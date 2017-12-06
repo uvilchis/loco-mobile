@@ -5,11 +5,21 @@ export default class TrainLine extends Component {
   constructor(props) {
     super(props);
   }
+ 
+  getDetails(e) {
+    console.log('pressed!')
+  }
 
-  render() {
+  render() { 
     return (
-        <View>
-          <Image source={require("../images/123.png")} />
+        <View style={styles.container}>
+          <Image source={this.props.line} />
+          <Image style={{width: 50, height: 50}} source={require("../images/green.png")} />
+          <Button
+            onPress={this.getDetails}
+            title="Details"
+            color="#841584"
+          />
         </View>
     )
   }

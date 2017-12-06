@@ -3,20 +3,30 @@ import { StyleSheet, Text, View, Image } from 'react-native';
 import TrainLine from './components/TrainLine.js';
 
 export default class App extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      lines: [
+        require("./images/123.png"),
+        require("./images/456.png"),
+        require("./images/7.png"),
+        require("./images/ACE.png"),
+        require("./images/BDFM.png"),
+        require("./images/G.png"),
+        require("./images/JZ.png"),
+        require("./images/L.png"),
+        require("./images/NQR.png"),
+        require("./images/S.png")
+      ]
+    }
+  }
   render() {
     return (
       <View style={styles.container}>
         <Text>Welcome to loco, your one stop resource for MTA delays</Text>
-        <TrainLine />
-        <Image source={require("./images/456.png")} />
-        <Image source={require("./images/7.png")} />
-        <Image source={require("./images/ACE.png")} />
-        <Image source={require("./images/BDFM.png")} />
-        <Image source={require("./images/G.png")} />
-        <Image source={require("./images/JZ.png")} />
-        <Image source={require("./images/L.png")} />
-        <Image source={require("./images/NQR.png")} />
-        <Image source={require("./images/S.png")} />
+          {this.state.lines.map((line, idx) => (
+            <TrainLine line={line} key={idx}/>
+          ))}
       </View>
     );
   }
