@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { StyleSheet, Text, View, Image } from 'react-native';
+import { StyleSheet, Text, View, Image, ScrollView } from 'react-native';
 import TrainLine from './components/TrainLine.js';
 
 export default class App extends React.Component {
@@ -22,21 +22,26 @@ export default class App extends React.Component {
   }
   render() {
     return (
-      <View style={styles.container}>
-        <Text>Welcome to loco, your one stop resource for MTA delays</Text>
+      <ScrollView contentContainerStyle={styles.contentContainer}>
+        <Text style={styles.text}>Welcome to loco, your one stop resource for MTA delays</Text>
           {this.state.lines.map((line, idx) => (
             <TrainLine line={line} key={idx}/>
           ))}
-      </View>
+      </ScrollView>
     );
   }
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
+  contentContainer: {
+    paddingVertical: 30,
+    justifyContent: 'center'
+  },
+  text: {
+    color: 'black',
+    fontWeight: 'bold',
+    fontSize: 20,
+    textAlign: 'center',
+    paddingVertical: 20
   }
 });
