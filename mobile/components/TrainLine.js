@@ -13,13 +13,17 @@ export default class TrainLine extends Component {
   render() { 
     return (
         <View style={styles.container}>
-          <Image source={this.props.line} />
-          <Image style={{width: 50, height: 50}} source={require("../images/green.png")} />
-          <Button
-            onPress={this.getDetails}
-            title="Details"
-            color="#841584"
-          />
+          <View style={styles.icon}>
+            <Image source={this.props.line} />
+          </View>
+          <View style={styles.buttons}>
+            <Image style={{width: 50, height: 50}} source={require("../images/green.png")} />
+            <Button
+              onPress={this.getDetails}
+              title="Details"
+              color="#841584"
+            />
+          </View>
         </View>
     )
   }
@@ -32,5 +36,14 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     alignItems: 'center',
     justifyContent: 'space-between'
+  },
+  icon: {
+    flex: 2
+  },
+  buttons: {
+    flex: 1.5,
+    flexDirection: 'row', 
+    justifyContent: 'space-between',
+    alignItems: 'center'
   }
 })
