@@ -1,13 +1,13 @@
-import React from 'react';
+import React, { Component } from 'react';
 import { StyleSheet, Text, View, Image } from 'react-native';
-
+import TrainLine from './components/TrainLine.js';
 
 export default class App extends React.Component {
   render() {
     return (
       <View style={styles.container}>
         <Text>Welcome to loco, your one stop resource for MTA delays</Text>
-        <Image source={require("./images/123.png")} />
+        <TrainLine />
         <Image source={require("./images/456.png")} />
         <Image source={require("./images/7.png")} />
         <Image source={require("./images/ACE.png")} />
