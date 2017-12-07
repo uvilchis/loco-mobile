@@ -6,11 +6,7 @@ export default class TrainLine extends Component {
     super(props);
   }
  
-  getDetails(e) {
-    console.log('pressed!')
-  }
-
-  render() { 
+  render() {   
     return (
         <View style={styles.container}>
           <View style={styles.icon}>
@@ -19,7 +15,10 @@ export default class TrainLine extends Component {
           <View style={styles.buttons}>
             <Image style={{width: 50, height: 50}} source={require("../images/green.png")} />
             <Button
-              onPress={this.getDetails}
+              onPress={() => {
+                // this.props.navigation.navigate('Lines')
+                // title="RootNavigator"
+              }}
               title="Details"
               color="#841584"
             />

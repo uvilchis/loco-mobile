@@ -1,6 +1,9 @@
 import React, { Component } from 'react';
 import { StyleSheet, Text, View, Image, ScrollView } from 'react-native';
+import RootNav from './RootNav.js';
 import TrainLine from './components/TrainLine.js';
+import Lines from './components/Lines.js';
+
 
 export default class App extends React.Component {
   constructor(props) {
@@ -20,21 +23,40 @@ export default class App extends React.Component {
       ]
     }
   }
-  render() {
+
+  getDetails(e) {
+    console.log('pressed!')
+    // this.props.navigation.navigate('Lines') //, { user: 'Daniel' })}
+    // title="RootNavigator"
+  }
+  
+  // 
+
+  render() { 
+    // const { navigate } = this.props.navigation; 
+    // console.log(navigate)  
     return (
-      <ScrollView contentContainerStyle={styles.contentContainer}>
+      <View>
+        <Text style={styles.title}>loco</Text>
         <Text style={styles.text}>Welcome to loco, your one stop resource for MTA delays</Text>
-          {this.state.lines.map((line, idx) => (
-            <TrainLine line={line} key={idx}/>
-          ))}
-      </ScrollView>
+        <RootNav />
+      </View>
     );
   }
 }
 
 const styles = StyleSheet.create({
+  title: {
+    flexDirection: 'row',
+    backgroundColor: '#6d6868',
+    color: 'white', 
+    fontWeight: 'bold',
+    fontSize: 30,
+    paddingVertical: 8,
+
+  },
   contentContainer: {
-    paddingVertical: 30,
+    paddingVertical: 20,
     justifyContent: 'center'
   },
   text: {
