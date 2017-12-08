@@ -1,21 +1,31 @@
-import React from 'react';
+import React, { Component } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
+import TrainLines from './components/TrainLines';
+import RootNav from './components/RootNav';
 
-export default class App extends React.Component {
+export default class App extends Component {
+  constructor(props) {
+    super(props);
+  }
+  
   render() {
+    console.log('APP PROPS:', this.props)
     return (
-      <View style={styles.container}>
-        <Text>Welcome to loco, your one stop resource for MTA delays</Text>
+      <View style={{flex: 1}}>
+        <Text style={styles.title}>loco</Text>        
+        <RootNav />
       </View>
     );
   }
-}
+};
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
+  title: {
+    flexDirection: 'row',
+    backgroundColor: '#6d6868',
+    color: 'white', 
+    fontWeight: 'bold',
+    fontSize: 30,
+    paddingVertical: 30
+  }
 });
