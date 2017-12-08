@@ -9,7 +9,7 @@ export default class App extends Component {
   }
   
   render() {
-    console.log('APP PROPS:', this.props)
+    // console.log('APP PROPS:', this.props)
     return (
       <View style={{flex: 1}}>
         <Text style={styles.title}>loco</Text>        
