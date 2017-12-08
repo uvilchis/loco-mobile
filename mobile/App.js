@@ -1,26 +1,23 @@
 import React, { Component } from 'react';
-import { StyleSheet, Text, View, Image, ScrollView } from 'react-native';
-import RootNav from './RootNav.js';
-import TrainLines from './components/TrainLines.js';
-import Lines from './components/Lines.js';
+import { StyleSheet, Text, View } from 'react-native';
+import TrainLines from './components/TrainLines';
+import RootNav from './components/RootNav';
 
-export default class App extends React.Component {
+export default class App extends Component {
   constructor(props) {
     super(props);
-    
   }
-
-  render() { 
+  
+  render() {
+    console.log('APP PROPS:', this.props)
     return (
-      <View>
-        <Text style={styles.title}>loco</Text>
-        <Text style={styles.text}>Welcome to loco, 
-        your one stop resource for MTA delays</Text>
-        <TrainLines RootNav={RootNav} />
+      <View style={{flex: 1}}>
+        <Text style={styles.title}>loco</Text>        
+        <RootNav />
       </View>
     );
   }
-}
+};
 
 const styles = StyleSheet.create({
   title: {
@@ -29,18 +26,6 @@ const styles = StyleSheet.create({
     color: 'white', 
     fontWeight: 'bold',
     fontSize: 30,
-    paddingVertical: 8,
-
-  },
-  contentContainer: {
-    paddingVertical: 20,
-    justifyContent: 'center'
-  },
-  text: {
-    color: 'black',
-    fontWeight: 'bold',
-    fontSize: 20,
-    textAlign: 'center',
-    paddingVertical: 20
+    paddingVertical: 30
   }
 });

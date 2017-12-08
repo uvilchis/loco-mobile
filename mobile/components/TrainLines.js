@@ -1,9 +1,10 @@
 import React, { Component } from 'react';
-import { View, StyleSheet, Image, Button, Text } from 'react-native';
+import { StyleSheet, ScrollView, Text, Button } from 'react-native';
+import TrainLine from './TrainLine';
 
 export default class TrainLines extends Component {
   constructor(props) {
-    super(props);
+    super(props); 
     this.state = {
       lines: [
         require("../images/123.png"),
@@ -18,17 +19,35 @@ export default class TrainLines extends Component {
         require("../images/S.png")
       ]
     }
+    this.navToLines = this.navToLines.bind(this);
   }
-  
-  static navigationOptions = {
-    title: 'Home',
+
+  navToLines(idx) {
+    this.props.navigation.navigate('Lines', { line: this.state.lines[idx] })
   }
- 
-  render() {   
+
+  render() {
+    console.log('TRAINLINES PROPS', this.props)    
     return (
-        <View>
-          <Text>Here's where all the trains get mapped</Text>
-        </View>
+      <ScrollView>
+        <Text style={styles.text}>Welcome to loco, your one stop resource for MTA delays</Text>
+        {this.state.lines.map((line, idx) =>
+          <TrainLine key={idx} line={line} idx={idx} navToLines={this.navToLines} />
+        )}
+      </ScrollView>
     )
   }
 }
+
+const styles = StyleSheet.create({
+  text: {
+    flexDirection: 'row',
+    backgroundColor: '#fff',
+    color: 'black',
+    fontWeight: 'bold',
+    fontSize: 20,
+    textAlign: 'center',
+    paddingVertical: 25
+  }
+});
+
