@@ -1,23 +1,27 @@
 import React, { Component } from 'react';
 import { StyleSheet, Text, View, Image, ScrollView, Button } from 'react-native';
 import Details from './Details.js';
-import TrainLines from './TrainLines';
 
 export default class Lines extends Component {
   constructor(props) {
     super(props);
+    this.state={
+      lines: [1, 2, 3]
+    }
   }
   
   render() {
-    console.log('Lines', this.props);
+    console.log('LINES PROPS', this.props);
     return (
-      <View>
-        <Text>This is where I want to go after the first detail click</Text>
-      </View>
+      <ScrollView>
+        {this.state.lines.map((train, idx) => 
+          <Details train={train} key={idx} /> 
+        )}
+      </ScrollView>
     );
   }
 }
 
-// Lines.navigationOptions = {
-//   title: 'Lines',
-// };
+Lines.navigationOptions = {
+  title: 'Lines',
+};

@@ -27,7 +27,7 @@ export default class TrainLines extends Component {
   }
 
   render() {
-    console.log('TRAINLINES PROPS', this.props)    
+    // console.log('TRAINLINES PROPS', this.props)    
     return (
       <ScrollView>
         <Text style={styles.text}>Welcome to loco, your one stop resource for MTA delays</Text>
