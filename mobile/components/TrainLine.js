@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { View, StyleSheet, Image, Button, Text } from 'react-native';
 
 const TrainLine = (props) => {
-  // console.log('TRAINLINE PROPS', props)   
+  // console.log('TRAINLINE PROPS', props)
     return (
       <View style={styles.container}>
         <View style={styles.icon}>
@@ -16,7 +16,7 @@ const TrainLine = (props) => {
               props.navToLines(props.idx);
             }} 
             title="Lines"
-            color="#841584"
+            color="#841584"   
           /> 
         </View> 
       </View> 

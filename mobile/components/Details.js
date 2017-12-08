@@ -11,7 +11,7 @@ export default class Details extends Component {
   }
 
   render() {
-    console.log('DETAILS PROPS:', this.props)
+    // console.log('DETAILS PROPS:', this.props)
     return (
       <ScrollView>
         <View style={styles.container}>

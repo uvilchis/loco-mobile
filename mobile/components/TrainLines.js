@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { StyleSheet, ScrollView, Text, Button } from 'react-native';
+import axios from 'axios';
 import TrainLine from './TrainLine';
 
 export default class TrainLines extends Component {
@@ -18,8 +19,21 @@ export default class TrainLines extends Component {
         require("../images/NQR.png"),
         require("../images/S.png")
       ]
-    }
+    };
     this.navToLines = this.navToLines.bind(this);
+  }
+  
+  componentDidMount() {
+    axios.get('http://ec2-18-221-253-159.us-east-2.compute.amazonaws.com:3001/loco/service?sub=mta')
+    .then((response) => {
+      console.log(response.data)
+      this.setState({
+        service: response.data 
+      });
+    })
+    .catch((err) => {
+      console.error(err);
+    })
   }
 
   navToLines(idx) {
