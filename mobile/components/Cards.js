@@ -17,7 +17,7 @@ export default class Cards extends Component {
   }
 
   render() {
-    console.log('CARDS PROPS:', this.props)
+    // console.log('CARDS PROPS:', this.props)
     return (
       <ScrollView style={styles.cards}>
         <Text>{this.props.train}</Text>
