@@ -3,10 +3,10 @@ import { View, Text, Image, Button, StyleSheet, ScrollView } from 'react-native'
 import Cards from './Cards';
 
 const markers = {
-  "GOOD SERVICE": require('../images/green.png'),
-  "SERVICE CHANGE": require('../images/red.png'),
-  "PLANNED WORK": require('../images/yellow.png'),
-  "DELAYS": require('../images/yellow.png')
+  "GOOD SERVICE": require('../images/markers/green.png'),
+  "SERVICE CHANGE": require('../images/markers/red.png'),
+  "PLANNED WORK": require('../images/markers/yellow.png'),
+  "DELAYS": require('../images/markers/yellow.png')
 }
 
 export default class Details extends Component {
