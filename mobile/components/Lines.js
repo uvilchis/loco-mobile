@@ -13,6 +13,12 @@ export default class Lines extends Component {
   }
 
   componentDidMount() {
+    this.props.navigation.state.params.lines.name === "SIR" ? 
+    this.setState({
+      lines: ["SIR"],
+      statusIcon: this.props.navigation.state.params.lines.status,
+      statusText: this.props.navigation.state.params.lines.text 
+    }) :
     this.setState({
       lines: this.props.navigation.state.params.lines.name.split(''),
       statusIcon: this.props.navigation.state.params.lines.status,
@@ -22,7 +28,7 @@ export default class Lines extends Component {
   
   render() {
     // console.log('ALL LINES PROPS', this.props);
-    console.log('NAVIGATION STATE PARAMS LINES PROPS', this.props.navigation.state.params.lines)
+    console.log('NAVIGATION STATE PARAMS LINES PROPS', this.props.navigation.state.params.lines.name)
     return (
       <ScrollView>
         {this.state.lines.map((train, idx) => 

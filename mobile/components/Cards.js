@@ -21,7 +21,7 @@ export default class Cards extends Component {
     // console.log('CARDS PROPS:', this.props)
     return (
       <ScrollView style={styles.cards}>
-        <Text>{this.props.train}</Text>
+        {/* <Text>{this.props.train}</Text> */}
         {this.props.statusText.length > 0 ? (
           <Card>
             <Text> {this.props.statusText} </Text>
