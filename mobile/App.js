@@ -2,12 +2,16 @@ import React, { Component } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import TrainLines from './components/TrainLines';
 import RootNav from './components/RootNav';
+import axios from 'axios';
 
 export default class App extends Component {
   constructor(props) {
     super(props);
+    this.state = {
+      service: []
+    }
   }
-  
+
   render() {
     // console.log('APP PROPS:', this.props)
     return (

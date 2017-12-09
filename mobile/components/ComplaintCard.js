@@ -6,6 +6,7 @@ export default class ComplaintCard extends Component {
   constructor(props) {
     super(props);
   }
+  
   render() {
     return (
       <ScrollView>
