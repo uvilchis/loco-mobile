@@ -9,6 +9,32 @@ const markers = {
   "DELAYS": require('../images/markers/yellow.png')
 }
 
+const line = {
+  "1": require('../images/line/1.png'),
+  "2": require('../images/line/2.png'),
+  "3": require('../images/line/3.png'),
+  "4": require('../images/line/4.png'),
+  "5": require('../images/line/5.png'),
+  "6": require('../images/line/6.png'),
+  "7": require('../images/line/7.png'),
+  "A": require('../images/line/A.png'),
+  "C": require('../images/line/C.png'),
+  "E": require('../images/line/E.png'),
+  "B": require('../images/line/B.png'),
+  "D": require('../images/line/D.png'),
+  "F": require('../images/line/F.png'),
+  "M": require('../images/line/M.png'),
+  "G": require('../images/line/G.png'),
+  "J": require('../images/line/J.png'),
+  "Z": require('../images/line/Z.png'),
+  "L": require('../images/line/L.png'),
+  "N": require('../images/line/N.png'),
+  "Q": require('../images/line/Q.png'),
+  "R": require('../images/line/R.png'),
+  "S": require('../images/line/S.png'),
+  "SIR": require('../images/line/SIR.png')
+}
+
 export default class Details extends Component {
   constructor(props) {
     super(props);
@@ -23,7 +49,7 @@ export default class Details extends Component {
       <ScrollView>
         <View style={styles.container}>
           <View style={styles.icon}>
-            <Text>{this.props.train}</Text>
+            <Image source={ line[this.props.train] } />
           </View>
           <View style={styles.buttons}>
             <Image style={{width: 50, height: 50}} source={ markers[this.props.statusIcon] } />
