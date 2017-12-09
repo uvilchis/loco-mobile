@@ -2,6 +2,13 @@ import React, { Component } from 'react';
 import { View, Text, Image, Button, StyleSheet, ScrollView } from 'react-native';
 import Cards from './Cards';
 
+const markers = {
+  "GOOD SERVICE": require('../images/green.png'),
+  "SERVICE CHANGE": require('../images/red.png'),
+  "PLANNED WORK": require('../images/yellow.png'),
+  "DELAYS": require('../images/yellow.png')
+}
+
 export default class Details extends Component {
   constructor(props) {
     super(props);
@@ -19,14 +26,13 @@ export default class Details extends Component {
             <Text>{this.props.train}</Text>
           </View>
           <View style={styles.buttons}>
-            <Image style={{width: 50, height: 50}} source={require("../images/yellow.png")} />
+            <Image style={{width: 50, height: 50}} source={ markers[this.props.statusIcon] } />
             <Button 
               onPress={() => {
                 console.log('pressed a Line!!')
                 this.setState({
                   compressed: !this.state.compressed
                 })
-                // on press have details about specific train show up
               }}
               title="Details"
               color='#841584'
