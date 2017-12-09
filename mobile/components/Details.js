@@ -41,7 +41,7 @@ export default class Details extends Component {
         </View>
         <View style={styles.cards}>
           {this.state.compressed ? (
-              <Cards train={this.props.train} />
+              <Cards train={this.props.train} statusText={this.props.statusText} />
           ) : null }
         </View>
       </ScrollView>
