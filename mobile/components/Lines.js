@@ -28,7 +28,7 @@ export default class Lines extends Component {
   
   render() {
     // console.log('ALL LINES PROPS', this.props);
-    console.log('NAVIGATION STATE PARAMS LINES PROPS', this.props.navigation.state.params.lines.name)
+    // console.log('NAVIGATION STATE PARAMS LINES PROPS', this.props.navigation.state.params.lines.name)
     return (
       <ScrollView>
         {this.state.lines.map((train, idx) => 

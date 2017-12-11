@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Text, Image, Button, StyleSheet, ScrollView } from 'react-native';
+import { View, Text, Image, Button, StyleSheet, ScrollView, Alert, Picker } from 'react-native';
 import axios from 'axios';
 import Cards from './Cards';
 
@@ -44,6 +44,16 @@ export default class Details extends Component {
     }
   }
 
+  // componentDidMount() {
+  //   axios.get(`http://10.16.1.191/api/route/stops?route_id=${this.props.train}`)
+  //   .then((response) => {
+  //     console.log(response.data)
+  //   })
+  //   .catch((err) => {
+  //     console.error(err);
+  //   })
+  // }
+
   render() {
     // console.log('DETAILS PROPS:', this.props)
     return (
@@ -60,7 +70,7 @@ export default class Details extends Component {
                 this.setState({
                   compressed: !this.state.compressed
                 })
-              }}
+              }} 
               title="Details"
               color='#841584'
             />
