@@ -28,7 +28,8 @@ export default class Cards extends Component {
           </Card>
         ) : null }        
         {this.state.complaints.map((complaint, idx) => 
-          <ComplaintCard complaint={complaint} key={idx} />
+          <ComplaintCard complaint={complaint} key={idx} train={this.props.train}
+          />
         )}
       </ScrollView>
     )

@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { View, Text, Image, Button, StyleSheet, ScrollView } from 'react-native';
+import axios from 'axios';
 import Cards from './Cards';
 
 const markers = {
