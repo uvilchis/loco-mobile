@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
-import { StyleSheet, Text, View, Image, ScrollView, Button } from 'react-native';
+import { StyleSheet, Text, View, Image, ScrollView } from 'react-native';
+import { Card, ListItem, Button } from 'react-native-elements';
 import Details from './Details.js';
 
 export default class Lines extends Component {
@@ -34,6 +35,11 @@ export default class Lines extends Component {
         {this.state.lines.map((train, idx) => 
           <Details train={train} key={idx} statusIcon={this.state.statusIcon} statusText={this.state.statusText} /> 
         )}
+        {this.state.statusText.length > 0 ? (
+          <Card>
+            <Text> {this.state.statusText} </Text>
+          </Card>
+        ) : null }
       </ScrollView>
     );
   }
