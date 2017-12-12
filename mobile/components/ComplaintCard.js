@@ -25,6 +25,22 @@ export default class ComplaintCard extends Component {
     })
   }
   
+  handleComplaintSubmit(event) {
+    let value = event.target.value;
+    axios.post('/api/report/add', {
+      sub: 'mta',
+      type: value,
+      stop_id: this.state.stopId,
+      route_id: this.state.routeId
+    })
+    .then(({ data }) => {
+      let complaints = this.state.complaints.slice();
+      complaints.find((el) => el.name === value).count = data.count;
+      this.setState({ complaints });
+    })
+    .catch((error) => console.log(error));
+  }
+
   render() {
     // console.log('COMPLAINTCARD PROPS', this.props)
     return (
@@ -33,15 +49,42 @@ export default class ComplaintCard extends Component {
           <Text style={styles.text} >
             {this.props.complaint}
           </Text>
-          <Text>
-            {this.state.complaintData.count}
-          </Text>
-          <Button 
+          <Button
             onPress={() => {
-              console.log('pressed complaint details!')  
+              console.log('pressed!')
+              axios.post(`http://10.16.1.191:3000/api/report/add`, {
+                sub: 'mta',
+                type: this.props.complaint,
+                stop_id: this.props.selected,
+                route_id: this.props.train
+              })
+              .then((response) => {
+                console.log(response.data)
+                this.props.count += 1
+              })
+              .catch((err) => {
+                console.error(err)
+              })
             }}
-            title="see more"
-            color="#841584"
+            title="upvote"
+            color='#841584'
+          />
+          <Text>
+            {this.props.count}
+          </Text>
+          <Button
+            onPress={() => {
+              console.log('pressed!')
+              axios.post(`http://10.16.1.191:3000/api/report/subtract`)
+              .then((response) => {
+                console.log(response.data)
+              })
+              .catch((err) => {
+                console.error(err)
+              })
+            }}
+            title="downvote"
+            color='#841584'
           />
         </Card>
       </ScrollView>

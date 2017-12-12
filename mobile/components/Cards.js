@@ -7,14 +7,14 @@ import ComplaintCard from './ComplaintCard';
 export default class Cards extends Component {
   constructor(props) {
     super(props);
+    this.defaultComplaints = [
+      { name: 'delayed', count: 0 }, 
+      { name: 'closed', count: 0 },
+      { name: 'accident', count: 0 }, 
+      { name: 'crowded', count: 0 }
+    ];
     this.state = {
       compressed: false,
-      complaints: [
-        'delayed',
-        'closed',
-        'accident',
-        'crowded'
-      ], 
       stations: [], 
       selected: ''
     }
@@ -33,6 +33,10 @@ export default class Cards extends Component {
     })
   }
 
+  handleComplaint() {
+    
+  }
+
   render() {
     // console.log('CARDS PROPS:', this.props)
     return (
@@ -47,8 +51,9 @@ export default class Cards extends Component {
         </Picker>
         
         {this.state.selected !== '' ? (
-          this.state.complaints.map((complaint, idx) => 
-            <ComplaintCard complaint={complaint} key={idx} train={this.props.train} selected={this.state.selected}
+          this.defaultComplaints.map((complaint, idx) => 
+            <ComplaintCard complaint={complaint.name} count={complaint.count} key={idx} 
+            train={this.props.train} selected={this.state.selected}
             />
         )) : null }       
       </ScrollView>
