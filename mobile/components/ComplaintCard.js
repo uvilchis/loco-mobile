@@ -22,7 +22,6 @@ export default class ComplaintCard extends Component {
             <View style={styles.button}>
               <Button
                 onPress={() => {
-                  // console.log('pressed + button')
                   this.props.handleAdd(this.props.complaint)
                 }}
                 title="+"
