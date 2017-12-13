@@ -1,47 +1,38 @@
 import React, { Component } from 'react';
-import { StyleSheet, Text, View, Image, ScrollView } from 'react-native';
-import TrainLine from './components/TrainLine.js';
+import { StyleSheet, Text, View, Image } from 'react-native';
+import TrainLines from './components/TrainLines';
+import RootNav from './components/RootNav';
+import axios from 'axios';
 
-export default class App extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      lines: [
-        require("./images/123.png"),
-        require("./images/456.png"),
-        require("./images/7.png"),
-        require("./images/ACE.png"),
-        require("./images/BDFM.png"),
-        require("./images/G.png"),
-        require("./images/JZ.png"),
-        require("./images/L.png"),
-        require("./images/NQR.png"),
-        require("./images/S.png")
-      ]
-    }
-  }
-  render() {
+const App = (props) => {
     return (
-      <ScrollView contentContainerStyle={styles.contentContainer}>
-        <Text style={styles.text}>Welcome to loco, your one stop resource for MTA delays</Text>
-          {this.state.lines.map((line, idx) => (
-            <TrainLine line={line} key={idx}/>
-          ))}
-      </ScrollView>
+      <View style={{flex: 1}}>
+        <View style={styles.container}>
+          <Text style={styles.title}>loco</Text>
+          <Image source={require('./images/NYCmap.png')} />
+        </View>      
+        <RootNav />
+      </View>
     );
   }
-}
 
 const styles = StyleSheet.create({
-  contentContainer: {
+  container: {
+    flexDirection: 'row',
+    backgroundColor: '#6d6868',
     paddingVertical: 30,
-    justifyContent: 'center'
+    justifyContent: 'space-between'
   },
-  text: {
-    color: 'black',
+  title: {  
+    flex: 1,
+    color: 'white', 
     fontWeight: 'bold',
-    fontSize: 20,
-    textAlign: 'center',
-    paddingVertical: 20
+    fontSize: 30  
+  }, 
+  img: {
+    flex: 1,
+    alignItems: 'flex-end'
   }
 });
+
+export default App
