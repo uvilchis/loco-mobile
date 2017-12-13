@@ -2,47 +2,44 @@ import React, { Component } from 'react';
 import { View, StyleSheet, Image, Button, Text } from 'react-native';
 
 const markers = {
-  "GOOD SERVICE": require('../images/green.png'),
-  "SERVICE CHANGE": require('../images/red.png'),
-  "PLANNED WORK": require('../images/yellow.png'),
-  "DELAYS": require('../images/yellow.png')
+  "GOOD SERVICE": require('../images/markers/green.png'),
+  "SERVICE CHANGE": require('../images/markers/red.png'),
+  "PLANNED WORK": require('../images/markers/yellow.png'),
+  "DELAYS": require('../images/markers/yellow.png')
 }
 
 const lines = {
-  "123": require('../images/123.png'),
-  "456": require('../images/456.png'),
-  "7": require('../images/7.png'),
-  "ACE": require('../images/ACE.png'),
-  "BDFM": require('../images/BDFM.png'),
-  "G": require('../images/G.png'),
-  "JZ": require('../images/JZ.png'),
-  "L": require('../images/L.png'),
-  "NQR": require('../images/NQR.png'),
-  "S": require('../images/S.png'),
-  "SIR": require('../images/SIR.png')
+  "123": require('../images/lines/123.png'),
+  "456": require('../images/lines/456.png'),
+  "7": require('../images/lines/7.png'),
+  "ACE": require('../images/lines/ACE.png'),
+  "BDFM": require('../images/lines/BDFM.png'),
+  "G": require('../images/lines/G.png'),
+  "JZ": require('../images/lines/JZ.png'),
+  "L": require('../images/lines/L.png'),
+  "NQR": require('../images/lines/NQR.png'),
+  "S": require('../images/lines/S.png'),
+  "SIR": require('../images/lines/SIR.png')
 }
 
 const TrainLine = (props) => {
-  // console.log('TRAIN STATUS', markers[props.line.status])
-  // console.log('LINE NAMES', lines[props.line.name])
-    return (
-      <View style={styles.container}>
-        <View style={styles.icon}>
-          <Image source={lines[props.line.name]} />
-        </View>
-        <View style={styles.buttons}>
-          <Image style={{width: 50, height: 50}} source={ markers[props.line.status] } />
-          <Button
-            onPress={() => {
-              console.log('pressed!!')
-              props.navToLines(props.idx);
-            }} 
-            title="Lines"
-            color="#841584"   
-          /> 
-        </View> 
+  return (
+    <View style={styles.container}>
+      <View style={styles.icon}>
+        <Image source={lines[props.line.name]} />
+      </View>
+      <View style={styles.buttons}>
+        <Image style={{width: 50, height: 50}} source={ markers[props.line.status] } />
+        <Button
+          onPress={() => {
+            props.navToLines(props.idx);
+          }} 
+          title="Lines"
+          color="#841584"   
+        /> 
       </View> 
-    )
+    </View> 
+  )
 }
 
 const styles = StyleSheet.create({
