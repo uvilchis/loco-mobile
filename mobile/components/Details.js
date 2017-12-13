@@ -44,29 +44,17 @@ export default class Details extends Component {
     }
   }
 
-  // componentDidMount() {
-  //   axios.get(`http://10.16.1.191/api/route/stops?route_id=${this.props.train}`)
-  //   .then((response) => {
-  //     console.log(response.data)
-  //   })
-  //   .catch((err) => {
-  //     console.error(err);
-  //   })
-  // }
-
   render() {
-    // console.log('DETAILS PROPS:', this.props)
     return (
       <ScrollView>
         <View style={styles.container}>
           <View style={styles.icon}>
-            <Image source={ line[this.props.train] } />
+            <Image source={ line[this.props.routeId] } />
           </View>
           <View style={styles.buttons}>
             <Image style={{width: 50, height: 50}} source={ markers[this.props.statusIcon] } />
             <Button 
               onPress={() => {
-                console.log('pressed a Line!!')
                 this.setState({
                   compressed: !this.state.compressed
                 })
@@ -78,7 +66,7 @@ export default class Details extends Component {
         </View>
         <View style={styles.cards}>
           {this.state.compressed ? (
-              <Cards train={this.props.train} statusText={this.props.statusText} />
+            <Cards routeId={this.props.routeId} statusText={this.props.statusText} />
           ) : null }
         </View>
       </ScrollView>

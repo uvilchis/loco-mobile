@@ -23,26 +23,23 @@ const lines = {
 }
 
 const TrainLine = (props) => {
-  // console.log('TRAIN STATUS', markers[props.line.status])
-  // console.log('LINE NAMES', lines[props.line.name])
-    return (
-      <View style={styles.container}>
-        <View style={styles.icon}>
-          <Image source={lines[props.line.name]} />
-        </View>
-        <View style={styles.buttons}>
-          <Image style={{width: 50, height: 50}} source={ markers[props.line.status] } />
-          <Button
-            onPress={() => {
-              console.log('pressed!!')
-              props.navToLines(props.idx);
-            }} 
-            title="Lines"
-            color="#841584"   
-          /> 
-        </View> 
+  return (
+    <View style={styles.container}>
+      <View style={styles.icon}>
+        <Image source={lines[props.line.name]} />
+      </View>
+      <View style={styles.buttons}>
+        <Image style={{width: 50, height: 50}} source={ markers[props.line.status] } />
+        <Button
+          onPress={() => {
+            props.navToLines(props.idx);
+          }} 
+          title="Lines"
+          color="#841584"   
+        /> 
       </View> 
-    )
+    </View> 
+  )
 }
 
 const styles = StyleSheet.create({

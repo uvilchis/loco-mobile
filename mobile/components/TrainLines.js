@@ -28,8 +28,7 @@ export default class TrainLines extends Component {
     this.props.navigation.navigate('Lines', { lines: this.state.service[idx] })
   }
 
-  render() {
-    // console.log('SERVICE DATA', this.state.service)   
+  render() {  
     return (
       <ScrollView>
         <Text style={styles.text}>Welcome to loco, your one stop resource for MTA delays</Text>

@@ -14,46 +14,108 @@ export default class Cards extends Component {
       { name: 'crowded', count: 0 }
     ];
     this.state = {
+      staticSched : false,
       compressed: false,
-      stations: [], 
-      selected: ''
+      direction: '',
+      routeId: '',      
+      stopId : '',
+      stationsN : [],  
+      stationsS: [],    
+      complaints: this.defaultComplaints.map((el) => Object.assign({}, el))
     }
+    this.handleChange = this.handleChange.bind(this)
+    this.handleAdd = this.handleAdd.bind(this)
   }
-
+  
   componentDidMount() {
-    axios.get(`http://ec2-18-221-253-159.us-east-2.compute.amazonaws.com/loco/stops/routes?sub=mta&route_id=${this.props.train}`)
-    .then((response) => { 
-      let arrSize = response.data.length
-      this.setState({
-        stations: response.data.slice(0, (arrSize/2))
+    axios.get(`http://10.16.1.191:3000/api/route/stops`, {
+      params: { 
+        sub: 'mta', 
+        route_id: this.props.routeId 
+      }
+    })
+    .then(({ data }) => {
+      this.setState({ 
+        routeId: this.props.routeId,
+        stationsN: data.N,
+        stationsS: data.S
       })
     })
-    .catch((err) => {
-      console.error(err);
+    .catch((error) => console.log(error));
+  }
+
+  handleChange(itemValue) {
+    let newState= {};
+    this.setState({
+      stopId: itemValue
+    }, () => {
+      axios.get(`http://10.16.1.191:3000/api/report/stoproute?sub=mta&stop_id=${this.state.stopId}&route_id=${this.state.routeId}`)
+      .then((response) => {
+        let defaults = this.defaultComplaints.map((a) => Object.assign({}, a));
+        let newComplaints = response.data.reduce((acc, b) => {
+          let temp = acc.find((el) => el.name === b.name);
+          temp ? temp.count = b.count : acc.push(b);
+          return acc;
+        }, defaults);
+      
+        newState.complaints = newComplaints;
+        this.setState(newState);
+      })
+      .catch((err) => {
+        console.error(err)
+      })
     })
   }
 
-  handleComplaint() {
-    
+  handleAdd(type) {
+    this.setState({
+      currentComplaint: type
+    }, () => {
+      axios.post(`http://10.16.1.191:3000/api/report/add`, {
+        sub: 'mta',
+        type: this.state.currentComplaint,
+        stop_id: this.state.stopId,
+        route_id: this.state.routeId
+      })
+      .then((response) => {
+        this.handleChange(this.state.stopId)
+      })
+      .catch((err) => {
+        console.error(err)
+      })
+    })    
   }
 
   render() {
-    // console.log('CARDS PROPS:', this.props)
     return (
       <ScrollView style={styles.cards}>
         <Picker style={styles.picker}
-          selectedValue={this.state.selected}
-          onValueChange={(itemValue, itemIndex) => this.setState({selected: itemValue})}>
+          selectedValue={this.state.direction}
+          onValueChange={(itemValue, itemIndex) => this.setState({direction: itemValue})}>
+          <Picker.Item label='Please select a direction...' value='' />
+          <Picker.Item label='Northbound' value='N' />
+          <Picker.Item label='Southbound' value='S' />
+        </Picker>   
+        <Picker style={styles.picker}
+          selectedValue={this.state.stopId}
+          onValueChange={(itemValue, itemIndex) => this.handleChange(itemValue)}>
           <Picker.Item label='Please select a station...' value='' />
-          {this.state.stations.map((station, idx) => {
-            return <Picker.Item label={station.stop_name} value={station.stop_id} key={idx} />
-          })}
-        </Picker>
-        
-        {this.state.selected !== '' ? (
-          this.defaultComplaints.map((complaint, idx) => 
-            <ComplaintCard complaint={complaint.name} count={complaint.count} key={idx} 
-            train={this.props.train} selected={this.state.selected}
+          {this.state.direction === 'N' ?
+            (this.state.stationsN.map((station, idx) => {
+              return <Picker.Item label={station.stop_name} value={station.stop_id} key={idx}
+                route_id={station.route_id}
+              />})) : (this.state.stationsS.map((station, idx) => {
+                return <Picker.Item label={station.stop_name} value={station.stop_id} key={idx}
+                  route_id={station.route_id}
+              />
+              }))
+          }
+        </Picker>             
+        {this.state.stopId !== '' ? (
+          this.state.complaints.map((complaint, idx) => 
+            <ComplaintCard complaint={complaint.name} count={complaint.count} 
+              key={idx} train={this.state.routeId} selected={this.state.stopId}
+              handleAdd={this.handleAdd}
             />
         )) : null }       
       </ScrollView>
