@@ -1,35 +1,38 @@
 import React, { Component } from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, Text, View, Image } from 'react-native';
 import TrainLines from './components/TrainLines';
 import RootNav from './components/RootNav';
 import axios from 'axios';
 
-export default class App extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      service: []
-    }
-  }
-
-  render() {
-    // console.log('APP PROPS:', this.props)
+const App = (props) => {
     return (
       <View style={{flex: 1}}>
-        <Text style={styles.title}>loco</Text>        
+        <View style={styles.container}>
+          <Text style={styles.title}>loco</Text>
+          <Image source={require('./images/NYCmap.png')} />
+        </View>      
         <RootNav />
       </View>
     );
   }
-};
 
 const styles = StyleSheet.create({
-  title: {
+  container: {
     flexDirection: 'row',
     backgroundColor: '#6d6868',
+    paddingVertical: 30,
+    justifyContent: 'space-between'
+  },
+  title: {  
+    flex: 1,
     color: 'white', 
     fontWeight: 'bold',
-    fontSize: 30,
-    paddingVertical: 30
+    fontSize: 30  
+  }, 
+  img: {
+    flex: 1,
+    alignItems: 'flex-end'
   }
 });
+
+export default App
