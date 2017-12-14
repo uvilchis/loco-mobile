@@ -10,6 +10,6 @@ export default RootNav = StackNavigator({
       header: null,
       headerMode: 'screen'
     }
-   },
-  Lines: { screen: Lines }
+  },
+  Lines: { screen: Lines } 
 });
