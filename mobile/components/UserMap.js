@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import MapView from 'react-native-maps';
 import { StyleSheet, Text, View, Image, Button, TextInput } from 'react-native';
 
-export default class UserMap extends React.Component {
+export default class UserMap extends Component {
   constructor(props) {
     super(props)
   }
@@ -35,3 +35,7 @@ const styles = StyleSheet.create({
   map: {
   }
 });
+
+UserMap.navigationOptions = {
+  title: 'Map',
+}

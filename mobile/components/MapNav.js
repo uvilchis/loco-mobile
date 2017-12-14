@@ -1,9 +1,9 @@
-import React from 'react';
+import React, { Component } from 'react';
 import { StackNavigator } from 'react-navigation';
 import App from '../App';
 import UserMap from './UserMap';
 
-export default MapNav = StackNavigator({
+export default MapNav = StackNavigator({ 
   App: { 
     screen: App,
     navigationOptions: {
@@ -11,5 +11,5 @@ export default MapNav = StackNavigator({
       headerMode: 'screen'
     }
   },
-  UserMap: { screen: UserMap }
-});
+  UserMap: { screen: UserMap }  
+})
