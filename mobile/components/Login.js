@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
+import Expo from 'expo';
 import { StyleSheet, Text, View, TextInput, TouchableOpacity, Image, Animated, Easing, Dimensions } from 'react-native'
 import { FontAwesome } from '@expo/vector-icons'
+import KEYS from '../env/key';
 
 import axios from 'axios';
 
@@ -27,7 +29,6 @@ export default class Login extends Component {
   pan() {
     this.panValue.setValue(0);
     this.fadeValue.setValue(0);
-
     Animated.parallel([
       Animated.timing(
         this.panValue,
@@ -62,8 +63,28 @@ export default class Login extends Component {
     });
   }
 
+  // Async/Await not playing nice
   handleGoogle() {
-    console.log('handle google');
+    Expo.Google.logInAsync({
+      androidClientId: KEYS.GOOGLE_ID_ANDROID,
+      iosClientId: KEYS.GOOGLE_ID_iOS,
+      scopes: ['profile']
+    })
+    .then((result) => {
+      if (result.type !== 'success') { throw 'failed to auth'; }
+      return axios.get(`http://10.16.1.193:3000/api/user/mobile/google`, {
+        params: {
+          auth_id: result.user.id,
+          display_name: `${result.user.givenName} ${result.user.familyName}`
+        }
+      });
+    })
+    .then(({ data }) => {
+      this.props.onGoogle(data);
+    })
+    .catch((error) => {
+      console.log(error);
+    });
   }
 
   render() {
