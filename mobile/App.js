@@ -18,6 +18,7 @@ export default class App extends Component {
     this.onSignUp = this.onSignUp.bind(this);
     this.onLogin = this.onLogin.bind(this);
     this.onLogout = this.onLogout.bind(this);
+    this.onGoogle = this.onGoogle.bind(this);
     this.toggleModal = this.toggleModal.bind(this);
   }
 
@@ -28,19 +29,21 @@ export default class App extends Component {
   onLogin(userObj) {
     axios.post(`http://10.16.1.193:3000/api/user/login`, userObj)
     .then(({ data }) => {
-      console.log(data);
       this.setState({
-        loggedIn: true
+        loggedIn: true,
+        modalVisible: false
       });
     })
     .catch((error) => console.log(error));
   }
 
   onSignUp(userObj) {
-    // console.log(userObj);
     axios.post(`http://10.16.1.193:3000/api/user/signup`, userObj)
     .then(({ data }) => {
-      console.log(data);
+      this.setState({
+        loggedIn: true,
+        modalVisible: false
+      });
     })
     .catch((error) => {
       console.log(error);
@@ -48,18 +51,24 @@ export default class App extends Component {
   }
 
   onLogout() {
-    // console.log('logout');
     axios.get(`http://10.16.1.193:3000/api/user/logout`)
     .then(({ data }) => {
-      console.log('logged out', data)
+      this.setState({
+        loggedIn: false
+      }, () => console.log('logged out'));
     })
-    .catch((error) => {
-      console.log(error);
-    })
+    .catch((error) => console.log(error));
+  }
+
+  onGoogle(data) {
+    console.log('onGoogle', data);
+    this.setState({
+      loggedIn: true,
+      modalVisible: false
+    }, () => console.log('google auth successful'));
   }
   
   render() {
-    console.log('APP PROPS:', this.props)
     return (
       <View style={{flex: 1}}>
         <View style={styles.container}>          
@@ -74,10 +83,7 @@ export default class App extends Component {
           {this.state.loggedIn ? (
             <Button
               onPress={() => {
-                this.setState({
-                  loggedIn: true,
-                  modalVisible: false
-                })
+                this.setState({ modalVisible: false });
                 this.onLogout()
               }}
               title="Logout"
@@ -85,10 +91,7 @@ export default class App extends Component {
             /> ) : (
             <Button
               onPress={() => {
-                this.setState({
-                  loggedIn: !this.state.loggedIn,
-                  modalVisible: true
-                })
+                this.setState({ modalVisible: true })
               }}
               title="Login"
               color='#841584'
@@ -103,7 +106,8 @@ export default class App extends Component {
           onRequestClose = {() => console.log("Modal has been closed.")}>
           <Login
             onLogin={this.onLogin} 
-            onSignUp={this.onSignUp} 
+            onSignUp={this.onSignUp}
+            onGoogle={this.onGoogle} 
             toggleModal={this.toggleModal} />
         </Modal>
         <RootNav />
