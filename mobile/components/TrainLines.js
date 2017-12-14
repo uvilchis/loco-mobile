@@ -5,19 +5,19 @@ import TrainLine from './TrainLine';
 
 export default class TrainLines extends Component {
   constructor(props) {
-    super(props); 
+    super(props);
     this.state = {
       service: []
     };
     this.navToLines = this.navToLines.bind(this)
   }
-  
+
   componentDidMount() {
     axios.get(`http://ec2-18-221-253-159.us-east-2.compute.amazonaws.com/loco/service?sub=mta`)
     .then((response) => {
       this.setState({
-        service: response.data.lines 
-      })
+        service: response.data.lines
+      }, () => { console.log('state at trainlines', this.state) })
     })
     .catch((err) => {
       console.error(err);
@@ -28,7 +28,7 @@ export default class TrainLines extends Component {
     this.props.navigation.navigate('Lines', { lines: this.state.service[idx] })
   }
 
-  render() {  
+  render() {
     return (
       <ScrollView>
         <Text style={styles.text}>Welcome to loco, your one stop resource for MTA delays</Text>
@@ -51,4 +51,3 @@ const styles = StyleSheet.create({
     paddingVertical: 25
   }
 });
-
