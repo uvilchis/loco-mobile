@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { StyleSheet, Text, View, Image, Modal, Button, TextInput } from 'react-native';
 import axios from 'axios';
+import UserMap from './components/UserMap';
 
 import Login from './components/Login';
 import RootNav from './components/RootNav';
@@ -35,22 +36,32 @@ export default class App extends Component {
     .catch((error) => console.log(error));
   }
 
-  onSignUp(userObj) {
-    // console.log(userObj);
-    axios.post(`http://10.16.1.193:3000/api/user/signup`, userObj)
-    .then(({ data }) => {
-      console.log(data);
+  signUp() {
+    var tempObj = {}
+    tempObj.username = this.state.username
+    tempObj.password = this.state.password
+    axios.post(`http://10.16.1.191:3000/api/user/signup`, tempObj)
+    .then((response) => {
+      console.log(response.data)
+      this.setState({
+        loggedIn: true
+      })
+    })
+    .catch((err) => {
+      console.error(err)
     })
     .catch((error) => {
       console.log(error);
     });
   }
 
-  onLogout() {
-    // console.log('logout');
-    axios.get(`http://10.16.1.193:3000/api/user/logout`)
-    .then(({ data }) => {
-      console.log('logged out', data)
+  logOut() {
+    axios.get(`http://10.16.1.191:3000/api/user/logout`)
+    .then((response) => {
+      console.log('logged out')
+      this.setState({
+        loggedIn: false
+      })
     })
     .catch((error) => {
       console.log(error);
@@ -60,13 +71,20 @@ export default class App extends Component {
   render() {
     return (
       <View style={{flex: 1}}>
-        <View style={styles.container}>
+        <View style={styles.container}>          
           <Text style={styles.title}>loco</Text>
+          <Button
+            onPress={() => {
+              console.log('finding location')
+            }}
+            title="Location"
+            color='#841584'
+          />
           {this.state.loggedIn ? (
             <Button
               onPress={() => {
                 this.setState({
-                  loggedIn: !this.state.loggedIn,
+                  loggedIn: true,
                   modalVisible: false
                 })
                 this.onLogout()
@@ -122,9 +140,9 @@ const styles = StyleSheet.create({
   },
   modal: {
     alignItems: 'center',
-    backgroundColor: '#f7021a',
+    backgroundColor: '#fff',
     padding: 100,
-    height: '80%'
+    height: '60%'
   }
 });
 
