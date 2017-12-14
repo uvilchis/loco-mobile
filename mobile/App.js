@@ -14,6 +14,7 @@ export default class App extends Component {
     }
     this.signUp = this.signUp.bind(this)
     this.logIn = this.logIn.bind(this)
+    this.logOut = this.logOut.bind(this)
   }
 
   toggleModal(visible) {
@@ -46,7 +47,16 @@ export default class App extends Component {
     axios.post(`http://10.16.1.191:3000/api/user/signup`, tempObj)
     .then((response) => {
       console.log(response.data)
+    })
+    .catch((err) => {
+      console.error(err)
+    })
+  }
 
+  logOut() {
+    axios.get(`http://10.16.1.191:3000/api/user/logout`)
+    .then((response) => {
+      console.log('logged out')
     })
     .catch((err) => {
       console.error(err)
@@ -73,16 +83,16 @@ export default class App extends Component {
               onPress={() => {
                 this.setState({
                   loggedIn: !this.state.loggedIn,
-                  modalVisible: true
+                  modalVisible: true                  
                 })
+                this.logOut()
               }}
               title="Login"
               color='#841584'
             />
           )}
           <Image source={require('./images/NYCmap.png')} />
-        </View>
-        
+        </View>        
         <Modal animationType = {"slide"} transparent = {false}
                visible = {this.state.modalVisible}
                onRequestClose = {() => { console.log("Modal has been closed.") } }>
@@ -115,7 +125,6 @@ export default class App extends Component {
             />
             <Button
               onPress={() => {
-                console.log('yo yo')
                 this.toggleModal()
               }}
               title="Go Back"
@@ -123,7 +132,6 @@ export default class App extends Component {
             />
           </View>
         </Modal>    
-
         <RootNav />        
       </View>
     )
