@@ -27,7 +27,7 @@ export default class App extends Component {
   }
 
   onLogin(userObj) {
-    axios.post(`http://10.16.1.193:3000/api/user/login`, userObj)
+    axios.post(`http://10.16.1.208:3000/api/user/login`, userObj)
     .then(({ data }) => {
       this.setState({
         loggedIn: true,
@@ -38,7 +38,7 @@ export default class App extends Component {
   }
 
   onSignUp(userObj) {
-    axios.post(`http://10.16.1.193:3000/api/user/signup`, userObj)
+    axios.post(`http://10.16.1.208:3000/api/user/signup`, userObj)
     .then(({ data }) => {
       this.setState({
         loggedIn: true,
@@ -51,7 +51,7 @@ export default class App extends Component {
   }
 
   onLogout() {
-    axios.get(`http://10.16.1.193:3000/api/user/logout`)
+    axios.get(`http://10.16.1.208:3000/api/user/logout`)
     .then(({ data }) => {
       this.setState({
         loggedIn: false

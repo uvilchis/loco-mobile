@@ -72,7 +72,7 @@ export default class Login extends Component {
     })
     .then((result) => {
       if (result.type !== 'success') { throw 'failed to auth'; }
-      return axios.get(`http://10.16.1.193:3000/api/user/mobile/google`, {
+      return axios.get(`http://10.16.1.208:3000/api/user/mobile/google`, {
         params: {
           auth_id: result.user.id,
           display_name: `${result.user.givenName} ${result.user.familyName}`
