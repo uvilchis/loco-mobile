@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { StyleSheet, Text, View, Image, Modal, Button, TextInput } from 'react-native';
 import axios from 'axios';
+// import MapNav from './components/MapNav';
 
 import Login from './components/Login';
 import RootNav from './components/RootNav';
@@ -56,17 +57,25 @@ export default class App extends Component {
       console.log(error);
     })
   }
-
+  
   render() {
+    console.log('APP PROPS:', this.props)
     return (
       <View style={{flex: 1}}>
-        <View style={styles.container}>
+        <View style={styles.container}>          
           <Text style={styles.title}>loco</Text>
+          <Button
+            onPress={() => {
+              console.log('pressed!')
+            }}
+            title="Location"
+            color='#841584'
+          />
           {this.state.loggedIn ? (
             <Button
               onPress={() => {
                 this.setState({
-                  loggedIn: !this.state.loggedIn,
+                  loggedIn: true,
                   modalVisible: false
                 })
                 this.onLogout()
@@ -122,9 +131,9 @@ const styles = StyleSheet.create({
   },
   modal: {
     alignItems: 'center',
-    backgroundColor: '#f7021a',
+    backgroundColor: '#fff',
     padding: 100,
-    height: '80%'
+    height: '60%'
   }
 });
 
