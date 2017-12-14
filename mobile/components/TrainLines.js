@@ -10,6 +10,7 @@ export default class TrainLines extends Component {
       service: []
     };
     this.navToLines = this.navToLines.bind(this);
+    this.navToLogin = this.navToLogin.bind(this);
   }
   
   componentDidMount() {
