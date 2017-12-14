@@ -1,8 +1,7 @@
 import React, { Component } from 'react';
-import { StyleSheet, Text, View, Image, Modal, Button } from 'react-native';
+import { StyleSheet, Text, View, Image, Modal, Button, TextInput } from 'react-native';
 import RootNav from './components/RootNav';
 import axios from 'axios';
-import Login from './components/Login';
 
 export default class App extends Component {
   constructor(props) {
@@ -17,6 +16,13 @@ export default class App extends Component {
     this.logIn = this.logIn.bind(this)
   }
 
+  toggleModal(visible) {
+    this.setState({
+      modalVisible: !this.state.modalVisible,
+      loggedIn: true
+    })
+  }
+
   logIn() {
     var tempObj = {}
     tempObj.username = this.state.username
@@ -24,6 +30,9 @@ export default class App extends Component {
     axios.post(`http://10.16.1.191:3000/api/user/login`, tempObj)
     .then((response) => {
       console.log(response.data)
+      this.setState({
+        loggedIn: true
+      })
     })
     .catch((err) => {
       console.error(err)
@@ -53,7 +62,8 @@ export default class App extends Component {
             <Button
               onPress={() => {
                 this.setState({
-                  loggedIn: !this.state.loggedIn
+                  loggedIn: !this.state.loggedIn,
+                  modalVisible: false
                 })
               }}
               title="Logout"
@@ -62,7 +72,8 @@ export default class App extends Component {
             <Button
               onPress={() => {
                 this.setState({
-                  loggedIn: !this.state.loggedIn
+                  loggedIn: !this.state.loggedIn,
+                  modalVisible: true
                 })
               }}
               title="Login"
@@ -71,6 +82,7 @@ export default class App extends Component {
           )}
           <Image source={require('./images/NYCmap.png')} />
         </View>
+        
         <Modal animationType = {"slide"} transparent = {false}
                visible = {this.state.modalVisible}
                onRequestClose = {() => { console.log("Modal has been closed.") } }>
@@ -89,7 +101,7 @@ export default class App extends Component {
             />
             <Button
               onPress={() => {
-                this.signUp()
+                this.logIn()
               }}
               title="Log In"
               color='#841584'
@@ -101,8 +113,17 @@ export default class App extends Component {
               title="Sign Up"
               color='#841584'
             />
+            <Button
+              onPress={() => {
+                console.log('yo yo')
+                this.toggleModal()
+              }}
+              title="Go Back"
+              color='#841584'
+            />
           </View>
         </Modal>    
+
         <RootNav />        
       </View>
     )
@@ -125,6 +146,12 @@ const styles = StyleSheet.create({
   img: {
     flex: 1,
     alignItems: 'flex-end'
+  },
+  modal: {
+    alignItems: 'center',
+    backgroundColor: '#f7021a',
+    padding: 100,
+    height: '80%'
   }
 });
 
