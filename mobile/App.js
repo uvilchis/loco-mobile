@@ -1,68 +1,62 @@
 import React, { Component } from 'react';
 import { StyleSheet, Text, View, Image, Modal, Button, TextInput } from 'react-native';
-import RootNav from './components/RootNav';
 import axios from 'axios';
+
+import Login from './components/Login';
+import RootNav from './components/RootNav';
 
 export default class App extends Component {
   constructor(props) {
-    super(props)
+    super(props);
     this.state = {
       loggedIn: false,
       username: '',
       password: '',
       modalVisible: false
-    }
-    this.signUp = this.signUp.bind(this)
-    this.logIn = this.logIn.bind(this)
-    this.logOut = this.logOut.bind(this)
+    };
+    this.onSignUp = this.onSignUp.bind(this);
+    this.onLogin = this.onLogin.bind(this);
+    this.onLogout = this.onLogout.bind(this);
+    this.toggleModal = this.toggleModal.bind(this);
   }
 
-  toggleModal(visible) {
-    this.setState({
-      modalVisible: !this.state.modalVisible,
-      loggedIn: true
-    })
+  toggleModal() {
+    this.setState({ modalVisible: !this.state.modalVisible });
   }
 
-  logIn() {
-    var tempObj = {}
-    tempObj.username = this.state.username
-    tempObj.password = this.state.password
-    axios.post(`http://10.16.1.191:3000/api/user/login`, tempObj)
-    .then((response) => {
-      console.log(response.data)
+  onLogin(userObj) {
+    axios.post(`http://10.16.1.193:3000/api/user/login`, userObj)
+    .then(({ data }) => {
+      console.log(data);
       this.setState({
         loggedIn: true
-      })
+      });
     })
-    .catch((err) => {
-      console.error(err)
+    .catch((error) => console.log(error));
+  }
+
+  onSignUp(userObj) {
+    // console.log(userObj);
+    axios.post(`http://10.16.1.193:3000/api/user/signup`, userObj)
+    .then(({ data }) => {
+      console.log(data);
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+  }
+
+  onLogout() {
+    // console.log('logout');
+    axios.get(`http://10.16.1.193:3000/api/user/logout`)
+    .then(({ data }) => {
+      console.log('logged out', data)
+    })
+    .catch((error) => {
+      console.log(error);
     })
   }
 
-  signUp() {
-    var tempObj = {}
-    tempObj.username = this.state.username
-    tempObj.password = this.state.password
-    axios.post(`http://10.16.1.191:3000/api/user/signup`, tempObj)
-    .then((response) => {
-      console.log(response.data)
-    })
-    .catch((err) => {
-      console.error(err)
-    })
-  }
-
-  logOut() {
-    axios.get(`http://10.16.1.191:3000/api/user/logout`)
-    .then((response) => {
-      console.log('logged out')
-    })
-    .catch((err) => {
-      console.error(err)
-    })
-  }
-  
   render() {
     return (
       <View style={{flex: 1}}>
@@ -75,6 +69,7 @@ export default class App extends Component {
                   loggedIn: !this.state.loggedIn,
                   modalVisible: false
                 })
+                this.onLogout()
               }}
               title="Logout"
               color='#841584'
@@ -83,59 +78,29 @@ export default class App extends Component {
               onPress={() => {
                 this.setState({
                   loggedIn: !this.state.loggedIn,
-                  modalVisible: true                  
+                  modalVisible: true
                 })
-                this.logOut()
               }}
               title="Login"
               color='#841584'
             />
           )}
           <Image source={require('./images/NYCmap.png')} />
-        </View>        
-        <Modal animationType = {"slide"} transparent = {false}
-               visible = {this.state.modalVisible}
-               onRequestClose = {() => { console.log("Modal has been closed.") } }>
-          <View>
-            <TextInput
-              name="username"
-              style={{height: 40, borderColor: 'gray', borderWidth: 1}}
-              onChangeText={(username) => this.setState({username})}
-              value={this.state.username}
-            />
-            <TextInput
-              name="password"
-              style={{height: 40, borderColor: 'gray', borderWidth: 1}}
-              onChangeText={(password) => this.setState({password})}
-              value={this.state.password}
-            />
-            <Button
-              onPress={() => {
-                this.logIn()
-              }}
-              title="Log In"
-              color='#841584'
-            />
-            <Button
-              onPress={() => {
-                this.signUp()
-              }}
-              title="Sign Up"
-              color='#841584'
-            />
-            <Button
-              onPress={() => {
-                this.toggleModal()
-              }}
-              title="Go Back"
-              color='#841584'
-            />
-          </View>
-        </Modal>    
-        <RootNav />        
+        </View>
+        <Modal 
+          animationType = {"slide"} 
+          transparent = {false}
+          visible = {this.state.modalVisible}
+          onRequestClose = {() => console.log("Modal has been closed.")}>
+          <Login
+            onLogin={this.onLogin} 
+            onSignUp={this.onSignUp} 
+            toggleModal={this.toggleModal} />
+        </Modal>
+        <RootNav />
       </View>
     )
-  } 
+  }
 }
 
 const styles = StyleSheet.create({
@@ -145,12 +110,12 @@ const styles = StyleSheet.create({
     paddingVertical: 30,
     justifyContent: 'space-between'
   },
-  title: {  
+  title: {
     flex: 1,
-    color: 'white', 
+    color: 'white',
     fontWeight: 'bold',
-    fontSize: 30  
-  }, 
+    fontSize: 30
+  },
   img: {
     flex: 1,
     alignItems: 'flex-end'
@@ -167,6 +132,6 @@ const styles = StyleSheet.create({
   //   let userInfoResponse = await fetch('https://www.googleapis.com/userinfo/v2/me', {
   //     headers: { Authorization: `Bearer ${accessToken}`},
   //   });
-  
+
   //   return userInfoResponse;
   // }
