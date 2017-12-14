@@ -36,37 +36,28 @@ export default class App extends Component {
     .catch((error) => console.log(error));
   }
 
-  signUp() {
-    var tempObj = {}
-    tempObj.username = this.state.username
-    tempObj.password = this.state.password
-    axios.post(`http://10.16.1.191:3000/api/user/signup`, tempObj)
-    .then((response) => {
-      console.log(response.data)
-      this.setState({
-        loggedIn: true
-      })
-    })
-    .catch((err) => {
-      console.error(err)
+  onSignUp(userObj) {
+    // console.log(userObj);
+    axios.post(`http://10.16.1.193:3000/api/user/signup`, userObj)
+    .then(({ data }) => {
+      console.log(data);
     })
     .catch((error) => {
       console.log(error);
     });
   }
 
-  logOut() {
-    axios.get(`http://10.16.1.191:3000/api/user/logout`)
-    .then((response) => {
-      console.log('logged out')
-      this.setState({
-        loggedIn: false
-      })
+  onLogout() {
+    // console.log('logout');
+    axios.get(`http://10.16.1.193:3000/api/user/logout`)
+    .then(({ data }) => {
+      console.log('logged out', data)
     })
     .catch((error) => {
       console.log(error);
     })
   }
+  
   render() {
     console.log('APP PROPS:', this.props)
     return (
