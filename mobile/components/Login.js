@@ -164,11 +164,9 @@ const styles = StyleSheet.create({
     backgroundColor: 'transparent'
   },
   button: {
-    height: 40,
     color: 'white',
     fontSize: 16,
-    padding: 20,
-    margin: 8
+    margin: 16
   },
   input: {
     height: 40,
