@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
-import Expo from 'expo';
 import { View, StyleSheet, Image, Button, Text, Alert, Animated, Easing } from 'react-native';
 import { Entypo, Feather } from '@expo/vector-icons';
 import Lines from './Lines';
+import StatusMarker from './StatusMarker';
 
 import Helpers from '../lib/util';
 
@@ -131,7 +131,7 @@ export default class TrainLine extends Component {
                   size={32}
                   onPress={this.showAlert}/> : null}
             </View>
-            <Image style={{width: 50, height: 50}} source={ markers[this.props.line.status] } />
+            <StatusMarker status={this.props.line.status} />
             <Animated.View
               style={[styles.rotateArrow, { transform: [{ rotate: spin }] }]}>
               <Entypo
@@ -168,6 +168,7 @@ const styles = StyleSheet.create({
   },
   buttons: {
     flex: 1.5,
+    padding: 2,
     flexDirection: 'row', 
     justifyContent: 'space-between',
     alignItems: 'center'
@@ -182,7 +183,7 @@ const styles = StyleSheet.create({
   rotateArrow: {
     height: 28,
     width: 28,
-    marginRight: 6,
-    marginTop: 4
+    marginRight: 8,
+    marginTop: 2
   }
 });
