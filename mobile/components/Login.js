@@ -3,6 +3,7 @@ import Expo from 'expo';
 import { StyleSheet, Text, View, TextInput, TouchableOpacity, Image, Animated, Easing, Dimensions } from 'react-native'
 import { FontAwesome } from '@expo/vector-icons'
 import KEYS from '../env/key';
+import URL from '../env/urls';
 
 import axios from 'axios';
 
@@ -72,7 +73,7 @@ export default class Login extends Component {
     })
     .then((result) => {
       if (result.type !== 'success') { throw 'failed to auth'; }
-      return axios.get(`http://10.16.1.208:3000/api/user/mobile/google`, {
+      return axios.get(`${URL}/api/user/mobile/google`, {
         params: {
           auth_id: result.user.id,
           display_name: `${result.user.givenName} ${result.user.familyName}`
@@ -107,7 +108,7 @@ export default class Login extends Component {
           name="chevron-down" 
           size={32}
           style={styles.downButton}
-          onPress={this.props.toggleModal} />
+          onPress={this.props.hideModal} />
         <TextInput 
           name="username"
           placeholder="Username"

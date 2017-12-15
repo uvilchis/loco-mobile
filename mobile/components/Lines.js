@@ -1,51 +1,27 @@
 import React, { Component } from 'react';
-import { StyleSheet, Text, View, Image, ScrollView } from 'react-native';
+import axios from 'axios';
+import { StyleSheet, Text, View, Animated } from 'react-native';
 import { Card, ListItem, Button } from 'react-native-elements';
 import Details from './Details.js';
+import URL from '../env/urls';
 
 export default class Lines extends Component {
   constructor(props) {
     super(props);
-    this.state = {
-      lines: [],
-      statusIcon: "",
-      statusText: ""
-    }
   }
 
   componentDidMount() {
-    console.log('props at lines',this.props)
-    this.props.navigation.state.params.lines.name === "SIR" ?
-    this.setState({
-      lines: ["SIR"],
-      statusIcon: this.props.navigation.state.params.lines.status,
-      statusText: this.props.navigation.state.params.lines.text
-    }) :
-    this.setState({
-      lines: this.props.navigation.state.params.lines.name.split(''),
-      statusIcon: this.props.navigation.state.params.lines.status,
-      statusText: this.props.navigation.state.params.lines.text
-    })
   }
 
   render() {
     return (
-      <ScrollView>
-        {this.state.lines.map((train, idx) =>
-          <Details routeId={train} key={idx} statusIcon={this.state.statusIcon}
-            statusText={this.state.statusText}
-          />
-        )}
-        {this.state.statusText.length > 0 ? (
-          <Card>
-            <Text> {this.state.statusText} </Text>
-          </Card>
-        ) : null }
-      </ScrollView>
+      <View>
+        {this.props.countedRoutes.map((route, idx) => 
+          <Card key={idx}>
+            <Text>{route.name}</Text>
+            <Text>{`${route.count} complaints in the last 30 minutes`}</Text>
+          </Card>)}
+      </View>
     );
   }
 }
-
-Lines.navigationOptions = {
-  title: 'Lines',
-};
