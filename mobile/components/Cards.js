@@ -28,7 +28,7 @@ export default class Cards extends Component {
   }
   
   componentDidMount() {
-    axios.get(`http://10.16.1.208:3000/api/route/stops`, {
+    axios.get(`http://10.16.1.191:3000/api/route/stops`, {
       params: { 
         sub: 'mta', 
         route_id: this.props.routeId 
@@ -49,7 +49,7 @@ export default class Cards extends Component {
     this.setState({
       stopId: itemValue
     }, () => {
-      axios.get(`http://10.16.1.208:3000/api/report/stoproute?sub=mta&stop_id=${this.state.stopId}&route_id=${this.state.routeId}`)
+      axios.get(`http://10.16.1.191:3000/api/report/stoproute?sub=mta&stop_id=${this.state.stopId}&route_id=${this.state.routeId}`)
       .then((response) => {
         let defaults = this.defaultComplaints.map((a) => Object.assign({}, a));
         let newComplaints = response.data.reduce((acc, b) => {
@@ -71,7 +71,7 @@ export default class Cards extends Component {
     this.setState({
       currentComplaint: type
     }, () => {
-      axios.post(`http://10.16.1.208:3000/api/report/add`, {
+      axios.post(`http://10.16.1.191:3000/api/report/add`, {
         sub: 'mta',
         type: this.state.currentComplaint,
         stop_id: this.state.stopId,
