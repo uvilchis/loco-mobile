@@ -14,7 +14,7 @@ export default class Lines extends Component {
   }
 
   componentDidMount() {
-    console.log('props at lines',this.props)
+    // console.log('props at lines',this.props)
     this.props.navigation.state.params.lines.name === "SIR" ?
     this.setState({
       lines: ["SIR"],

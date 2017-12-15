@@ -17,7 +17,7 @@ export default class TrainLines extends Component {
     .then((response) => {
       this.setState({
         service: response.data.lines
-      }, () => { console.log('state at trainlines', this.state) })
+      })
     })
     .catch((err) => {
       console.error(err);
