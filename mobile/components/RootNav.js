@@ -1,8 +1,7 @@
 import React from 'react';
 import { StackNavigator } from 'react-navigation';
 import TrainLines from './TrainLines';
-import Lines from './Lines';
-import NewDetails from './NewDetails'
+import Details from './Details';
 
 export default RootNav = StackNavigator({
   TrainLines: {
@@ -12,12 +11,5 @@ export default RootNav = StackNavigator({
       headerMode: 'screen'
     }
   },
-  Lines: { screen: Lines },
-  NewDetails : {
-    screen : NewDetails,
-    navigationOptions: {
-      header : null,
-      headerMode : 'screen'
-    }
-  }
+  Details: { screen: Details }
 });
