@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { StyleSheet, Text, View, Image, Modal, Button, TextInput } from 'react-native';
+import { StyleSheet, Text, View, Image, Modal, Button } from 'react-native';
 import axios from 'axios';
 // import MapNav from './components/MapNav';
 
@@ -77,8 +77,7 @@ export default class App extends Component {
               console.log('pressed!')
             }}
             title="Location"
-            color='#841584'
-          />
+            color='#841584' />
           {this.state.loggedIn ? (
             <Button
               onPress={() => {
@@ -86,16 +85,11 @@ export default class App extends Component {
                 this.onLogout()
               }}
               title="Logout"
-              color='#841584'
-            /> ) : (
+              color='#841584' /> ) : (
             <Button
-              onPress={() => {
-                this.setState({ modalVisible: true })
-              }}
+              onPress={() => this.setState({ modalVisible: true })}
               title="Login"
-              color='#841584'
-            />
-          )}
+              color='#841584'/>)}
           <Image source={require('./images/NYCmap.png')} />
         </View>
         <Modal 

@@ -4,18 +4,17 @@ import { View } from 'react-native';
 import { EvilIcons } from '@expo/vector-icons';
 
 const StatusMarker = (props) => {
-  let name;
-  let color;
+  let name, color;
   switch(props.status) {
     case 'DELAYS': {
       name = 'clock';
-      color = 'gold';
+      color = '#ff9872';
       break;
     }
     
     case 'PLANNED WORK': {
       name = 'gear';
-      color = 'gold';
+      color = '#ff9872';
       break;
     }
 

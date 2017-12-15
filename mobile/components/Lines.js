@@ -10,14 +10,12 @@ export default class Lines extends Component {
     super(props);
   }
 
-  componentDidMount() {
-  }
-
   render() {
     return (
       <View>
         {this.props.countedRoutes.map((route, idx) => 
-          <Card key={idx}>
+          <Card 
+            key={idx}>
             <Text>{route.name}</Text>
             <Text>{`${route.count} complaints in the last 30 minutes`}</Text>
           </Card>)}
@@ -25,3 +23,9 @@ export default class Lines extends Component {
     );
   }
 }
+
+const styles = StyleSheet.create({
+  card: {
+    // flexDirection: 'row'
+  }
+});

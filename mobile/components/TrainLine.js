@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { View, StyleSheet, Image, Button, Text, Alert, Animated, Easing } from 'react-native';
-import { Entypo, Feather } from '@expo/vector-icons';
+import { Entypo, EvilIcons } from '@expo/vector-icons';
 import Lines from './Lines';
 import StatusMarker from './StatusMarker';
 
@@ -92,7 +92,7 @@ export default class TrainLine extends Component {
     const style = Helpers.LineStyle[this.props.line.name] || {};
     const spin = this.spinValue.interpolate({
       inputRange: [0, 1],
-      outputRange: ['0deg', '180deg']
+      outputRange: ['0deg', '-180deg']
     });
 
     return (
@@ -104,17 +104,17 @@ export default class TrainLine extends Component {
           <View style={styles.buttons}>
             <View style={{ height: 32, width: 32 }}>
               {this.props.line.text ? 
-                <Feather 
-                  name="info"
+                <EvilIcons 
+                  name="exclamation"
                   color='black'
-                  size={32}
+                  size={38}
                   onPress={this.showAlert}/> : null}
             </View>
             <StatusMarker status={this.props.line.status} />
             <Animated.View
               style={[styles.rotateArrow, { transform: [{ rotate: spin }] }]}>
               <Entypo
-                name="chevron-with-circle-up"
+                name="chevron-with-circle-down"
                 color='black'
                 size={28}
                 onPress={this.toggleLines} /> 
@@ -146,7 +146,7 @@ const styles = StyleSheet.create({
     flex: 2
   },
   buttons: {
-    flex: 1.5,
+    flex: 2,
     padding: 2,
     flexDirection: 'row', 
     justifyContent: 'space-between',
