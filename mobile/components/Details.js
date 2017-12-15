@@ -49,16 +49,16 @@ export default class Details extends Component {
       <ScrollView>
         <View style={styles.container}>
           <View style={styles.icon}>
-            <Image source={ line[this.props.routeId] } />
+            <Image  />
           </View>
           <View style={styles.buttons}>
-            <Image style={{width: 50, height: 50}} source={ markers[this.props.statusIcon] } />
-            <Button 
+            <Image style={{width: 50, height: 50}} />
+            <Button
               onPress={() => {
                 this.setState({
                   compressed: !this.state.compressed
                 })
-              }} 
+              }}
               title="Details"
               color='#841584'
             />
@@ -66,7 +66,7 @@ export default class Details extends Component {
         </View>
         <View style={styles.cards}>
           {this.state.compressed ? (
-            <Cards routeId={this.props.routeId} statusText={this.props.statusText} />
+          <Cards />
           ) : null }
         </View>
       </ScrollView>
@@ -87,7 +87,7 @@ const styles = StyleSheet.create({
   },
   buttons: {
     flex: 1.5,
-    flexDirection: 'row', 
+    flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center'
   }

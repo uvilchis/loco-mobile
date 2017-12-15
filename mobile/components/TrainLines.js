@@ -25,7 +25,7 @@ export default class TrainLines extends Component {
   }
 
   navToLines(idx) {
-    this.props.navigation.navigate('Lines', { lines: this.state.service[idx] })
+    this.props.navigation.navigate('Details', { lines: this.state.service[idx] })
   }
 
   render() {
