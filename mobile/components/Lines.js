@@ -8,17 +8,18 @@ export default class Lines extends Component {
     super(props);
     this.state = {
       lines: [],
-      statusIcon: "", 
+      statusIcon: "",
       statusText: ""
     }
   }
 
   componentDidMount() {
-    this.props.navigation.state.params.lines.name === "SIR" ? 
+    console.log('props at lines',this.props)
+    this.props.navigation.state.params.lines.name === "SIR" ?
     this.setState({
       lines: ["SIR"],
       statusIcon: this.props.navigation.state.params.lines.status,
-      statusText: this.props.navigation.state.params.lines.text 
+      statusText: this.props.navigation.state.params.lines.text
     }) :
     this.setState({
       lines: this.props.navigation.state.params.lines.name.split(''),
@@ -26,14 +27,14 @@ export default class Lines extends Component {
       statusText: this.props.navigation.state.params.lines.text
     })
   }
-  
+
   render() {
     return (
       <ScrollView>
-        {this.state.lines.map((train, idx) => 
-          <Details routeId={train} key={idx} statusIcon={this.state.statusIcon} 
-            statusText={this.state.statusText} 
-          /> 
+        {this.state.lines.map((train, idx) =>
+          <Details routeId={train} key={idx} statusIcon={this.state.statusIcon}
+            statusText={this.state.statusText}
+          />
         )}
         {this.state.statusText.length > 0 ? (
           <Card>
