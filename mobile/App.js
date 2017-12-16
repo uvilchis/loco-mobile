@@ -1,8 +1,7 @@
 import React, { Component } from 'react';
 import { StyleSheet, Text, View, Image, Modal, Button } from 'react-native';
 import axios from 'axios';
-// import MapNav from './components/MapNav';
-
+import MapNav from './components/MapNav';
 import Login from './components/Login';
 import RootNav from './components/RootNav';
 
@@ -13,7 +12,8 @@ export default class App extends Component {
       loggedIn: false,
       username: '',
       password: '',
-      modalVisible: false
+      modalVisible: false,
+      showMap: false
     };
     this.onSignUp = this.onSignUp.bind(this);
     this.onLogin = this.onLogin.bind(this);
@@ -71,13 +71,7 @@ export default class App extends Component {
     return (
       <View style={{flex: 1}}>
         <View style={styles.container}>          
-          <Text style={styles.title}>loco</Text>
-          <Button
-            onPress={() => {
-              console.log('pressed!')
-            }}
-            title="Location"
-            color='#841584' />
+          <Text style={styles.title}>loco</Text>          
           {this.state.loggedIn ? (
             <Button
               onPress={() => {
@@ -89,8 +83,18 @@ export default class App extends Component {
             <Button
               onPress={() => this.setState({ modalVisible: true })}
               title="Login"
-              color='#841584'/>)}
-          <Image source={require('./images/NYCmap.png')} />
+              color='#841584'
+            />
+          )}
+          <Button
+            onPress={() => {
+              this.setState({
+                showMap: !this.state.showMap
+              })
+            }}
+            title="Map"
+            color='#841584'
+          />
         </View>
         <Modal 
           animationType = {"slide"} 
@@ -103,7 +107,7 @@ export default class App extends Component {
             onGoogle={this.onGoogle} 
             hideModal={this.hideModal} />
         </Modal>
-        <RootNav />
+        {this.state.showMap ? ( <MapNav /> ) : ( <RootNav /> )}        
       </View>
     )
   }
