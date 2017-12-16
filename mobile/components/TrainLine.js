@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, StyleSheet, Image, Button, Text, Alert, Animated, Easing } from 'react-native';
+import { View, StyleSheet, Image, Button, Text, Alert, Animated, Easing, TouchableOpacity } from 'react-native';
 import { Entypo, EvilIcons } from '@expo/vector-icons';
 import Lines from './Lines';
 import StatusMarker from './StatusMarker';
@@ -39,7 +39,6 @@ export default class TrainLine extends Component {
   }
 
   _setMax(e) {
-    // Acconut for padding
     this.setState({
       max: e.nativeEvent.layout.height + 16
     });
@@ -55,8 +54,6 @@ export default class TrainLine extends Component {
 
   // True = rotate down, false = rotate up
   drop() {
-    // let init = this.state.showLines ? this.state.max + this.state.min : this.state.min;
-    // let final = this.state.showLines ? this.state.min : this.state.max + this.state.min;
     let init = this.state.showLines ? this.state.min : this.state.max + this.state.min;
     let final = this.state.showLines ? this.state.min + this.state.max : this.state.min;
 
@@ -102,14 +99,14 @@ export default class TrainLine extends Component {
               <Text style={[styles.symbols, { color: style.color }]}>{this.props.line.name}</Text>
           </View>
           <View style={styles.buttons}>
-            <View style={{ height: 32, width: 32 }}>
+            <TouchableOpacity style={{ height: 32, width: 32 }}>
               {this.props.line.text ? 
                 <EvilIcons 
                   name="exclamation"
-                  color='black'
+                  color='darkblue'
                   size={38}
                   onPress={this.showAlert}/> : null}
-            </View>
+            </TouchableOpacity>
             <StatusMarker status={this.props.line.status} />
             <Animated.View
               style={[styles.rotateArrow, { transform: [{ rotate: spin }] }]}>
@@ -122,7 +119,7 @@ export default class TrainLine extends Component {
           </View> 
         </View>
         <Animated.View style={{ opacity: this.opacityValue }} onLayout={this._setMax}>
-          <Lines 
+          <Lines
             countedRoutes={this.props.line.countedRoutes} 
             color={style.color}
             onDetailsPress={this.props.onDetailsPress} />

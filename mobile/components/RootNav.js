@@ -11,5 +11,7 @@ export default RootNav = StackNavigator({
       headerMode: 'screen'
     }
   },
-  Details: { screen: Details }
+  Details: { 
+    screen: Details
+  }
 });

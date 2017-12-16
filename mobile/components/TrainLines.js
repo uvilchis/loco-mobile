@@ -61,8 +61,10 @@ export default class TrainLines extends Component {
     });
   }
 
-  onDetailsPress(routeName) {
-    this.props.navigation.navigate('Details', { routeName: routeName })
+  // onDetailsPress(routeName) {
+  //   this.props.navigation.navigate('Details', { routeName: routeName })
+  onDetailsPress(route) {
+    this.props.navigation.navigate('Details', { route: route })
   }
 
   render() {

@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import Expo from 'expo';
 import { StyleSheet, Text, View, TextInput, TouchableOpacity, Image, Animated, Easing, Dimensions } from 'react-native'
-import { FontAwesome } from '@expo/vector-icons'
+import { EvilIcons } from '@expo/vector-icons'
 import KEYS from '../env/key';
 import URL from '../env/urls';
 
@@ -18,6 +18,10 @@ export default class Login extends Component {
     };
     this.panValue = new Animated.Value(0);
     this.fadeValue = new Animated.Value();
+    this.dropValue = new Animated.Value(0);
+
+    this.drop = this.drop.bind(this);
+    this.pan = this.pan.bind(this);
     this.handleLogin = this.handleLogin.bind(this);
     this.handleSignUp = this.handleSignUp.bind(this);
     this.handleGoogle = this.handleGoogle.bind(this);
@@ -25,10 +29,22 @@ export default class Login extends Component {
 
   componentDidMount() {
     this.pan();
+    this.drop();
+  }
+
+  drop() {
+    this.dropValue.setValue(0);
+    Animated.timing(
+      this.dropValue,
+      {
+        toValue: 1,
+        duration: 2000,
+        easing: Easing.linear
+      }
+    ).start(this.drop);
   }
 
   pan() {
-
     this.panValue.setValue(0);
     this.fadeValue.setValue(0);
 
@@ -49,7 +65,7 @@ export default class Login extends Component {
           easing: Easing.linear
         }
       )
-    ]).start(() => this.pan());
+    ]).start(this.pan);
   }
 
   handleLogin() {
@@ -109,11 +125,21 @@ export default class Login extends Component {
             }]
           }}
           source={require('../images/backgrounds/escalator-bg.jpg')} />
-        <FontAwesome 
-          name="chevron-down" 
-          size={32}
-          style={styles.downButton}
-          onPress={this.props.hideModal} />
+        <Animated.View
+          style={[styles.downButton, {
+            transform: [{
+              translateY: this.dropValue.interpolate({
+                inputRange: [0, 0.5, 1],
+                outputRange: [5, 0, 5]
+              })
+            }]
+          }]}>
+          <EvilIcons 
+            name="chevron-down" 
+            size={50}
+            color="white"
+            onPress={this.props.hideModal} />
+        </Animated.View>
         <TextInput 
           name="username"
           placeholder="Username"
@@ -163,8 +189,7 @@ const styles = StyleSheet.create({
     position: 'absolute',
     backgroundColor: 'transparent',
     top: 40,
-    left: (Dimensions.get('window').width / 2) - 16,
-    color: 'white'
+    left: (Dimensions.get('window').width / 2) - 25,
   },
   buttonWrapper: {
     backgroundColor: 'transparent'

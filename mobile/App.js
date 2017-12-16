@@ -28,7 +28,7 @@ export default class App extends Component {
   }
 
   onLogin(userObj) {
-    axios.post(`/api/user/login`, userObj)
+    axios.post(`${URL}/api/user/login`, userObj)
     .then(({ data }) => {
       this.setState({
         loggedIn: true,
@@ -88,20 +88,15 @@ export default class App extends Component {
             />
           )}
           <Button
-            onPress={() => {
-              this.setState({
-                showMap: !this.state.showMap
-              })
-            }}
+            onPress={() => this.setState({ showMap: !this.state.showMap })}
             title="Map"
-            color='#841584'
-          />
+            color='#841584'/>
         </View>
         <Modal 
-          animationType = {"slide"} 
-          transparent = {false}
-          visible = {this.state.modalVisible}
-          onRequestClose = {() => console.log("Modal has been closed.")}>
+          animationType={"slide"} 
+          transparent={false}
+          visible={this.state.modalVisible}
+          onRequestClose={() => console.log("Modal has been closed.")}>
           <Login
             onLogin={this.onLogin} 
             onSignUp={this.onSignUp}
