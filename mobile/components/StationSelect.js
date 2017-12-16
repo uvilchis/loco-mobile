@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, TextInput, Text, StyleSheet, Animated, Easing, TouchableOpacity } from 'react-native';
+import { View, TextInput, Text, StyleSheet, Animated, Easing, TouchableOpacity, TouchableWithoutFeedback } from 'react-native';
 import { EvilIcons } from '@expo/vector-icons';
 
 export default class StationSelect extends Component {
@@ -77,28 +77,34 @@ export default class StationSelect extends Component {
   render() {
     return (
       <View style={styles.container}>
-        <View style={styles.inner}>
-          <TextInput
-            name="search"
-            placeholder="Search for a station"
-            value={this.state.search}
-            onFocus={this._onFocus}
-            onChangeText={this._onChange} />
-          <Animated.View 
-            style={{
-              transform: [{
-                rotate: this.spinValue.interpolate({
-                  inputRange: [0, 1],
-                  outputRange: ['0deg', '-180deg']
-                })
-              }]
-            }}>
-            <EvilIcons
-              name="chevron-down"
-              size={32}
-              onPress={this._toggle} />
-          </Animated.View>
-        </View>
+        <TouchableWithoutFeedback
+          onPress={this._toggle}>
+          <View
+            style={styles.inner}>
+            <TextInput
+              style={styles.input}
+              name="search"
+              placeholder="Search for a station"
+              value={this.state.search}
+              onFocus={this._onFocus}
+              onChangeText={this._onChange}
+              underlineColorAndroid="transparent" />
+            <Animated.View 
+              style={{
+                transform: [{
+                  rotate: this.spinValue.interpolate({
+                    inputRange: [0, 1],
+                    outputRange: ['0deg', '-180deg']
+                  })
+                }]
+              }}>
+              <EvilIcons
+                name="chevron-down"
+                size={32}
+                onPress={this._toggle} />
+            </Animated.View>
+          </View>
+        </TouchableWithoutFeedback>
         {this.state.dropdown ? 
           <View style={[styles.dropdown]} onLayout={this._setHeight}>
             {this.state.filtered.map((station, idx) =>
@@ -123,8 +129,12 @@ const styles = StyleSheet.create({
     borderWidth: 1
   },
   inner: {
+    flex: 1,
     flexDirection: 'row',
     justifyContent: 'space-between'
+  },
+  input: {
+    minWidth: 150
   },
   dropdown: {
     marginTop: 8,

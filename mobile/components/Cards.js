@@ -70,8 +70,8 @@ export default class Cards extends Component {
     this.setState({ direction });
   }
 
-  onSelect(stopId, routeId) {
-    this.setState({ stopId, routeId });
+  onSelect(stopId) {
+    this.setState({ stopId });
   }
 
   handleChange(itemValue) {
@@ -142,7 +142,7 @@ export default class Cards extends Component {
         </Animated.View>
         <View style={styles.inner}>
           <Text style={styles.directionSelect}>Select Direction</Text>
-          <CustomToggle style={{}} onSelect={this.onDirectionSelect} />
+          <CustomToggle style={{}} onDirectionSelect={this.onDirectionSelect} />
           <Text style={styles.stationSelect}>Select Station</Text>
           <StationSelect 
             stations={this.state.stationsN}
@@ -156,10 +156,10 @@ export default class Cards extends Component {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    paddingTop: 60
+    paddingTop: 40
   },
   inner: {
-    marginTop: 40
+    marginTop: 60
   },
   picker: {
     borderColor: 'black'
