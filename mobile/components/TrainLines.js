@@ -1,39 +1,81 @@
 import React, { Component } from 'react';
-import { StyleSheet, ScrollView, Text, Button } from 'react-native';
+import { StyleSheet, ScrollView, Text, Button, RefreshControl } from 'react-native';
 import axios from 'axios';
 import TrainLine from './TrainLine';
+import URL from '../env/urls';
 
 export default class TrainLines extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      service: []
+      service: [],
+      refreshing: false
     };
-    this.navToLines = this.navToLines.bind(this)
+    this.onDetailsPress = this.onDetailsPress.bind(this);
+    this._onRefresh = this._onRefresh.bind(this);
   }
 
   componentDidMount() {
-    axios.get(`http://ec2-18-221-253-159.us-east-2.compute.amazonaws.com/loco/service?sub=mta`)
-    .then((response) => {
-      this.setState({
-        service: response.data.lines
-      }, () => { console.log('state at trainlines', this.state) })
+    let newState = { refresing: false};
+    axios.get(`${URL}/api/service?sub=mta`)
+    .then(({ data }) => {
+      newState.service = data.lines;
+      return axios.get(`${URL}/api/report/getallcomplaintcounts?sub=mta`);
     })
-    .catch((err) => {
-      console.error(err);
+    .then(({ data }) => {
+      newState.service.forEach((a) => {
+        if (a.name === 'SIR') {
+          return a.countedRoutes = [{ name: a.name, count: data[a.name] || 0}];
+        }
+        a.countedRoutes = a.name.split('').reduce((acc, b) => {
+          acc.push({ name: b, count: data[b] || 0 });
+          return acc;
+        }, []);
+      });
+      this.setState(newState)
     })
+    .catch((err) => console.error(err));
   }
 
-  navToLines(idx) {
+  _onRefresh() {
+    this.setState({ refreshing: true }, () => {
+      let newState = { refreshing: false };
+      axios.get(`${URL}/api/service?sub=mta`)
+      .then(({ data }) => {
+        newState.service = data.lines;
+        return axios.get(`${URL}/api/report/getallcomplaintcounts?sub=mta`);
+      })
+      .then(({ data }) => {
+        newState.service.forEach((a) => {
+          if (a.name === 'SIR') {
+            return a.countedRoutes = [{ name: a.name, count: data[a.name] || 0}];
+          }
+          a.countedRoutes = a.name.split('').reduce((acc, b) => {
+            acc.push({ name: b, count: data[b] || 0 });
+            return acc;
+          }, []);
+        });
+        this.setState(newState)
+      })
+      .catch((err) => console.error(err));    
+    });
+  }
+
+  onDetailsPress(idx) {
     this.props.navigation.navigate('Details', { lines: this.state.service[idx] })
   }
 
   render() {
     return (
-      <ScrollView>
-        <Text style={styles.text}>Welcome to loco, your one stop resource for MTA delays</Text>
+      <ScrollView
+        style={styles.main}
+        refreshControl={
+          <RefreshControl
+            refreshing={this.state.refreshing}
+            onRefresh={this._onRefresh} />
+        }>
         {this.state.service.map((line, idx) =>
-          <TrainLine key={idx} line={line} idx={idx} navToLines={this.navToLines} />
+          <TrainLine key={idx} line={line} idx={idx} onDetailsPress={this.onDetailsPress}/>
         )}
       </ScrollView>
     )
@@ -41,6 +83,9 @@ export default class TrainLines extends Component {
 }
 
 const styles = StyleSheet.create({
+  main: {
+    backgroundColor: 'white'
+  },
   text: {
     flexDirection: 'row',
     backgroundColor: '#fff',

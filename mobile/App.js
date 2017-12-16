@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { StyleSheet, Text, View, Image, Modal, Button, TextInput } from 'react-native';
+import { StyleSheet, Text, View, Image, Modal, Button } from 'react-native';
 import axios from 'axios';
 // import MapNav from './components/MapNav';
 
@@ -19,15 +19,15 @@ export default class App extends Component {
     this.onLogin = this.onLogin.bind(this);
     this.onLogout = this.onLogout.bind(this);
     this.onGoogle = this.onGoogle.bind(this);
-    this.toggleModal = this.toggleModal.bind(this);
+    this.hideModal = this.hideModal.bind(this);
   }
 
-  toggleModal() {
-    this.setState({ modalVisible: !this.state.modalVisible });
+  hideModal() {
+    this.setState({ modalVisible: false });
   }
 
   onLogin(userObj) {
-    axios.post(`http://10.16.1.208:3000/api/user/login`, userObj)
+    axios.post(`http://10.16.1.193:3000/api/user/login`, userObj)
     .then(({ data }) => {
       this.setState({
         loggedIn: true,
@@ -38,7 +38,7 @@ export default class App extends Component {
   }
 
   onSignUp(userObj) {
-    axios.post(`http://10.16.1.208:3000/api/user/signup`, userObj)
+    axios.post(`http://10.16.1.193:3000/api/user/signup`, userObj)
     .then(({ data }) => {
       this.setState({
         loggedIn: true,
@@ -51,7 +51,7 @@ export default class App extends Component {
   }
 
   onLogout() {
-    axios.get(`http://10.16.1.208:3000/api/user/logout`)
+    axios.get(`http://10.16.1.193:3000/api/user/logout`)
     .then(({ data }) => {
       this.setState({
         loggedIn: false
@@ -61,7 +61,6 @@ export default class App extends Component {
   }
 
   onGoogle(data) {
-    console.log('onGoogle', data);
     this.setState({
       loggedIn: true,
       modalVisible: false
@@ -78,8 +77,7 @@ export default class App extends Component {
               console.log('pressed!')
             }}
             title="Location"
-            color='#841584'
-          />
+            color='#841584' />
           {this.state.loggedIn ? (
             <Button
               onPress={() => {
@@ -87,16 +85,11 @@ export default class App extends Component {
                 this.onLogout()
               }}
               title="Logout"
-              color='#841584'
-            /> ) : (
+              color='#841584' /> ) : (
             <Button
-              onPress={() => {
-                this.setState({ modalVisible: true })
-              }}
+              onPress={() => this.setState({ modalVisible: true })}
               title="Login"
-              color='#841584'
-            />
-          )}
+              color='#841584'/>)}
           <Image source={require('./images/NYCmap.png')} />
         </View>
         <Modal 
@@ -108,7 +101,7 @@ export default class App extends Component {
             onLogin={this.onLogin} 
             onSignUp={this.onSignUp}
             onGoogle={this.onGoogle} 
-            toggleModal={this.toggleModal} />
+            hideModal={this.hideModal} />
         </Modal>
         <RootNav />
       </View>
@@ -127,7 +120,8 @@ const styles = StyleSheet.create({
     flex: 1,
     color: 'white',
     fontWeight: 'bold',
-    fontSize: 30
+    fontSize: 30,
+    paddingLeft: 16
   },
   img: {
     flex: 1,

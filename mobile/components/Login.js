@@ -3,6 +3,7 @@ import Expo from 'expo';
 import { StyleSheet, Text, View, TextInput, TouchableOpacity, Image, Animated, Easing, Dimensions } from 'react-native'
 import { FontAwesome } from '@expo/vector-icons'
 import KEYS from '../env/key';
+import URL from '../env/urls';
 
 import axios from 'axios';
 
@@ -16,7 +17,7 @@ export default class Login extends Component {
       password: ''
     };
     this.panValue = new Animated.Value(0);
-    this.fadeValue = new Animated.Value(0);
+    this.fadeValue = new Animated.Value();
     this.handleLogin = this.handleLogin.bind(this);
     this.handleSignUp = this.handleSignUp.bind(this);
     this.handleGoogle = this.handleGoogle.bind(this);
@@ -27,8 +28,10 @@ export default class Login extends Component {
   }
 
   pan() {
+
     this.panValue.setValue(0);
     this.fadeValue.setValue(0);
+
     Animated.parallel([
       Animated.timing(
         this.panValue,
@@ -41,8 +44,8 @@ export default class Login extends Component {
       Animated.timing(
         this.fadeValue,
         {
-          toValue: 1,
-          duration: 1000,
+          toValue: 1000,
+          duration: 35000,
           easing: Easing.linear
         }
       )
@@ -72,7 +75,7 @@ export default class Login extends Component {
     })
     .then((result) => {
       if (result.type !== 'success') { throw 'failed to auth'; }
-      return axios.get(`http://10.16.1.208:3000/api/user/mobile/google`, {
+      return axios.get(`${URL}/api/user/mobile/google`, {
         params: {
           auth_id: result.user.id,
           display_name: `${result.user.givenName} ${result.user.familyName}`
@@ -92,7 +95,10 @@ export default class Login extends Component {
       <View style={styles.main}>
         <Animated.Image
           style={{
-            opacity: this.fadeValue,
+            opacity: this.fadeValue.interpolate({
+              inputRange: [0, 50, 950, 1000],
+              outputRange: [0, 1, 1, 0]
+            }),
             position: 'absolute',
             maxHeight: Math.max(960, Dimensions.get('window').height),
             transform: [{
@@ -107,7 +113,7 @@ export default class Login extends Component {
           name="chevron-down" 
           size={32}
           style={styles.downButton}
-          onPress={this.props.toggleModal} />
+          onPress={this.props.hideModal} />
         <TextInput 
           name="username"
           placeholder="Username"

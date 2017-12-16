@@ -1,51 +1,54 @@
 import React, { Component } from 'react';
-import { StyleSheet, Text, View, Image, ScrollView } from 'react-native';
+import axios from 'axios';
+import { StyleSheet, Text, View, Animated, TouchableOpacity } from 'react-native';
 import { Card, ListItem, Button } from 'react-native-elements';
+import { EvilIcons } from '@expo/vector-icons';
 import Details from './Details.js';
+import URL from '../env/urls';
 
 export default class Lines extends Component {
   constructor(props) {
     super(props);
-    this.state = {
-      lines: [],
-      statusIcon: "",
-      statusText: ""
-    }
-  }
-
-  componentDidMount() {
-    console.log('props at lines',this.props)
-    this.props.navigation.state.params.lines.name === "SIR" ?
-    this.setState({
-      lines: ["SIR"],
-      statusIcon: this.props.navigation.state.params.lines.status,
-      statusText: this.props.navigation.state.params.lines.text
-    }) :
-    this.setState({
-      lines: this.props.navigation.state.params.lines.name.split(''),
-      statusIcon: this.props.navigation.state.params.lines.status,
-      statusText: this.props.navigation.state.params.lines.text
-    })
   }
 
   render() {
     return (
-      <ScrollView>
-        {this.state.lines.map((train, idx) =>
-          <Details routeId={train} key={idx} statusIcon={this.state.statusIcon}
-            statusText={this.state.statusText}
-          />
-        )}
-        {this.state.statusText.length > 0 ? (
-          <Card>
-            <Text> {this.state.statusText} </Text>
-          </Card>
-        ) : null }
-      </ScrollView>
+      <View>
+        {this.props.countedRoutes.map((route, idx) => 
+          <Card 
+            key={idx}>
+            <View style={styles.inner}>
+              <Text style={[styles.name, { color: this.props.color }]}>{route.name}</Text>
+              <Text style={styles.complaints}>{`${route.count} complaints in last 30 minutes`}</Text>
+              <TouchableOpacity
+                style={styles.button}
+                onPress={this.props.onDetailsPress}>
+                <EvilIcons
+                  name='arrow-right'
+                  color='darkgrey'
+                  size={32} />
+              </TouchableOpacity>
+            </View>
+          </Card>)}
+      </View>
     );
   }
 }
 
-Lines.navigationOptions = {
-  title: 'Lines',
-};
+const styles = StyleSheet.create({
+  inner: {
+    flexDirection: 'row',
+    alignItems: 'center'
+  },
+  name: {
+    flex: 1,
+    fontSize: 24,
+    fontWeight: 'bold'
+  },
+  complaints: {
+    flex: 9
+  },
+  button: {
+    flex: 1
+  }
+});
