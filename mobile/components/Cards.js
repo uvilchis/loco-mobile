@@ -22,8 +22,8 @@ export default class Cards extends Component {
       direction: '',
       routeId: '',      
       stopId : '',
-      stationsN : [],  
-      stationsS: [],    
+      stationsN : [],
+      stationsS: [],
       complaints: this.defaultComplaints.map((el) => Object.assign({}, el))
     };
 
@@ -32,11 +32,12 @@ export default class Cards extends Component {
     this.drop = this.drop.bind(this);
     this.handleChange = this.handleChange.bind(this);
     this.handleAdd = this.handleAdd.bind(this);
+    this.onSelect = this.onSelect.bind(this);
+    this.onDirectionSelect = this.onDirectionSelect.bind(this);
   }
   
   componentDidMount() {
     this.drop();
-
     axios.get(`${URL}/api/route/stops`, {
       params: { 
         sub: 'mta', 
@@ -63,6 +64,14 @@ export default class Cards extends Component {
         easing: Easing.linear
       }
     ).start(this.drop);
+  }
+
+  onDirectionSelect(direction) {
+    this.setState({ direction });
+  }
+
+  onSelect(stopId, routeId) {
+    this.setState({ stopId, routeId });
   }
 
   handleChange(itemValue) {
@@ -133,44 +142,14 @@ export default class Cards extends Component {
         </Animated.View>
         <View style={styles.inner}>
           <Text style={styles.directionSelect}>Select Direction</Text>
-          <CustomToggle style={{}} onSelect={() => console.log('select')} />
+          <CustomToggle style={{}} onSelect={this.onDirectionSelect} />
           <Text style={styles.stationSelect}>Select Station</Text>
-          <StationSelect stations={this.state.stationsN} />
+          <StationSelect 
+            stations={this.state.stationsN}
+            onSelect={this.onSelect} />
         </View>
       </ScrollView>
     );
-      // <ScrollView style={styles.cards}>
-      //   <Button onPress={this.props.hideModal}>Hide</Button>
-      //   <Picker style={styles.picker}
-      //     selectedValue={this.state.direction}
-      //     onValueChange={(itemValue, itemIndex) => this.setState({direction: itemValue})}>
-      //     <Picker.Item label='Please select a direction...' value='' />
-      //     <Picker.Item label='Northbound' value='N' />
-      //     <Picker.Item label='Southbound' value='S' />
-      //   </Picker>   
-      //   <Picker style={styles.picker}
-      //     selectedValue={this.state.stopId}
-      //     onValueChange={(itemValue, itemIndex) => this.handleChange(itemValue)}>
-      //     <Picker.Item label='Please select a station...' value='' />
-      //     {this.state.direction === 'N' ?
-      //       (this.state.stationsN.map((station, idx) => {
-      //         return <Picker.Item label={station.stop_name} value={station.stop_id} key={idx}
-      //           route_id={station.route_id}
-      //         />})) : (this.state.stationsS.map((station, idx) => {
-      //           return <Picker.Item label={station.stop_name} value={station.stop_id} key={idx}
-      //             route_id={station.route_id}
-      //         />
-      //         }))
-      //     }
-      //   </Picker>             
-      //   {this.state.stopId !== '' ? (
-      //     this.state.complaints.map((complaint, idx) => 
-      //       <ComplaintCard complaint={complaint.name} count={complaint.count} 
-      //         key={idx} train={this.state.routeId} selected={this.state.stopId}
-      //         handleAdd={this.handleAdd}
-      //       />
-      //   )) : null }
-      // </ScrollView>
   }
 }
 

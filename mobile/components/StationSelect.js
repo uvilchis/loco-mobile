@@ -47,7 +47,7 @@ export default class StationSelect extends Component {
   }
 
   _setHeight(e) {
-    console.log(e.nativeEvent.layout);
+    // console.log(e.nativeEvent.layout);
   }
 
   _onChange(search) {
@@ -58,7 +58,12 @@ export default class StationSelect extends Component {
   }
 
   _onSelect(idx) {
-    this.setState({ search: this.state.filtered[idx].stop_name, dropdown: false }, this.anim);
+    this.props.onSelect(this.state.filtered[idx].stop_id, this.state.filtered[idx].route_id);
+    this.setState({
+      search: this.state.filtered[idx].stop_name,
+      filtered:[this.state.filtered[idx]],
+      dropdown: false
+    }, this.anim);
   }
 
   _onFocus() {

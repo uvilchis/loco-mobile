@@ -20,6 +20,7 @@ export default class CustomToggle extends Component {
   }
 
   onSelect(uptown) {
+    this.props.onDirectionSelect(uptown ? 'N' : 'S');
     if (uptown !== this.state.uptown) {
       this.setState({ uptown, selected: true }, this.anim);
     }
