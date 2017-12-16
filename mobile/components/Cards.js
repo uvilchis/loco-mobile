@@ -19,8 +19,6 @@ export default class Cards extends Component {
       { name: 'crowded', count: 0 }
     ];
     this.state = {
-      staticSched : false,
-      compressed: false,
       direction: '',
       routeId: '',      
       stopId : '',

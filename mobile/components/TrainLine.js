@@ -39,7 +39,6 @@ export default class TrainLine extends Component {
   }
 
   _setMax(e) {
-    // Acconut for padding
     this.setState({
       max: e.nativeEvent.layout.height + 16
     });
