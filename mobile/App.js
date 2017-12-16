@@ -4,6 +4,7 @@ import axios from 'axios';
 import MapNav from './components/MapNav';
 import Login from './components/Login';
 import RootNav from './components/RootNav';
+import URL from './env/urls';
 
 export default class App extends Component {
   constructor(props) {
@@ -27,7 +28,7 @@ export default class App extends Component {
   }
 
   onLogin(userObj) {
-    axios.post(`http://10.16.1.191:3000/api/user/login`, userObj)
+    axios.post(`/api/user/login`, userObj)
     .then(({ data }) => {
       this.setState({
         loggedIn: true,
@@ -38,7 +39,7 @@ export default class App extends Component {
   }
 
   onSignUp(userObj) {
-    axios.post(`http://10.16.1.191:3000/api/user/signup`, userObj)
+    axios.post(`${URL}/api/user/signup`, userObj)
     .then(({ data }) => {
       this.setState({
         loggedIn: true,
@@ -51,7 +52,7 @@ export default class App extends Component {
   }
 
   onLogout() {
-    axios.get(`http://10.16.1.191:3000/api/user/logout`)
+    axios.get(`${URL}/api/user/logout`)
     .then(({ data }) => {
       this.setState({
         loggedIn: false
