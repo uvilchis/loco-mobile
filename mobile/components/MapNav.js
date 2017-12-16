@@ -3,5 +3,10 @@ import { StackNavigator } from 'react-navigation';
 import UserMap from './UserMap';
 
 export default MapNav = StackNavigator({   
-  UserMap: { screen: UserMap }  
+  UserMap: { 
+    screen: UserMap,
+    navigationOptions: {
+      header: null
+    }
+  }  
 })

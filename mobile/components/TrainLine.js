@@ -55,8 +55,6 @@ export default class TrainLine extends Component {
 
   // True = rotate down, false = rotate up
   drop() {
-    // let init = this.state.showLines ? this.state.max + this.state.min : this.state.min;
-    // let final = this.state.showLines ? this.state.min : this.state.max + this.state.min;
     let init = this.state.showLines ? this.state.min : this.state.max + this.state.min;
     let final = this.state.showLines ? this.state.min + this.state.max : this.state.min;
 

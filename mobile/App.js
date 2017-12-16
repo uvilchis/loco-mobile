@@ -28,7 +28,7 @@ export default class App extends Component {
   }
 
   onLogin(userObj) {
-    axios.post(`/api/user/login`, userObj)
+    axios.post(`${URL}/api/user/login`, userObj)
     .then(({ data }) => {
       this.setState({
         loggedIn: true,

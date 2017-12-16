@@ -28,7 +28,6 @@ export default class Login extends Component {
   }
 
   pan() {
-
     this.panValue.setValue(0);
     this.fadeValue.setValue(0);
 
