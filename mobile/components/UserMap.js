@@ -2,11 +2,7 @@ import React, { Component } from 'react';
 import { Constants, Location, Permissions, MapView } from 'expo';
 import axios from 'axios';
 import geodist from 'geodist';
-<<<<<<< HEAD
 import URL from '../env/urls';
-=======
-import URL from '../env/urls'
->>>>>>> saturdayUV
 
 
 const GEOLOCATION_OPTIONS = { enableHighAccuracy: true, timeout: 20000, maximumAge: 1000 };
@@ -50,11 +46,7 @@ export default class UserMap extends Component {
     if (status !== 'granted') {
       this.setState({
         errorMessage: 'Permission to access location was denied',
-<<<<<<< HEAD
       });
-=======
-      })
->>>>>>> saturdayUV
     }
 
     let location = await Location.getCurrentPositionAsync({})
