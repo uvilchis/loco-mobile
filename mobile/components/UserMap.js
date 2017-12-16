@@ -8,11 +8,33 @@ export default class UserMap extends Component {
     super(props)
     this.state = {
       location: { coords: {latitude: 0, longitude: 0}},
+      results: [],
+      dist: 0.5
     };
   }
   
   componentWillMount() {
-    this.locationChanged()  
+    this.locationChanged()
+    .then((response) => {
+      console.log(response)
+      return axios.get(`http://10.16.1.191:3000/api/stops/coords`, {
+        sub: 'mta',
+        lat: this.state.location.coords.latitude,
+        long: this.state.location.coords.longitude,
+        dist: this.state.dist
+      })
+      .then((response) => {
+        this.setState({
+          results: response.data
+        })
+      })
+      .catch((err) => {
+        console.error(err)
+      })
+    })
+    .catch((err) => {
+      console.error(err)
+    })  
   }
 
   locationChanged = async () => {
@@ -27,7 +49,7 @@ export default class UserMap extends Component {
   }
 
   render() {
-    console.log(this.state.location)
+    console.log('THIS.STATE.LOCATION IN USERMAP:', this.state.location)
     return (
       <MapView
         style={{ flex: 1 }}
