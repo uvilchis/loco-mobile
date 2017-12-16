@@ -14,15 +14,15 @@ export default class Lines extends Component {
   render() {
     return (
       <View>
-        {this.props.countedRoutes.map((route, idx) => 
-          <Card 
+        {this.props.countedRoutes.map((route, idx) =>
+          <Card
             key={idx}>
             <View style={styles.inner}>
               <Text style={[styles.name, { color: this.props.color }]}>{route.name}</Text>
               <Text style={styles.complaints}>{`${route.count} complaints in last 30 minutes`}</Text>
               <TouchableOpacity
                 style={styles.button}
-                onPress={this.props.onDetailsPress}>
+                onPress={()=> {this.props.onDetailsPress(route.name)}}>
                 <EvilIcons
                   name='arrow-right'
                   color='darkgrey'

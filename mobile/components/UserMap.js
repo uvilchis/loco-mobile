@@ -4,6 +4,7 @@ import axios from 'axios';
 import geodist from 'geodist';
 import URL from '../env/urls';
 
+
 const GEOLOCATION_OPTIONS = { enableHighAccuracy: true, timeout: 20000, maximumAge: 1000 };
 
 export default class UserMap extends Component {
@@ -25,8 +26,8 @@ export default class UserMap extends Component {
       this.setState({
         errorMessage: 'Permission to access location was denied',
       });
-    } 
-    
+    }
+
     let location = await Location.getCurrentPositionAsync({})
     this.setState({
       location: location
@@ -67,7 +68,7 @@ export default class UserMap extends Component {
             description={marker.stop_name}
             key={idx}
           />
-        ))}        
+        ))}
       </MapView>
     )
   }

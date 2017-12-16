@@ -16,7 +16,7 @@ export default class TrainLines extends Component {
   }
 
   componentDidMount() {
-    let newState = { refresing: false};
+    let newState = { refreshing: false};
     axios.get(`${URL}/api/service?sub=mta`)
     .then(({ data }) => {
       newState.service = data.lines;
@@ -32,7 +32,7 @@ export default class TrainLines extends Component {
           return acc;
         }, []);
       });
-      this.setState(newState)
+      this.setState(newState, () => {console.log('STATES FROM TH', this.state)})
     })
     .catch((err) => console.error(err));
   }
@@ -57,12 +57,12 @@ export default class TrainLines extends Component {
         });
         this.setState(newState)
       })
-      .catch((err) => console.error(err));    
+      .catch((err) => console.error(err));
     });
   }
 
-  onDetailsPress(idx) {
-    this.props.navigation.navigate('Details', { lines: this.state.service[idx] })
+  onDetailsPress(routeName) {
+    this.props.navigation.navigate('Details', { routeName: routeName })
   }
 
   render() {

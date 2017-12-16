@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { View, Text, Image, Button, StyleSheet, ScrollView, Alert, Picker } from 'react-native';
 import axios from 'axios';
 import Cards from './Cards';
+import URL from '../env/urls';
 
 const markers = {
   "GOOD SERVICE": require('../images/markers/green.png'),
@@ -40,7 +41,9 @@ export default class Details extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      compressed: false
+      compressed: false,
+      N : [],
+      S : []
     }
   }
 
@@ -66,7 +69,7 @@ export default class Details extends Component {
         </View>
         <View style={styles.cards}>
           {this.state.compressed ? (
-          <Cards />
+          <Cards routeName={this.props.navigation.state.params.routeName}/>
           ) : null }
         </View>
       </ScrollView>
