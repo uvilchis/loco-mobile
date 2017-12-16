@@ -1,8 +1,12 @@
 import React, { Component } from 'react';
-import { ScrollView, StyleSheet, Image, Text, Picker } from 'react-native';
+import { View, StyleSheet, Image, Text, Animated, Dimensions, Easing, ScrollView } from 'react-native';
 import { Card, ListItem, Button } from 'react-native-elements';
+import { EvilIcons } from '@expo/vector-icons';
 import axios from 'axios';
+
 import ComplaintCard from './ComplaintCard';
+import CustomToggle from './CustomToggle';
+import StationSelect from './StationSelect';
 import URL from '../env/urls';
 
 export default class Cards extends Component {
@@ -24,15 +28,21 @@ export default class Cards extends Component {
       stationsS: [],    
       complaints: this.defaultComplaints.map((el) => Object.assign({}, el))
     };
+
+    this.dropValue = new Animated.Value(0);
+
+    this.drop = this.drop.bind(this);
     this.handleChange = this.handleChange.bind(this);
     this.handleAdd = this.handleAdd.bind(this);
   }
   
   componentDidMount() {
+    this.drop();
+
     axios.get(`${URL}/api/route/stops`, {
       params: { 
         sub: 'mta', 
-        route_id: '1'
+        route_id: this.props.route.name
       }
     })
     .then(({ data }) => {
@@ -43,6 +53,18 @@ export default class Cards extends Component {
       })
     })
     .catch((error) => console.log(error));
+  }
+
+  drop() {
+    this.dropValue.setValue(0);
+    Animated.timing(
+      this.dropValue,
+      {
+        toValue: 1,
+        duration: 2000,
+        easing: Easing.linear
+      }
+    ).start(this.drop);
   }
 
   handleChange(itemValue) {
@@ -95,47 +117,91 @@ export default class Cards extends Component {
 
   render() {
     return (
-      <ScrollView style={styles.cards}>
-        <Button onPress={this.props.hideModal}>Hide</Button>
-        <Picker style={styles.picker}
-          selectedValue={this.state.direction}
-          onValueChange={(itemValue, itemIndex) => this.setState({direction: itemValue})}>
-          <Picker.Item label='Please select a direction...' value='' />
-          <Picker.Item label='Northbound' value='N' />
-          <Picker.Item label='Southbound' value='S' />
-        </Picker>   
-        <Picker style={styles.picker}
-          selectedValue={this.state.stopId}
-          onValueChange={(itemValue, itemIndex) => this.handleChange(itemValue)}>
-          <Picker.Item label='Please select a station...' value='' />
-          {this.state.direction === 'N' ?
-            (this.state.stationsN.map((station, idx) => {
-              return <Picker.Item label={station.stop_name} value={station.stop_id} key={idx}
-                route_id={station.route_id}
-              />})) : (this.state.stationsS.map((station, idx) => {
-                return <Picker.Item label={station.stop_name} value={station.stop_id} key={idx}
-                  route_id={station.route_id}
-              />
-              }))
-          }
-        </Picker>             
-        {this.state.stopId !== '' ? (
-          this.state.complaints.map((complaint, idx) => 
-            <ComplaintCard complaint={complaint.name} count={complaint.count} 
-              key={idx} train={this.state.routeId} selected={this.state.stopId}
-              handleAdd={this.handleAdd}
-            />
-        )) : null }       
+      <ScrollView style={styles.container}>
+        <Animated.View
+          style={[styles.downButton, {
+            transform: [{
+              translateY: this.dropValue.interpolate({
+                inputRange: [0, 0.5, 1],
+                outputRange: [5, 0, 5]
+              })
+            }]
+          }]}>
+          <EvilIcons
+            name="chevron-down"
+            size={50}
+            color="black"
+            onPress={this.props.hideModal} />
+        </Animated.View>
+        <View style={styles.inner}>
+          <Text style={styles.directionSelect}>Select Direction</Text>
+          <CustomToggle style={{}} onSelect={() => console.log('select')} />
+          <Text style={styles.stationSelect}>Select Station</Text>
+          <StationSelect stations={this.state.stationsN} />
+        </View>
       </ScrollView>
-    )
+    );
+      // <ScrollView style={styles.cards}>
+      //   <Button onPress={this.props.hideModal}>Hide</Button>
+      //   <Picker style={styles.picker}
+      //     selectedValue={this.state.direction}
+      //     onValueChange={(itemValue, itemIndex) => this.setState({direction: itemValue})}>
+      //     <Picker.Item label='Please select a direction...' value='' />
+      //     <Picker.Item label='Northbound' value='N' />
+      //     <Picker.Item label='Southbound' value='S' />
+      //   </Picker>   
+      //   <Picker style={styles.picker}
+      //     selectedValue={this.state.stopId}
+      //     onValueChange={(itemValue, itemIndex) => this.handleChange(itemValue)}>
+      //     <Picker.Item label='Please select a station...' value='' />
+      //     {this.state.direction === 'N' ?
+      //       (this.state.stationsN.map((station, idx) => {
+      //         return <Picker.Item label={station.stop_name} value={station.stop_id} key={idx}
+      //           route_id={station.route_id}
+      //         />})) : (this.state.stationsS.map((station, idx) => {
+      //           return <Picker.Item label={station.stop_name} value={station.stop_id} key={idx}
+      //             route_id={station.route_id}
+      //         />
+      //         }))
+      //     }
+      //   </Picker>             
+      //   {this.state.stopId !== '' ? (
+      //     this.state.complaints.map((complaint, idx) => 
+      //       <ComplaintCard complaint={complaint.name} count={complaint.count} 
+      //         key={idx} train={this.state.routeId} selected={this.state.stopId}
+      //         handleAdd={this.handleAdd}
+      //       />
+      //   )) : null }
+      // </ScrollView>
   }
 }
 
 const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    paddingTop: 60
+  },
+  inner: {
+    marginTop: 40
+  },
   picker: {
     borderColor: 'black'
   },
   cards: {
     paddingVertical: 10
+  },
+  downButton: {
+    position: 'absolute',
+    left: (Dimensions.get('window').width / 2) - 25
+  },
+  directionSelect: {
+    fontSize: 24,
+    marginTop: 20,
+    margin: 12
+  },
+  stationSelect: {
+    fontSize: 24,
+    margin: 12,
+    marginTop: 24
   }
 })

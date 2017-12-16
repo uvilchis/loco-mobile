@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, StyleSheet, Image, Button, Text, Alert, Animated, Easing } from 'react-native';
+import { View, StyleSheet, Image, Button, Text, Alert, Animated, Easing, TouchableOpacity } from 'react-native';
 import { Entypo, EvilIcons } from '@expo/vector-icons';
 import Lines from './Lines';
 import StatusMarker from './StatusMarker';
@@ -100,14 +100,14 @@ export default class TrainLine extends Component {
               <Text style={[styles.symbols, { color: style.color }]}>{this.props.line.name}</Text>
           </View>
           <View style={styles.buttons}>
-            <View style={{ height: 32, width: 32 }}>
+            <TouchableOpacity style={{ height: 32, width: 32 }}>
               {this.props.line.text ? 
                 <EvilIcons 
                   name="exclamation"
-                  color='black'
+                  color='darkblue'
                   size={38}
                   onPress={this.showAlert}/> : null}
-            </View>
+            </TouchableOpacity>
             <StatusMarker status={this.props.line.status} />
             <Animated.View
               style={[styles.rotateArrow, { transform: [{ rotate: spin }] }]}>
@@ -120,7 +120,7 @@ export default class TrainLine extends Component {
           </View> 
         </View>
         <Animated.View style={{ opacity: this.opacityValue }} onLayout={this._setMax}>
-          <Lines 
+          <Lines
             countedRoutes={this.props.line.countedRoutes} 
             color={style.color}
             onDetailsPress={this.props.onDetailsPress} />

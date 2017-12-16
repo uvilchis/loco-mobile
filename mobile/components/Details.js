@@ -1,42 +1,9 @@
 import React, { Component } from 'react';
-import { View, Text, Image, Button, StyleSheet, ScrollView, Alert, Picker, Modal, TouchableOpacity } from 'react-native';
+import { View, Text, Image, Button, StyleSheet, ScrollView, Alert, Modal, TouchableOpacity, Animated, Easing } from 'react-native';
 import axios from 'axios';
 import { EvilIcons } from '@expo/vector-icons';
 
 import Cards from './Cards';
-
-// const markers = {
-//   "GOOD SERVICE": require('../images/markers/green.png'),
-//   "SERVICE CHANGE": require('../images/markers/red.png'),
-//   "PLANNED WORK": require('../images/markers/yellow.png'),
-//   "DELAYS": require('../images/markers/yellow.png')
-// }
-
-// const line = {
-//   "1": require('../images/line/1.png'),
-//   "2": require('../images/line/2.png'),
-//   "3": require('../images/line/3.png'),
-//   "4": require('../images/line/4.png'),
-//   "5": require('../images/line/5.png'),
-//   "6": require('../images/line/6.png'),
-//   "7": require('../images/line/7.png'),
-//   "A": require('../images/line/A.png'),
-//   "C": require('../images/line/C.png'),
-//   "E": require('../images/line/E.png'),
-//   "B": require('../images/line/B.png'),
-//   "D": require('../images/line/D.png'),
-//   "F": require('../images/line/F.png'),
-//   "M": require('../images/line/M.png'),
-//   "G": require('../images/line/G.png'),
-//   "J": require('../images/line/J.png'),
-//   "Z": require('../images/line/Z.png'),
-//   "L": require('../images/line/L.png'),
-//   "N": require('../images/line/N.png'),
-//   "Q": require('../images/line/Q.png'),
-//   "R": require('../images/line/R.png'),
-//   "S": require('../images/line/S.png'),
-//   "SIR": require('../images/line/SIR.png')
-// }
 
 export default class Details extends Component {
   constructor(props) {
@@ -44,8 +11,26 @@ export default class Details extends Component {
     this.state = {
       modalVisible: false
     };
+    this.jumpValue = new Animated.Value(0);
+    this.jumpAnim = this.jumpAnim.bind(this);
     this.showModal = this.showModal.bind(this);
     this.hideModal = this.hideModal.bind(this);
+  }
+
+  componentDidMount() {
+    this.jumpAnim();
+  }
+
+  jumpAnim() {
+    this.jumpValue.setValue(0);
+    Animated.timing(
+      this.jumpValue,
+      {
+        toValue: 1,
+        duration: 2000,
+        easing: Easing.linear
+      }
+    ).start(this.jumpAnim);
   }
 
   showModal() {
@@ -57,32 +42,43 @@ export default class Details extends Component {
   }
 
   render() {
-    console.log(this.props);
     return (
-      <ScrollView>
-        <View style={styles.container}>
+      <View style={styles.container}>
+        <ScrollView>
           <View style={styles.cards}>
             {this.state.compressed ? (
               <Cards />
             ) : null }
           </View>
-          <TouchableOpacity
-            style={styles.add}
-            onPress={() => console.log('test')}>
+        </ScrollView>
+        <TouchableOpacity
+          onPress={this.showModal}
+          style={styles.add}>
+          <Animated.View
+            style={{ 
+              transform: [{
+                translateY: this.jumpValue.interpolate({
+                  inputRange: [0, 0.5, 1],
+                  outputRange: [5, -2, 5]
+                })
+              }]
+            }}>
             <EvilIcons
               name='chevron-up'
               size={32} />
-            <Text>Add Complaint</Text>
-          </TouchableOpacity>
-        </View>
+          </Animated.View>
+          <Text>Add Complaint</Text>
+        </TouchableOpacity>
         <Modal
           animationType={'slide'}
           transparent={false}
           visible={this.state.modalVisible}
-          onPress={this.showModal} >
-          <Cards hideModal={this.hideModal} />
+          onRequestClose={this.hideModal}>
+          <Cards 
+            hideModal={this.hideModal}
+            route={this.props.navigation.state.params.route} />
         </Modal>
-      </ScrollView>
+      </View>
     )
   }
 }
@@ -105,7 +101,8 @@ const styles = StyleSheet.create({
     alignItems: 'center'
   },
   add: {
+    alignItems: 'center',
     position: 'absolute',
-    bottom: 0
+    bottom: 20
   }
 })
