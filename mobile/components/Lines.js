@@ -22,7 +22,7 @@ export default class Lines extends Component {
               <Text style={styles.complaints}>{`${route.count} complaints in last 30 minutes`}</Text>
               <TouchableOpacity
                 style={styles.button}
-                onPress={this.props.onDetailsPress}>
+                onPress={() => this.props.onDetailsPress(route)}>
                 <EvilIcons
                   name='arrow-right'
                   color='darkgrey'

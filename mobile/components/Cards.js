@@ -3,6 +3,7 @@ import { ScrollView, StyleSheet, Image, Text, Picker } from 'react-native';
 import { Card, ListItem, Button } from 'react-native-elements';
 import axios from 'axios';
 import ComplaintCard from './ComplaintCard';
+import URL from '../env/urls';
 
 export default class Cards extends Component {
   constructor(props) {
@@ -24,14 +25,14 @@ export default class Cards extends Component {
       complaints: this.defaultComplaints.map((el) => Object.assign({}, el))
     };
     this.handleChange = this.handleChange.bind(this);
-    this.handleAdd = this.handleAdd.bind(this)
+    this.handleAdd = this.handleAdd.bind(this);
   }
   
   componentDidMount() {
-    axios.get(`http://10.16.1.191:3000/api/route/stops`, {
+    axios.get(`${URL}/api/route/stops`, {
       params: { 
         sub: 'mta', 
-        route_id: this.props.routeId 
+        route_id: '1'
       }
     })
     .then(({ data }) => {
@@ -45,50 +46,57 @@ export default class Cards extends Component {
   }
 
   handleChange(itemValue) {
-    let newState= {};
-    this.setState({
-      stopId: itemValue
-    }, () => {
-      axios.get(`http://10.16.1.191:3000/api/report/stoproute?sub=mta&stop_id=${this.state.stopId}&route_id=${this.state.routeId}`)
-      .then((response) => {
-        let defaults = this.defaultComplaints.map((a) => Object.assign({}, a));
-        let newComplaints = response.data.reduce((acc, b) => {
-          let temp = acc.find((el) => el.name === b.name);
-          temp ? temp.count = b.count : acc.push(b);
-          return acc;
-        }, defaults);
+    // let newState= {};
+    // this.setState({
+    //   stopId: itemValue
+    // }, () => {
+    //   axios.get(`${URL}/api/report/stoproute`, {
+    //     params: {
+    //       sub: 'mta',
+    //       stop_id: this.state.stopId,
+    //       route_id: this.state.routeId
+    //     }
+    //   })
+    //   .then((response) => {
+    //     let defaults = this.defaultComplaints.map((a) => Object.assign({}, a));
+    //     let newComplaints = response.data.reduce((acc, b) => {
+    //       let temp = acc.find((el) => el.name === b.name);
+    //       temp ? temp.count = b.count : acc.push(b);
+    //       return acc;
+    //     }, defaults);
       
-        newState.complaints = newComplaints;
-        this.setState(newState);
-      })
-      .catch((err) => {
-        console.error(err)
-      })
-    })
+    //     newState.complaints = newComplaints;
+    //     this.setState(newState);
+    //   })
+    //   .catch((err) => {
+    //     console.error(err)
+    //   })
+    // })
   }
 
   handleAdd(type) {
-    this.setState({
-      currentComplaint: type
-    }, () => {
-      axios.post(`http://10.16.1.191:3000/api/report/add`, {
-        sub: 'mta',
-        type: this.state.currentComplaint,
-        stop_id: this.state.stopId,
-        route_id: this.state.routeId
-      })
-      .then((response) => {
-        this.handleChange(this.state.stopId)
-      })
-      .catch((err) => {
-        console.error(err)
-      })
-    })    
+    // this.setState({
+    //   currentComplaint: type
+    // }, () => {
+    //   axios.post(`${URL}/api/report/add`, {
+    //     sub: 'mta',
+    //     type: this.state.currentComplaint,
+    //     stop_id: this.state.stopId,
+    //     route_id: this.state.routeId
+    //   })
+    //   .then((response) => {
+    //     this.handleChange(this.state.stopId)
+    //   })
+    //   .catch((err) => {
+    //     console.error(err)
+    //   })
+    // })    
   }
 
   render() {
     return (
       <ScrollView style={styles.cards}>
+        <Button onPress={this.props.hideModal}>Hide</Button>
         <Picker style={styles.picker}
           selectedValue={this.state.direction}
           onValueChange={(itemValue, itemIndex) => this.setState({direction: itemValue})}>

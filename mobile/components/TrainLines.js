@@ -61,8 +61,8 @@ export default class TrainLines extends Component {
     });
   }
 
-  onDetailsPress(idx) {
-    this.props.navigation.navigate('Details', { lines: this.state.service[idx] })
+  onDetailsPress(route) {
+    this.props.navigation.navigate('Details', { route: route })
   }
 
   render() {
