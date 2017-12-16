@@ -92,3 +92,7 @@ const styles = StyleSheet.create({
     alignItems: 'center'
   }
 })
+
+Details.navigationOptions = {
+  title: 'Details'
+}

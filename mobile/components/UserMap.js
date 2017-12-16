@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { Image, View, Text } from 'react-native';
 import { Constants, Location, Permissions, MapView } from 'expo';
 import axios from 'axios';
 import geodist from 'geodist';
@@ -11,7 +12,8 @@ export default class UserMap extends Component {
     super(props)
     this.state = {
       location: [],
-      results: []
+      results: [],
+      iconLoaded: false
     };
   }
 
@@ -49,26 +51,42 @@ export default class UserMap extends Component {
   }
 
   render() {
-    console.log('RESULTS', this.state.results)
+    console.log('RESULTS', this.state.results.length)
     return (
-      <MapView
-        style={{ flex: 1 }}
-        initialRegion={{
-          latitude: 40.750808794289775,
-          longitude: -73.97638340930507,
-          latitudeDelta: 0.01,
-          longitudeDelta: 0.05,
-        }}
-      >
-        {this.state.results.map((marker, idx) => (
-          <MapView.Marker
-            coordinate={{latitude: Number(marker.stop_lat), longitude: Number(marker.stop_lon)}}
-            title={marker.stop_id}
-            description={marker.stop_name}
-            key={idx}
-          />
-        ))}        
-      </MapView>
+      <View style={{flex: 1}} >
+        {this.state.results.map((marker, idx) => {
+          <Image source={require('../images/line/2.png')} />
+        })}
+        <MapView
+          style={{ flex: 1 }}
+          initialRegion={{
+            latitude: 40.750808794289775,
+            longitude: -73.97638340930507,
+            latitudeDelta: 0.01,
+            longitudeDelta: 0.05,
+          }}
+        >
+          <MapView.Marker //for current location
+            key={this.state.iconLoaded ? 'markerLoaded' : 'marker'}
+            coordinate={{latitude: 40.750808794289775, longitude: -73.97638340930507}}
+            title={'me!'}
+            >
+            <Text>Hello Christine</Text>
+            <Image style={{height: 20, width: 20}} source={require('../images/line/A.png')} onLoadEnd={() => {if (!this.state.iconLoaded) this.setState({iconLoaded: true});}}/>
+          </MapView.Marker>
+          {this.state.results.map((marker, idx) => (
+            <MapView.Marker
+              coordinate={{latitude: Number(marker.stop_lat), longitude: Number(marker.stop_lon)}}
+              title={marker.route_id}
+              description={marker.stop_name}
+              // identifier={marker.stop_id}
+              key={idx}>
+              <Image style={{width: 25, height: 25}} source={require('../images/line/3.png')} />
+              
+            </MapView.Marker>
+          ))}        
+        </MapView>
+      </View>
     )
   }
 }
