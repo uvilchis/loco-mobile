@@ -1,11 +1,9 @@
 import React, { Component } from 'react';
 import { Constants, Location, Permissions, MapView } from 'expo';
 import axios from 'axios';
-<<<<<<< Updated upstream
 import geodist from 'geodist';
-=======
 import URL from '../env/urls'
->>>>>>> Stashed changes
+
 
 const GEOLOCATION_OPTIONS = { enableHighAccuracy: true, timeout: 20000, maximumAge: 1000 };
 
@@ -20,8 +18,7 @@ export default class UserMap extends Component {
 
   componentWillMount() {
     this.locationChanged()
-<<<<<<< Updated upstream
-=======
+
     .then((response) => {
       console.log(response)
       return axios.get(`${URL}/api/stops/coords`, {
@@ -42,7 +39,6 @@ export default class UserMap extends Component {
     .catch((err) => {
       console.error(err)
     })
->>>>>>> Stashed changes
   }
 
   locationChanged = async () => {
@@ -50,10 +46,9 @@ export default class UserMap extends Component {
     if (status !== 'granted') {
       this.setState({
         errorMessage: 'Permission to access location was denied',
-      });
-<<<<<<< Updated upstream
-    } 
-    
+      })
+    }
+
     let location = await Location.getCurrentPositionAsync({})
     this.setState({
       location: location
@@ -68,11 +63,10 @@ export default class UserMap extends Component {
         console.error('ERROR IN AXIOS REQUEST', err)
       })
     })
-=======
+
     }
     let location = await Location.getCurrentPositionAsync({});
     console.log(location)
->>>>>>> Stashed changes
   }
 
   render() {
@@ -94,7 +88,7 @@ export default class UserMap extends Component {
             description={marker.stop_name}
             key={idx}
           />
-        ))}        
+        ))}
       </MapView>
     )
   }
