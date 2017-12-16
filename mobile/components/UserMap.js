@@ -2,8 +2,7 @@ import React, { Component } from 'react';
 import { Constants, Location, Permissions, MapView } from 'expo';
 import axios from 'axios';
 import geodist from 'geodist';
-import URL from '../env/urls'
-
+import URL from '../env/urls';
 
 const GEOLOCATION_OPTIONS = { enableHighAccuracy: true, timeout: 20000, maximumAge: 1000 };
 
@@ -46,14 +45,19 @@ export default class UserMap extends Component {
     if (status !== 'granted') {
       this.setState({
         errorMessage: 'Permission to access location was denied',
-      })
+      });
     }
 
     let location = await Location.getCurrentPositionAsync({})
     this.setState({
       location: location
     }, () => {
-      axios.get(`http://10.16.1.191:3000/api/stops/location?lat=${this.state.location.coords.latitude}&lon=${this.state.location.coords.longitude}`)
+      axios.get(`${URL}/api/stops/location`, {
+        params: {
+          lat: this.state.location.coords.latitude,
+          lon: this.state.location.coords.longitude
+        }
+      })
       .then((response) => {
         this.setState({
           results: response.data
@@ -63,10 +67,6 @@ export default class UserMap extends Component {
         console.error('ERROR IN AXIOS REQUEST', err)
       })
     })
-
-    }
-    let location = await Location.getCurrentPositionAsync({});
-    console.log(location)
   }
 
   render() {

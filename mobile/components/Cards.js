@@ -33,7 +33,6 @@ export default class Cards extends Component {
   }
 
   componentDidMount() {
-    console.log('PROPS AT DETAILS',this.props)
     axios.get(`${URL}/api/route/stops`, {
       params: {
         sub: 'mta',
@@ -45,9 +44,6 @@ export default class Cards extends Component {
         routeId: this.props.routeName,
         stationsN: data.N,
         stationsS: data.S
-      }, () => {
-        console.log('STATE AT CARDS', this.state)
-        console.log('PROPS AT CARDS', this.props)
       })
     })
     .catch((error) => console.log(error));
@@ -66,16 +62,31 @@ export default class Cards extends Component {
     this.setState({
       stopId: itemValue
     }, () => {
-      axios.get(`${URL}/api/times/stoproute`, {
+      axios.get(`${URL}/api/times/stoproute?sub=mta`, {
         params : {
-          sub : 'mta',
           stop_id  : this.state.stopId,
           route_id : this.state.routeId
         }
       })
-      .then((response ) => {
+      .then(( response ) => {
         newState.schedule = response.data.filter((el) => el.arrival_time >= time && el.route_type === day).slice(0, 10);
-        console.log(newState)
+        return axios.get(`${URL}/api/report/stoproute?sub=mta`, {
+          params: {
+            stop_id : this.state.stopId,
+            route_id : this.state.routeId
+          }
+        })
+      })
+      .then(( response ) => {
+        console.log('response from reports request', response.data)
+        let defaults = this.defaultComplaints.map((a) => Object.assign({}, a));
+        let newComplaints = response.data.reduce((acc, b) => {
+          let temp = acc.find((el) => el.name === b.name);
+          temp ? temp.count = b.count : acc.push(b);
+          return acc
+        }, defaults);
+        newState.complaints = newComplaints;
+        this.setState(newState, ()=> {console.log(this.state)});
       })
       .catch((err) => console.error(err))
     })
@@ -101,6 +112,7 @@ export default class Cards extends Component {
   }
 
   render() {
+    console.log(this.state.schedule.length)
     return (
       <ScrollView style={styles.cards}>
         <Button

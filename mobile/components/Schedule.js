@@ -1,9 +1,12 @@
 import React, { Component } from 'react';
-import { Text } from 'react-native-elements';
+import  { Text } from 'react-native';
+import  {Card}  from 'react-native-elements';
 
 const Schedule = (props) => {
-  this.props.schedule.map((el) =>
-    <Text>{el.arrival_time}</Text>
+  return (
+    props.schedule.map((el, idx) =>
+        <Text key={idx}>{el.arrival_time}</Text>
+    )
   )
 }
 
