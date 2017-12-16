@@ -13,7 +13,7 @@ const StatusMarker = (props) => {
     }
     
     case 'PLANNED WORK': {
-      name = 'gear';
+      name = 'close-o';
       color = '#ff9872';
       break;
     }
@@ -25,7 +25,7 @@ const StatusMarker = (props) => {
     }
     
     case 'GOOD SERVICE': {
-      name = 'heart';
+      name = 'check';
       color = 'darkseagreen'
       break;
     }

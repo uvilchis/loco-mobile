@@ -11,7 +11,7 @@ export default class TrainLines extends Component {
       service: [],
       refreshing: false
     };
-    this.onDetailsClick = this.onDetailsClick.bind(this);
+    this.onDetailsPress = this.onDetailsPress.bind(this);
     this._onRefresh = this._onRefresh.bind(this);
   }
 
@@ -61,7 +61,7 @@ export default class TrainLines extends Component {
     });
   }
 
-  onDetailsClick(idx) {
+  onDetailsPress(idx) {
     this.props.navigation.navigate('Details', { lines: this.state.service[idx] })
   }
 
@@ -75,7 +75,7 @@ export default class TrainLines extends Component {
             onRefresh={this._onRefresh} />
         }>
         {this.state.service.map((line, idx) =>
-          <TrainLine key={idx} line={line} idx={idx} />
+          <TrainLine key={idx} line={line} idx={idx} onDetailsPress={this.onDetailsPress}/>
         )}
       </ScrollView>
     )

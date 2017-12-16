@@ -20,17 +20,17 @@
 // };
 
 const LineStyle = {
-  '123': { backgroundColor: '#e80909', color: 'white' },
-  '456': { backgroundColor: 'green', color: 'white' },
-  '7': { backgroundColor: 'purple', color: 'white' },
-  'ACE': { backgroundColor: 'blue', color: 'white' },
-  'BDFM': { backgroundColor: 'orange', color: 'white' },
-  'G': { backgroundColor: '#21bc43', color: 'white' },
-  'JZ': { backgroundColor: '#706127', color: 'white' },
-  'L': { backgroundColor: 'grey', color: 'white' },
-  'NQR': { backgroundColor: 'gold', color: 'black' },
-  'S': { backgroundColor: 'lightslategrey', color: 'white' },
-  'SIR': { backgroundColor: '#192b87', color: 'white'}
+  '123': { color: '#e80909' },
+  '456': { color: 'green' },
+  '7': { color: 'purple' },
+  'ACE': { color: 'blue' },
+  'BDFM': { color: 'orange' },
+  'G': { color: '#21bc43' },
+  'JZ': { color: '#706127' },
+  'L': { color: 'grey' },
+  'NQR': { color: 'gold' },
+  'S': { color: 'lightslategrey' },
+  'SIR': { color: '#192b87' }
 };
 
 export default Helpers = {

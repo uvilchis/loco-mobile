@@ -17,7 +17,7 @@ export default class Login extends Component {
       password: ''
     };
     this.panValue = new Animated.Value(0);
-    this.fadeValue = new Animated.Value(0);
+    this.fadeValue = new Animated.Value();
     this.handleLogin = this.handleLogin.bind(this);
     this.handleSignUp = this.handleSignUp.bind(this);
     this.handleGoogle = this.handleGoogle.bind(this);
@@ -28,8 +28,10 @@ export default class Login extends Component {
   }
 
   pan() {
+
     this.panValue.setValue(0);
     this.fadeValue.setValue(0);
+
     Animated.parallel([
       Animated.timing(
         this.panValue,
@@ -42,8 +44,8 @@ export default class Login extends Component {
       Animated.timing(
         this.fadeValue,
         {
-          toValue: 1,
-          duration: 1000,
+          toValue: 1000,
+          duration: 35000,
           easing: Easing.linear
         }
       )
@@ -93,7 +95,10 @@ export default class Login extends Component {
       <View style={styles.main}>
         <Animated.Image
           style={{
-            opacity: this.fadeValue,
+            opacity: this.fadeValue.interpolate({
+              inputRange: [0, 50, 950, 1000],
+              outputRange: [0, 1, 1, 0]
+            }),
             position: 'absolute',
             maxHeight: Math.max(960, Dimensions.get('window').height),
             transform: [{

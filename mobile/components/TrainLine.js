@@ -99,7 +99,7 @@ export default class TrainLine extends Component {
       <Animated.View style={[styles.container, { height: this.state.dropValue }]}>
         <View style={styles.inner} onLayout={this._setMin}>
           <View style={styles.icon}>
-              <Text style={[styles.symbols, { color: style.backgroundColor }]}>{this.props.line.name}</Text>
+              <Text style={[styles.symbols, { color: style.color }]}>{this.props.line.name}</Text>
           </View>
           <View style={styles.buttons}>
             <View style={{ height: 32, width: 32 }}>
@@ -113,16 +113,19 @@ export default class TrainLine extends Component {
             <StatusMarker status={this.props.line.status} />
             <Animated.View
               style={[styles.rotateArrow, { transform: [{ rotate: spin }] }]}>
-              <Entypo
-                name="chevron-with-circle-down"
-                color='black'
-                size={28}
+              <EvilIcons
+                name="chevron-down"
+                color='darkgrey'
+                size={32}
                 onPress={this.toggleLines} /> 
             </Animated.View>
           </View> 
         </View>
         <Animated.View style={{ opacity: this.opacityValue }} onLayout={this._setMax}>
-          <Lines countedRoutes={this.props.line.countedRoutes} />
+          <Lines 
+            countedRoutes={this.props.line.countedRoutes} 
+            color={style.color}
+            onDetailsPress={this.props.onDetailsPress} />
         </Animated.View>
       </Animated.View> 
     );
