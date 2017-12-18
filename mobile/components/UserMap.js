@@ -1,9 +1,10 @@
 import React, { Component } from 'react';
-
+import { Image, View, Text, Modal } from 'react-native';
 import { Constants, Location, Permissions, MapView } from 'expo';
 import axios from 'axios';
 import geodist from 'geodist';
 import URL from '../env/urls';
+import MapDeets from './MapDeets';
 
 
 const GEOLOCATION_OPTIONS = { enableHighAccuracy: true, timeout: 20000, maximumAge: 1000 };
@@ -13,7 +14,9 @@ export default class UserMap extends Component {
     super(props)
     this.state = {
       location: [],
-      results: []
+      results: [],
+      modalVisible: false,
+      selected: ''
     };
   }
 
@@ -72,26 +75,43 @@ export default class UserMap extends Component {
   }
 
   render() {
-    console.log('RESULTS', this.state.results)
     return (
-      <MapView
-        style={{ flex: 1 }}
-        initialRegion={{
-          latitude: 40.750808794289775,
-          longitude: -73.97638340930507,
-          latitudeDelta: 0.01,
-          longitudeDelta: 0.05,
-        }}
-      >
-        {this.state.results.map((marker, idx) => (
-          <MapView.Marker
-            coordinate={{latitude: Number(marker.stop_lat), longitude: Number(marker.stop_lon)}}
-            title={marker.stop_id}
-            description={marker.stop_name}
-            key={idx}
+      <View style={{flex: 1}} >
+        <MapView
+          style={{ flex: 1 }}
+          initialRegion={{
+            latitude: 40.750808794289775,
+            longitude: -73.97638340930507,
+            latitudeDelta: 0.01,
+            longitudeDelta: 0.05,
+          }}
+        >
+          {this.state.results.map((marker, idx) => (
+            <MapView.Marker
+              coordinate={{latitude: Number(marker.stop_lat), longitude: Number(marker.stop_lon)}}
+              description={marker.stop_name}
+              onPress={() => {
+                this.setState({
+                  modalVisible: !this.state.modalVisible,
+                  selected: marker.stop_name
+                })
+              }}
+              key={idx}>            
+            </MapView.Marker>
+          ))}        
+        </MapView>
+        <Modal
+          animationType={"slide"}
+          transparent={false}
+          visible={this.state.modalVisible}
+          onRequestClose={() => console.log("Modal has been closed.")}
+        >
+          <MapDeets 
+            results={this.state.results}
+            selected={this.state.selected}
           />
-        ))}
-      </MapView>
+        </Modal>
+      </View>
     )
   }
 }
