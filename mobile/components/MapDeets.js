@@ -26,7 +26,6 @@ export default class MapDeets extends Component {
   }
 
   render() {
-    console.log('MAPDEETS UNIQUE STATE:', this.state.unique)
     return (
       <ScrollView style={styles.container}>
         <Text>{this.props.selected}</Text>
