@@ -76,7 +76,7 @@ export default class StationSelect extends Component {
 
   render() {
     return (
-      <View style={styles.container}>
+      <View style={[this.props.style, styles.container, { marginBottom: this.state.dropdown ? 60 : 20 }]}>
         <TouchableWithoutFeedback
           onPress={this._toggle}>
           <View
@@ -92,6 +92,8 @@ export default class StationSelect extends Component {
               clearButtonMode="while-editing" />
             <Animated.View 
               style={{
+                alignSelf: 'center',
+                marginRight: 4,
                 transform: [{
                   rotate: this.spinValue.interpolate({
                     inputRange: [0, 1],
@@ -124,8 +126,9 @@ export default class StationSelect extends Component {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    margin: 8,
-    padding: 8,
+    alignContent: 'center',
+    justifyContent: 'center',
+    marginHorizontal: 16,
     borderColor: 'lightgrey',
     borderWidth: 1
   },
@@ -135,11 +138,12 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between'
   },
   input: {
+    minHeight: 48,
     minWidth: 150,
+    paddingHorizontal: 8,
     flex: 1
   },
   dropdown: {
-    marginTop: 8,
     overflow: 'hidden'
   },
   item: {
@@ -148,6 +152,7 @@ const styles = StyleSheet.create({
   },
   station: {
     fontSize: 14,
-    paddingVertical: 10
+    paddingVertical: 12,
+    paddingLeft: 8
   }
 });

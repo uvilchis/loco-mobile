@@ -68,11 +68,7 @@ export default class UserMap extends Component {
       .catch((err) => {
         console.error('ERROR IN AXIOS REQUEST', err)
       })
-    })
-
-    }
-    let location = await Location.getCurrentPositionAsync({});
-    console.log(location)
+    });
   }
 
   render() {

@@ -10,7 +10,7 @@ export default class ComplaintCard extends Component {
 
   render() {
     return (
-      <View >
+      <View>
         <Card>
           <Text style={styles.type}>
             {this.props.complaint}

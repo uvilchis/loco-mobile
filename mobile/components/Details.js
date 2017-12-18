@@ -1,10 +1,11 @@
 import React, { Component } from 'react';
-import { View, Text, Image, Button, StyleSheet, ScrollView, Alert, Modal, TouchableOpacity, Animated, Easing } from 'react-native';
+import { View, Text, StyleSheet, ScrollView, Alert, Modal, TouchableOpacity, Animated, Easing, Dimensions } from 'react-native';
 import axios from 'axios';
 import URL from '../env/urls';
 import { EvilIcons } from '@expo/vector-icons';
 
 import ComplaintsInfo from './ComplaintsInfo';
+import StationSelect from './StationSelect';
 import Cards from './Cards';
 
 export default class Details extends Component {
@@ -13,8 +14,15 @@ export default class Details extends Component {
     this.state = {
       compressed: false,
       modalVisible: false,
-      currentComplaints: []
+      currentComplaints: [],
+      stationsN: [],
+      stationsS: []
     };
+
+    // Click handlers
+    this.onStationSelect = this.onStationSelect.bind(this);
+
+    // Animation handlers
     this.jumpValue = new Animated.Value(0);
     this.jumpAnim = this.jumpAnim.bind(this);
     this.showModal = this.showModal.bind(this);
@@ -23,14 +31,38 @@ export default class Details extends Component {
 
   componentDidMount() {
     this.jumpAnim();
-    axios.get(`${URL}/api/report/reports`, {
+
+    let newState = {};
+    axios.get(`${URL}/api/route/stops`, {
       params: {
         sub: 'mta',
         route_id: this.props.navigation.state.params.route
       }
     })
-    .then(({ data }) => this.setState({ currentComplaints: data }))
+    .then(({ data }) => {
+      newState.stationsN = data.N;
+      newState.stationsS = data.S;
+      return axios.get(`${URL}/api/report/reports`, {
+        params: {
+          sub: 'mta',
+          route_id: this.props.navigation.state.params.route
+        }
+      })
+    })
+    .then(({ data }) => {
+      newState.currentComplaints = data.map((el, idx) => {
+        let temp = el[0].split('-').pop().slice(0, -1);
+        let stop = newState.stationsN.find((a) => a.stop_id.includes(temp));
+        let count = el[1];
+        return { stop, count };
+      })
+      this.setState(newState);
+    })
     .catch((error) => console.log(error));
+  }
+
+  onStationSelect(stopId) {
+    console.log(stopId);
   }
 
   jumpAnim() {
@@ -56,7 +88,15 @@ export default class Details extends Component {
   render() {
     return (
       <View style={styles.container}>
+      <ScrollView style={styles.scroll}>
         <ComplaintsInfo currentComplaints={this.state.currentComplaints} />
+        <Text style={styles.sectionHeader}>Select a station</Text>
+        <StationSelect 
+          style={styles.stationStyle}
+          stations={this.state.stationsN} 
+          onStationSelect={this.onStationSelect} />
+        <Text style={styles.sectionHeader}>Detailed Complaints</Text>
+      </ScrollView>
         <TouchableOpacity
           onPress={this.showModal}
           style={styles.add}>
@@ -71,7 +111,8 @@ export default class Details extends Component {
             }}>
             <EvilIcons
               name='chevron-up'
-              size={32} />
+              size={32}
+              style={{ backgroundColor: 'transparent' }} />
           </Animated.View>
           <Text>Add Complaint</Text>
         </TouchableOpacity>
@@ -89,28 +130,22 @@ export default class Details extends Component {
   }
 }
 
-
-// }}
-// title="Details"
-// color='#841584'
-// />
-// </View>
-// </View>
-// <View style={styles.cards}>
-// {this.state.compressed ? (
-// <Cards routeName={this.props.navigation.state.params.routeName}/>
-// ) : null }
-// </View>
-// </ScrollView>
-
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    // flexDirection: 'row',
     backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    paddingVertical: 10
+    alignContent: 'center',
+    paddingTop: 10
+  },
+  scroll: {
+    flex: 1
+  },
+  sectionHeader: {
+    fontSize: 24,
+    marginTop: 20,
+    margin: 16
+  },
+  stationStyle: {
   },
   icon: {
     // flex: 2
@@ -122,7 +157,9 @@ const styles = StyleSheet.create({
   },
   add: {
     alignItems: 'center',
+    alignSelf: 'center',
     position: 'absolute',
+    backgroundColor: 'transparent',
     bottom: 20
   }
-})
+});

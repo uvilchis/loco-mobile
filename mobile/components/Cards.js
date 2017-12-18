@@ -188,10 +188,7 @@ export default class Cards extends Component {
         <View style={styles.inner}>
           <Text style={styles.directionSelect}>Select Direction</Text>
           <CustomToggle style={{}} onDirectionSelect={this.onDirectionSelect} />
-          <Text style={styles.stationSelect}>Select Station</Text>
-          <StationSelect 
-            stations={this.state.stationsN}
-            onStationSelect={this.onStationSelect} />
+          <Text style={styles.stationSelect}>Select Complaint</Text>
         </View>
       </ScrollView>
     );
