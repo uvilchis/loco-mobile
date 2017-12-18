@@ -32,9 +32,9 @@ export default class TrainLines extends Component {
           return acc;
         }, []);
       });
-      this.setState(newState, () => {console.log('STATES FROM TH', this.state)})
+      this.setState(newState);
     })
-    .catch((err) => console.error(err));
+    .catch((error) => console.log(error));
   }
 
   _onRefresh() {
@@ -57,12 +57,14 @@ export default class TrainLines extends Component {
         });
         this.setState(newState)
       })
-      .catch((err) => console.error(err));
+      .catch((error) => console.log(error));
     });
   }
 
-  onDetailsPress(routeName) {
-    this.props.navigation.navigate('Details', { routeName: routeName })
+  // onDetailsPress(routeName) {
+  //   this.props.navigation.navigate('Details', { routeName: routeName })
+  onDetailsPress(route) {
+    this.props.navigation.navigate('Details', { route })
   }
 
   render() {
@@ -72,11 +74,9 @@ export default class TrainLines extends Component {
         refreshControl={
           <RefreshControl
             refreshing={this.state.refreshing}
-            onRefresh={this._onRefresh} />
-        }>
+            onRefresh={this._onRefresh} /> }>
         {this.state.service.map((line, idx) =>
-          <TrainLine key={idx} line={line} idx={idx} onDetailsPress={this.onDetailsPress}/>
-        )}
+          <TrainLine key={idx} line={line} idx={idx} onDetailsPress={this.onDetailsPress}/>)}
       </ScrollView>
     )
   }

@@ -1,60 +1,50 @@
 import React, { Component } from 'react';
-import { View, Text, Image, ScrollView, StyleSheet } from 'react-native';
+import { View, Text, Image, ScrollView, StyleSheet, TouchableOpacity } from 'react-native';
 import { Card, ListItem, Button } from 'react-native-elements';
+import { EvilIcons } from '@expo/vector-icons';
 import axios from 'axios';
 
-export default class ComplaintCard extends Component {
-  constructor(props) {
-    super(props);
-  }
+import Helpers from '../lib/util'
 
-  render() {
-    return (
-      <View >
-        <Card>
-          <Text style={styles.type}>
-            {this.props.complaint}
-          </Text>
-          <View style={styles.detailsBar}>
-            <Text style={styles.text}>
-              {this.props.count}
-            </Text>    
-            <View style={styles.button}>
-              <Button
-                onPress={() => {
-                  this.props.handleAdd(this.props.complaint)
-                }}
-                title="+"
-                color='#841584'
-              />
-            </View>        
-          </View>
-        </Card>        
+const ComplaintCard = (props) => (
+  <Card>
+    <View style={styles.container}>
+      <View style={styles.type}>
+        <Text style={styles.text}>{Helpers.WordHelper(props.name)}</Text>
+        <Text style={styles.text}>{props.count}</Text>
       </View>
-    )
-  }
-}
+      <TouchableOpacity
+        onPress={() => props.onAdd(props.name)}>
+        <EvilIcons
+          name="plus"
+          size={32}
+          color="lightgrey"
+          style={styles.button} />
+      </TouchableOpacity>
+    </View>
+  </Card>
+);
 
 const styles = StyleSheet.create({
-  detailsBar: {
+  container: {
     flexDirection: 'row',
     backgroundColor: '#fff',
     alignItems: 'center',
     justifyContent: 'space-between'
   },
   type: {
-    fontWeight: 'bold',
-    fontSize: 18
+    flex: 1,
+    justifyContent: 'space-between',
+    flexDirection: 'row'
   },
   text: {
-    flex: 1,
-    fontWeight: 'bold',
-    fontSize: 18
-  }, 
+    fontSize: 18,
+  },
   button: {
-    flex: 3,
-    flexDirection: 'row', 
-    justifyContent: 'space-between',
-    alignItems: 'center'
+    alignSelf: 'center',
+    backgroundColor: 'transparent',
+    marginLeft: 16
   }
-})
+});
+
+export default ComplaintCard;

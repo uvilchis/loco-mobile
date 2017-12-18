@@ -19,3 +19,4 @@ yarn-error.log*
 // Environment Variables
 **/key.js
 **/urls.js
+**/url.js

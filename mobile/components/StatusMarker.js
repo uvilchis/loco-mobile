@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View } from 'react-native';
+import { TouchableOpacity, Alert } from 'react-native';
 
 import { EvilIcons } from '@expo/vector-icons';
 
@@ -36,12 +36,25 @@ const StatusMarker = (props) => {
     }
   }
 
+  const showAlert = () => {
+    Alert.alert(
+      'Icon Definition',
+      props.status,
+      [
+        { text: 'Close', style: 'cancel' }
+      ]
+    );
+  }
+
   return (
-    <EvilIcons
-      name={name}
-      color={color}
-      size={40}
-      style={{ marginTop: 4 }} />
+    <TouchableOpacity
+      onLongPress={showAlert}>
+      <EvilIcons
+        name={name}
+        color={color}
+        size={40}
+        style={{ marginTop: 4 }} />
+    </TouchableOpacity>
   );
 };
 
