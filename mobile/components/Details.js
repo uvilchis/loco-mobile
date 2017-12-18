@@ -6,6 +6,7 @@ import { EvilIcons } from '@expo/vector-icons';
 
 import ComplaintsInfo from './ComplaintsInfo';
 import StationSelect from './StationSelect';
+import StationComplaints from './StationComplaints';
 import Cards from './Cards';
 
 export default class Details extends Component {
@@ -14,7 +15,9 @@ export default class Details extends Component {
     this.state = {
       compressed: false,
       modalVisible: false,
+      selected: false,
       currentComplaints: [],
+      stationComplaints: [],
       stationsN: [],
       stationsS: []
     };
@@ -63,6 +66,18 @@ export default class Details extends Component {
 
   onStationSelect(stopId) {
     console.log(stopId);
+    axios.get(`${URL}/api/report/stoproute`, {
+      params: {
+        sub: 'mta',
+        route_id: this.props.navigation.state.params.route,
+        stop_id: stopId
+      }
+    })
+    .then(({ data }) => this.setState({ 
+      stationComplaints: data,
+      selected: true
+    }))
+    .catch((error) => console.log(error));
   }
 
   jumpAnim() {
@@ -88,15 +103,16 @@ export default class Details extends Component {
   render() {
     return (
       <View style={styles.container}>
-      <ScrollView style={styles.scroll}>
-        <ComplaintsInfo currentComplaints={this.state.currentComplaints} />
-        <Text style={styles.sectionHeader}>Select a station</Text>
-        <StationSelect 
-          style={styles.stationStyle}
-          stations={this.state.stationsN} 
-          onStationSelect={this.onStationSelect} />
-        <Text style={styles.sectionHeader}>Detailed Complaints</Text>
-      </ScrollView>
+        <ScrollView style={styles.scroll}>
+          <ComplaintsInfo currentComplaints={this.state.currentComplaints} />
+          <Text style={styles.sectionHeader}>Select a station</Text>
+          <StationSelect 
+            style={styles.stationStyle}
+            stations={this.state.stationsN} 
+            onStationSelect={this.onStationSelect} />
+          <Text style={styles.sectionHeader}>Station complaints</Text>
+          <StationComplaints stationComplaints={this.state.stationComplaints} selected={this.state.selected} />
+        </ScrollView>
         <TouchableOpacity
           onPress={this.showModal}
           style={styles.add}>

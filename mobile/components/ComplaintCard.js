@@ -10,33 +10,33 @@ export default class ComplaintCard extends Component {
 
   render() {
     return (
-      <View>
-        <Card>
+      <Card>
+        <View style={styles.container}>
           <Text style={styles.type}>
-            {this.props.complaint}
+            {this.props.name}
           </Text>
-          <View style={styles.detailsBar}>
+          <View>
             <Text style={styles.text}>
               {this.props.count}
             </Text>    
             <View style={styles.button}>
               <Button
                 onPress={() => {
-                  this.props.handleAdd(this.props.complaint)
+                  // this.props.handleAdd(this.props.complaint)
                 }}
                 title="+"
                 color='#841584'
               />
             </View>        
           </View>
-        </Card>        
-      </View>
+        </View>
+      </Card>
     )
   }
 }
 
 const styles = StyleSheet.create({
-  detailsBar: {
+  container: {
     flexDirection: 'row',
     backgroundColor: '#fff',
     alignItems: 'center',
