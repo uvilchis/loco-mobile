@@ -4,6 +4,10 @@ import axios from 'axios';
 import MapNav from './components/MapNav';
 import Login from './components/Login';
 import RootNav from './components/RootNav';
+// TODO : Implement a favorites list
+import Favorites from './components/Favorites'
+// TODO : implement tab navigation
+import TabNav from './components/TabNav';
 import URL from './env/urls';
 
 export default class App extends Component {
@@ -14,17 +18,23 @@ export default class App extends Component {
       username: '',
       password: '',
       modalVisible: false,
-      showMap: false
+      showMap: false,
+      favoritesVisible: false
     };
     this.onSignUp = this.onSignUp.bind(this);
     this.onLogin = this.onLogin.bind(this);
     this.onLogout = this.onLogout.bind(this);
     this.onGoogle = this.onGoogle.bind(this);
     this.hideModal = this.hideModal.bind(this);
+    this.hideFavorites = this.hideFavorites.bind(this);
   }
 
   hideModal() {
     this.setState({ modalVisible: false });
+  }
+
+  hideFavorites() {
+    this.setState({ favoritesVisible : false })
   }
 
   onLogin(userObj) {
@@ -67,12 +77,12 @@ export default class App extends Component {
       modalVisible: false
     }, () => console.log('google auth successful'));
   }
-  
+
   render() {
     return (
       <View style={{flex: 1}}>
-        <View style={styles.container}>          
-          <Text style={styles.title}>loco</Text>          
+        <View style={styles.container}>
+          <Text style={styles.title}>loco</Text>
           {this.state.loggedIn ? (
             <Button
               onPress={() => {
@@ -88,22 +98,38 @@ export default class App extends Component {
             />
           )}
           <Button
-            onPress={() => this.setState({ showMap: !this.state.showMap })}
+            onPress={() => this.setState({showMap: !this.state.showMap})}
             title="Map"
-            color='#841584'/>
+            color='#841584'
+          />
+          <Button
+            onPress={() => this.setState({ favoritesVisible : true })}
+            title="Favorites"
+            color='#841584'
+          />
         </View>
-        <Modal 
-          animationType={"slide"} 
-          transparent={false}
-          visible={this.state.modalVisible}
-          onRequestClose={() => console.log("Modal has been closed.")}>
+        <Modal
+          animationType = {"slide"}
+          transparent = {false}
+          visible = {this.state.modalVisible}
+          onRequestClose = {() => console.log("Modal has been closed.")}>
           <Login
-            onLogin={this.onLogin} 
+            onLogin={this.onLogin}
             onSignUp={this.onSignUp}
-            onGoogle={this.onGoogle} 
-            hideModal={this.hideModal} />
+            onGoogle={this.onGoogle}
+            hideModal={this.hideModal}
+          />
         </Modal>
-        {this.state.showMap ? ( <MapNav /> ) : ( <RootNav /> )}        
+        <Modal
+          animationType = {"slide"}
+          transparent = {false}
+          visible = {this.state.favoritesVisible}
+          onRequestClose = {() => console.log("Modal has been closed.")}>
+          <Favorites
+            hideFavorites={this.hideFavorites}
+          />
+        </Modal>
+        {this.state.showMap ? ( <MapNav /> ) : ( <RootNav /> )}
       </View>
     )
   }

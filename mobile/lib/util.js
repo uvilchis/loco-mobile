@@ -1,14 +1,14 @@
 const LineStyle = {
-  '123': { color: '#e80909' },
-  '456': { color: 'green' },
-  '7': { color: 'purple' },
-  'ACE': { color: 'blue' },
-  'BDFM': { color: 'orange' },
-  'G': { color: '#21bc43' },
-  'JZ': { color: '#706127' },
-  'L': { color: 'grey' },
-  'NQR': { color: 'gold' },
-  'S': { color: 'lightslategrey' },
+  '123': { color: '#EE352E' },
+  '456': { color: '#00933C' },
+  '7': { color: '#B933AD' },
+  'ACE': { color: '#0039A6' },
+  'BDFM': { color: '#FF6319' },
+  'G': { color: '#6CBE45' },
+  'JZ': { color: '#996633' },
+  'L': { color: '#A7A9AC' },
+  'NQR': { color: '#FCCC0A' },
+  'S': { color: '#808183' },
   'SIR': { color: '#192b87' }
 };
 
@@ -31,4 +31,4 @@ export default Helpers = {
   LineStyle,
   WordHelper,
   DateHelper
-}; 
+};

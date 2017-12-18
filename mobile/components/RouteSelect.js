@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { View, TextInput, Text, StyleSheet, Animated, Easing, TouchableOpacity, TouchableWithoutFeedback } from 'react-native';
 import { EvilIcons } from '@expo/vector-icons';
 
-export default class StationSelect extends Component {
+export default class RouteSelect extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -10,6 +10,7 @@ export default class StationSelect extends Component {
       search: '',
       all: [],
       filtered: [],
+      height: new Animated.Value(0)
     };
 
     this.spinValue = new Animated.Value(0);
@@ -23,10 +24,10 @@ export default class StationSelect extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    if (!this.state.all.length && nextProps.stations.length) {
+    if (!this.state.all.length && nextProps.routes.length) {
       this.setState({
-        all: nextProps.stations,
-        filtered: nextProps.stations
+        all: nextProps.routes,
+        filtered: nextProps.routes
       });
     }
   }
@@ -45,18 +46,21 @@ export default class StationSelect extends Component {
     ).start();
   }
 
+  _setHeight(e) {
+    // console.log(e.nativeEvent.layout);
+  }
+
   _onChange(search) {
     let newState = {};
     newState.search = search;
-    newState.filtered = this.state.all.filter((a) => a.stop_name.toLowerCase().includes(search.toLowerCase()));
-    this.setState(newState, this.anim);
+    newState.filtered = this.state.all.filter((a) => a.route_id.toLowerCase().includes(search.toLowerCase()));
+    this.setState(newState);
   }
 
   _onSelect(idx) {
-    this.props.onStationSelect(this.state.filtered[idx].stop_id, this.state.filtered[idx].route_id);
+    this.props.onRouteSelect(this.state.filtered[idx].route_id)
     this.setState({
-      search: this.state.filtered[idx].stop_name,
-      filtered:[this.state.filtered[idx]],
+      search: this.state.filtered[idx].route_id,
       dropdown: false
     }, this.anim);
   }
@@ -71,20 +75,20 @@ export default class StationSelect extends Component {
 
   render() {
     return (
-      <View
-        style={[this.props.style, styles.container]}>
-        <TouchableWithoutFeedback
-          onPress={this._toggle}>
-          <View style={styles.inner}>
-            <TextInput
-              style={styles.input}
-              name="search"
-              placeholder="Search for a station"
-              value={this.state.search}
-              onFocus={this._onFocus}
-              onChangeText={this._onChange}
-              underlineColorAndroid="transparent"
-              clearButtonMode="while-editing" />
+    <View style={[this.props.style, styles.container, { marginBottom: this.state.dropdown ? 60 : 20 }]}>
+      <TouchableWithoutFeedback
+        onPress={this._toggle}>
+        <View
+          style={styles.inner}>
+          <TextInput
+            style={styles.input}
+            name="search"
+            placeholder="Search for a route"
+            value={this.state.search}
+            onFocus={this._onFocus}
+            onChangeText={this._onChange}
+            underlineColorAndroid="transparent"
+            clearButtonMode="while-editing" />
             <Animated.View
               style={{
                 alignSelf: 'center',
@@ -101,20 +105,20 @@ export default class StationSelect extends Component {
                 size={32}
                 onPress={this._toggle} />
             </Animated.View>
-          </View>
-        </TouchableWithoutFeedback>
-        {this.state.dropdown ?
-          <View style={[styles.dropdown]} onLayout={this._setHeight}>
-            {this.state.filtered.map((station, idx) =>
-              <TouchableOpacity
-                key={idx}
-                style={styles.item}
-                onPress={this._onSelect.bind(null, idx)}>
-                <Text style={styles.station}>{station.stop_name}</Text>
-              </TouchableOpacity>)}
-          </View> : null}
-      </View>
-    );
+        </View>
+      </TouchableWithoutFeedback>
+      {this.state.dropdown ?
+        <View style={[styles.dropdown]} onLayout={this._setHeight}>
+          {this.state.filtered.map((route, idx) =>
+            <TouchableOpacity
+              key={idx}
+              style={styles.item}
+              onPress={this._onSelect.bind(null, idx)}>
+              <Text style={styles.station}>{route.route_id}</Text>
+            </TouchableOpacity>)}
+        </View> : null}
+    </View>
+    )
   }
 }
 
@@ -125,11 +129,10 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     marginHorizontal: 16,
     borderColor: 'lightgrey',
-    borderWidth: 1,
-    overflow: 'hidden'
+    borderWidth: 1
   },
   inner: {
-    // flex: 1,
+    flex: 1,
     flexDirection: 'row',
     justifyContent: 'space-between'
   },
