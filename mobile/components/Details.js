@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Text, StyleSheet, ScrollView, Alert, Modal, TouchableOpacity, Animated, Easing, Dimensions } from 'react-native';
+import { View, Text, StyleSheet, Alert, ScrollView, RefreshControl, Modal, TouchableOpacity, Animated, Easing, Dimensions } from 'react-native';
 import axios from 'axios';
 import URL from '../env/urls';
 import { EvilIcons } from '@expo/vector-icons';
@@ -7,15 +7,27 @@ import { EvilIcons } from '@expo/vector-icons';
 import ComplaintsInfo from './ComplaintsInfo';
 import StationSelect from './StationSelect';
 import StationComplaints from './StationComplaints';
+import CustomToggle from './CustomToggle';
 import Cards from './Cards';
 
 export default class Details extends Component {
   constructor(props) {
     super(props);
+
+    this.defaultComplaints = [
+      { name: 'delayed', count: 0 },
+      { name: 'closed', count: 0 },
+      { name: 'accident', count: 0 },
+      { name: 'crowded', count: 0 }
+    ];
+
     this.state = {
-      compressed: false,
+      refreshing: false,
       modalVisible: false,
-      selected: false,
+      station: false,
+      direction: '',
+      stopId: '',
+      rawComplaints: [],
       currentComplaints: [],
       stationComplaints: [],
       stationsN: [],
@@ -24,6 +36,10 @@ export default class Details extends Component {
 
     // Click handlers
     this.onStationSelect = this.onStationSelect.bind(this);
+    this.onDirectionSelect = this.onDirectionSelect.bind(this);
+    this.onFetchComplaints = this.onFetchComplaints.bind(this);
+    this.onAdd = this.onAdd.bind(this);
+    this._onRefresh = this._onRefresh.bind(this);
 
     // Animation handlers
     this.jumpValue = new Animated.Value(0);
@@ -53,19 +69,34 @@ export default class Details extends Component {
       })
     })
     .then(({ data }) => {
-      newState.currentComplaints = data.map((el, idx) => {
+      newState.rawComplaints = data;
+      newState.currentComplaints = Object.entries(data.reduce((acc, el) => {
         let temp = el[0].split('-').pop().slice(0, -1);
-        let stop = newState.stationsN.find((a) => a.stop_id.includes(temp));
-        let count = el[1];
-        return { stop, count };
-      })
+        console.log('el', el);
+        console.log(temp);
+        console.log('found', newState.stationsN.find((a) => a.stop_id.includes(temp)));
+        let name = newState.stationsN.find((a) => a.stop_id.includes(temp)).stop_name;
+        acc[name] = acc[name] ? acc[name] + el[1] : el[1];
+        return acc;
+      }, {}));
       this.setState(newState);
     })
     .catch((error) => console.log(error));
   }
 
   onStationSelect(stopId) {
-    console.log(stopId);
+    this.setState({ stopId }, this.onFetchComplaints);
+  }
+
+  // True = uptown
+  onDirectionSelect(direction) {
+    this.setState({ direction }, this.onFetchComplaints);
+  }
+
+  onFetchComplaints() {
+    if (!this.state.stopId || !this.state.direction) { return; }
+
+    let stopId = this.state.stopId.slice(0, -1) + this.state.direction;
     axios.get(`${URL}/api/report/stoproute`, {
       params: {
         sub: 'mta',
@@ -73,11 +104,81 @@ export default class Details extends Component {
         stop_id: stopId
       }
     })
-    .then(({ data }) => this.setState({ 
-      stationComplaints: data,
-      selected: true
-    }))
+    .then(({ data }) => this.setState({ selected: true, stationComplaints: data }))
     .catch((error) => console.log(error));
+  }
+
+  onAdd(complaintType) {
+    let newState = {};
+    let stopId = this.state.stopId.slice(0, -1) + this.state.direction;
+    axios.post(`${URL}/api/report/add`, {
+      sub: 'mta',
+      type: complaintType,
+      stop_id: stopId,
+      route_id: this.props.navigation.state.params.route
+    })
+    .then(({ data }) => {
+      newState.stationComplaints = this.state.stationComplaints.slice();
+      let temp = newState.stationComplaints.find((el) => el.name === complaintType);
+      if (temp) { 
+        temp.count = data.count; 
+      } else {
+        newState.stationComplaints.push({ name: complaintType, count: data.count });
+      }
+      
+      return axios.get(`${URL}/api/report/reports`, {
+        params: {
+          sub: 'mta',
+          route_id: this.props.navigation.state.params.route
+        }
+      })
+    })
+    .then(({ data }) => {
+      newState.rawComplaints = data;
+      newState.currentComplaints = Object.entries(data.reduce((acc, el) => {
+        let temp = el[0].split('-').pop().slice(0, -1);
+        let name = this.state.stationsN.find((a) => a.stop_id.includes(temp)).stop_name;
+        acc[name] = acc[name] ? acc[name] + el[1] : el[1];
+        return acc;
+      }, {}));
+      this.setState(newState);
+    })
+    .catch((error) => console.log(error));
+  }
+
+  _onRefresh() {
+    if (!this.state.selected) { return; }
+
+    let newState = { refreshing: false };
+    this.setState({ refreshing: true}, () => {
+      axios.get(`${URL}/api/report/reports`, {
+        params: {
+          sub: 'mta',
+          route_id: this.props.navigation.state.params.route
+        }
+      })
+      .then(({ data }) => {
+        newState.rawComplaints = data;
+        newState.currentComplaints = Object.entries(data.reduce((acc, el) => {
+          let temp = el[0].split('-').pop().slice(0, -1);
+          let name = this.state.stationsN.find((a) => a.stop_id.includes(temp)).stop_name;
+          acc[name] = acc[name] ? acc[name] + el[1] : el[1];
+          return acc;
+        }, {}));
+        return axios.get(`${URL}/api/report/stoproute`, {
+          params: {
+            sub: 'mta',
+            route_id: this.props.navigation.state.params.route,
+            stop_id: this.state.stopId
+          }
+        });
+      })
+      .then(({ data }) => {
+        newState.stationComplaints = data;
+        this.setState(newState);
+      })
+      .catch((error) => console.log(error));
+    });
   }
 
   jumpAnim() {
@@ -103,17 +204,41 @@ export default class Details extends Component {
   render() {
     return (
       <View style={styles.container}>
-        <ScrollView style={styles.scroll}>
+        <ScrollView
+          style={styles.scroll}
+          refreshControl={
+            <RefreshControl
+              refreshing={this.state.refreshing}
+              onRefresh={this._onRefresh} />}>
+          <View style={styles.section}>
+            <Text style={styles.sectionHeader}>Recent complaints</Text>
+          </View>
           <ComplaintsInfo currentComplaints={this.state.currentComplaints} />
-          <Text style={styles.sectionHeader}>Select a station</Text>
+
+          <View style={styles.section}>
+            <Text style={styles.sectionHeader}>Select a station</Text>
+          </View>
           <StationSelect 
             style={styles.stationStyle}
             stations={this.state.stationsN} 
             onStationSelect={this.onStationSelect} />
-          <Text style={styles.sectionHeader}>Station complaints</Text>
-          <StationComplaints stationComplaints={this.state.stationComplaints} selected={this.state.selected} />
+
+          <View style={styles.section}>
+            <Text style={styles.sectionHeader}>Select direction</Text>
+          </View>
+          <CustomToggle onDirectionSelect={this.onDirectionSelect} />
+
+          <View style={styles.section}>
+            <Text style={styles.sectionHeader}>Station complaints</Text>
+          </View>
+          <StationComplaints
+            stationComplaints={this.state.stationComplaints}
+            selected={this.state.selected}
+            onAdd={this.onAdd} />
+
         </ScrollView>
-        <TouchableOpacity
+
+        {this.state.selected ? <TouchableOpacity
           onPress={this.showModal}
           style={styles.add}>
           <Animated.View
@@ -130,8 +255,9 @@ export default class Details extends Component {
               size={32}
               style={{ backgroundColor: 'transparent' }} />
           </Animated.View>
-          <Text>Add Complaint</Text>
-        </TouchableOpacity>
+          <Text>View Schedule</Text>
+        </TouchableOpacity> : null}
+
         <Modal
           animationType={'slide'}
           transparent={false}
@@ -139,7 +265,8 @@ export default class Details extends Component {
           onRequestClose={this.hideModal}>
           <Cards 
             hideModal={this.hideModal}
-            route={this.props.navigation.state.params.route} />
+            routeId={this.props.navigation.state.params.route}
+            stopId={this.state.stopId} />
         </Modal>
       </View>
     );
@@ -150,16 +277,21 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#fff',
-    alignContent: 'center',
-    paddingTop: 10
+    alignContent: 'center'
   },
   scroll: {
     flex: 1
   },
+  section: {
+    borderBottomColor: 'lightgrey',
+    borderBottomWidth: 1,
+    marginHorizontal: 16,
+    marginBottom: 12
+  },
   sectionHeader: {
     fontSize: 24,
     marginTop: 20,
-    margin: 16
+    marginBottom: 4
   },
   stationStyle: {
   },

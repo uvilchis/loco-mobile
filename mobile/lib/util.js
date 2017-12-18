@@ -33,6 +33,9 @@ const LineStyle = {
   'SIR': { color: '#192b87' }
 };
 
+const WordHelper = (word) => word.charAt(0).toUpperCase() + word.slice(1);
+
 export default Helpers = {
-  LineStyle
+  LineStyle,
+  WordHelper
 }; 

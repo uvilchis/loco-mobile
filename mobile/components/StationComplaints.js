@@ -11,17 +11,18 @@ const defaultComplaints = [
 ];
 
 const StationComplaints = (props) => {
+
   let complaints = defaultComplaints.map((el) => {
     let temp = props.stationComplaints.find((a) => a.name === el.name);
     el.count = temp ? temp.count : 0;
     return el;
   });
+
   return (
     <View style={styles.container}>
-      {props.stationComplaints.length ? 
+      {props.selected ? 
         complaints.map((el, idx) => 
-          <ComplaintCard key={idx} name={el.name} count={el.count} />) : 
-        props.selected ? <Text>No recent complaints</Text> : <Text>Select station above</Text> }
+          <ComplaintCard key={idx} name={el.name} count={el.count} onAdd={props.onAdd} />) : <Text>Select filters above</Text>}
     </View>
   );
 };
@@ -29,7 +30,8 @@ const StationComplaints = (props) => {
 
 const styles = StyleSheet.create({
   container: {
-    paddingHorizontal: 16
+    paddingHorizontal: 16,
+    marginBottom: 80
   }
 });
 

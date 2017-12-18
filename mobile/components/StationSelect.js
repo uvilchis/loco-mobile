@@ -152,7 +152,7 @@ const styles = StyleSheet.create({
   },
   station: {
     fontSize: 14,
-    paddingVertical: 12,
+    paddingVertical: 16,
     paddingLeft: 8
   }
 });

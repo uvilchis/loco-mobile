@@ -11,8 +11,6 @@ export default class CustomToggle extends Component {
       uptown: null
     };
 
-    this.animValue = new Animated.Value();
-
     this.leftValue = new Animated.Value(0);
     this.rightValue = new Animated.Value(0);
     this.onSelect = this.onSelect.bind(this);
@@ -106,7 +104,8 @@ export default class CustomToggle extends Component {
 const styles = StyleSheet.create({
   container: {
     flexDirection: 'row',
-    marginHorizontal: 8
+    marginHorizontal: 16,
+    marginBottom: 20
   },
   touchable: {
     flex: 1
