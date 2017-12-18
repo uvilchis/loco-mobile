@@ -58,7 +58,7 @@ export default class StationSelect extends Component {
   }
 
   _onSelect(idx) {
-    this.props.onSelect(this.state.filtered[idx].stop_id, this.state.filtered[idx].route_id);
+    this.props.onStationSelect(this.state.filtered[idx].stop_id, this.state.filtered[idx].route_id);
     this.setState({
       search: this.state.filtered[idx].stop_name,
       filtered:[this.state.filtered[idx]],
@@ -88,7 +88,8 @@ export default class StationSelect extends Component {
               value={this.state.search}
               onFocus={this._onFocus}
               onChangeText={this._onChange}
-              underlineColorAndroid="transparent" />
+              underlineColorAndroid="transparent"
+              clearButtonMode="while-editing" />
             <Animated.View 
               style={{
                 transform: [{
@@ -134,7 +135,8 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between'
   },
   input: {
-    minWidth: 150
+    minWidth: 150,
+    flex: 1
   },
   dropdown: {
     marginTop: 8,

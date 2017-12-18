@@ -3,13 +3,12 @@ import { View, StyleSheet, Image, Text, Animated, Dimensions, Easing, ScrollView
 import { Card, ListItem, Button } from 'react-native-elements';
 import { EvilIcons } from '@expo/vector-icons';
 import axios from 'axios';
+import URL from '../env/urls';
 
 import ComplaintCard from './ComplaintCard';
 import Schedule from './Schedule';
-
 import CustomToggle from './CustomToggle';
 import StationSelect from './StationSelect';
-import URL from '../env/urls';
 
 export default class Cards extends Component {
   constructor(props) {
@@ -28,7 +27,7 @@ export default class Cards extends Component {
       stopId : '',
       stationsN : [],
       stationsS: [],
-      schedule : [],
+      schedule : [], // This should be optional
       complaints: this.defaultComplaints.map((el) => Object.assign({}, el))
     };
 
@@ -37,8 +36,7 @@ export default class Cards extends Component {
     this.drop = this.drop.bind(this);
     this.handleChange = this.handleChange.bind(this);
     this.handleAdd = this.handleAdd.bind(this);
-    this.onSelect = this.onSelect.bind(this);
-    this.handleDirectionSelect = this.handleDirectionSelect.bind(this);
+    this.onStationSelect = this.onStationSelect.bind(this);
     this.onDirectionSelect = this.onDirectionSelect.bind(this);
   }
 
@@ -47,67 +45,60 @@ export default class Cards extends Component {
     axios.get(`${URL}/api/route/stops`, {
       params: { 
         sub: 'mta', 
-        route_id: this.props.route.name
+        route_id: this.props.route
       }
     })
     .then(({ data }) => {
       this.setState({
-        routeId: this.props.routeName,
+        routeId: this.props.route,
         stationsN: data.N,
         stationsS: data.S
-      }, () => {
-        console.log('STATE AT CARDS', this.state)
-        console.log('PROPS AT CARDS', this.props)
-      })
+      });
     })
     .catch((error) => console.log(error));
   }
 
-  handleDirectionSelect(direction) {
-    this.setState({ direction : direction }, ()=> {console.log(this.state.direction)})
-  }
-
   handleChange(itemValue) {
-    let newState= {};
-    let dayNumber = new Date().getDay();
-    let dayTranslator = { 0: 'SUN', 6: 'SAT' }
-    let day = dayTranslator[dayNumber] || 'WKD';
-    let time = new Date().toLocaleTimeString('en-gb');
-    this.setState({
-      stopId: itemValue
-    }, () => {
-      axios.get(`${URL}/api/times/stoproute`, {
-        params : {
-          sub : 'mta',
-          stop_id  : this.state.stopId,
-          route_id : this.state.routeId
-        }
-      })
-      .then((response ) => {
-        newState.schedule = response.data.filter((el) => el.arrival_time >= time && el.route_type === day).slice(0, 10);
-        console.log(newState)
-      })
-      .catch((err) => console.error(err))
-    })
+    // let newState= {};
+    // let dayNumber = new Date().getDay();
+    // let dayTranslator = { 0: 'SUN', 6: 'SAT' }
+    // let day = dayTranslator[dayNumber] || 'WKD';
+    // let time = new Date().toLocaleTimeString('en-gb');
+    // this.setState({
+    //   stopId: itemValue
+    // }, () => {
+    //   axios.get(`${URL}/api/times/stoproute`, {
+    //     params : {
+    //       sub : 'mta',
+    //       stop_id  : this.state.stopId,
+    //       route_id : this.state.routeId
+    //     }
+    //   })
+    //   .then((response ) => {
+    //     newState.schedule = response.data.filter((el) => el.arrival_time >= time && el.route_type === day).slice(0, 10);
+    //     console.log(newState)
+    //   })
+    //   .catch((err) => console.error(err))
+    // })
   }
 
   handleAdd(type) {
-    this.setState({
-      currentComplaint: type
-    }, () => {
-      axios.post(`${URL}/api/report/add`, {
-        sub: 'mta',
-        type: this.state.currentComplaint,
-        stop_id: this.state.stopId,
-        route_id: this.state.routeId
-      })
-      .then((response) => {
-        this.handleChange(this.state.stopId)
-      })
-      .catch((err) => {
-        console.error(err)
-      })
-    })
+    // this.setState({
+    //   currentComplaint: type
+    // }, () => {
+    //   axios.post(`${URL}/api/report/add`, {
+    //     sub: 'mta',
+    //     type: this.state.currentComplaint,
+    //     stop_id: this.state.stopId,
+    //     route_id: this.state.routeId
+    //   })
+    //   .then((response) => {
+    //     this.handleChange(this.state.stopId)
+    //   })
+    //   .catch((err) => {
+    //     console.error(err)
+    //   })
+    // })
   }
 
   drop() {
@@ -126,7 +117,7 @@ export default class Cards extends Component {
     this.setState({ direction });
   }
 
-  onSelect(stopId) {
+  onStationSelect(stopId) {
     this.setState({ stopId });
   }
 
@@ -200,7 +191,7 @@ export default class Cards extends Component {
           <Text style={styles.stationSelect}>Select Station</Text>
           <StationSelect 
             stations={this.state.stationsN}
-            onSelect={this.onSelect} />
+            onStationSelect={this.onStationSelect} />
         </View>
       </ScrollView>
     );

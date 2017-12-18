@@ -1,17 +1,10 @@
 import React, { Component } from 'react';
 import { View, Text, Image, Button, StyleSheet, ScrollView, Alert, Modal, TouchableOpacity, Animated, Easing } from 'react-native';
 import axios from 'axios';
-import Cards from './Cards';
 import URL from '../env/urls';
-
-const markers = {
-  "GOOD SERVICE": require('../images/markers/green.png'),
-  "SERVICE CHANGE": require('../images/markers/red.png'),
-  "PLANNED WORK": require('../images/markers/yellow.png'),
-  "DELAYS": require('../images/markers/yellow.png')
-}
 import { EvilIcons } from '@expo/vector-icons';
 
+import ComplaintsInfo from './ComplaintsInfo';
 import Cards from './Cards';
 
 export default class Details extends Component {
@@ -19,9 +12,8 @@ export default class Details extends Component {
     super(props);
     this.state = {
       compressed: false,
-      N : [],
-      S : [],
-      modalVisible: false
+      modalVisible: false,
+      currentComplaints: []
     };
     this.jumpValue = new Animated.Value(0);
     this.jumpAnim = this.jumpAnim.bind(this);
@@ -31,6 +23,14 @@ export default class Details extends Component {
 
   componentDidMount() {
     this.jumpAnim();
+    axios.get(`${URL}/api/report/reports`, {
+      params: {
+        sub: 'mta',
+        route_id: this.props.navigation.state.params.route
+      }
+    })
+    .then(({ data }) => this.setState({ currentComplaints: data }))
+    .catch((error) => console.log(error));
   }
 
   jumpAnim() {
@@ -56,13 +56,7 @@ export default class Details extends Component {
   render() {
     return (
       <View style={styles.container}>
-        <ScrollView>
-          <View style={styles.cards}>
-            {this.state.compressed ? (
-              <Cards />
-            ) : null }
-          </View>
-        </ScrollView>
+        <ComplaintsInfo currentComplaints={this.state.currentComplaints} />
         <TouchableOpacity
           onPress={this.showModal}
           style={styles.add}>
@@ -91,7 +85,7 @@ export default class Details extends Component {
             route={this.props.navigation.state.params.route} />
         </Modal>
       </View>
-    )
+    );
   }
 }
 
