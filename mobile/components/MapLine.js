@@ -1,9 +1,13 @@
 import React, { Component } from 'react';
 import { StyleSheet, View, Button, Image, Text } from 'react-native';
+import MapLineNav from './MapLineNav';
 
 export default class MapLine extends Component {
   constructor(props) {
     super(props)
+    this.state = {
+      showDeets: false
+    }
   }
 
   render() {
@@ -16,10 +20,14 @@ export default class MapLine extends Component {
         <Button style={styles.button}
           onPress={() => {
             console.log('pressed line, redirect to details for more info')
+            this.setState({
+              showDeets: !this.state.showDeets
+            })
           }}
           title="Details"
           color='#841584'
         />
+        {this.state.showDeets ? ( <MapLineNav /> ) : null }
       </View>
     )
   }
@@ -27,10 +35,13 @@ export default class MapLine extends Component {
 
 const styles = StyleSheet.create({
   container: {
-    flexDirection: 'row'
+    flexDirection: 'row',
+    fontSize: 20
   }, 
   text: {
-    flex: 2
+    flex: 2, 
+    fontWeight: 'bold',
+    fontSize: 20
   },
   button: {
     flex: 1

@@ -74,7 +74,6 @@ export default class UserMap extends Component {
   }
 
   render() {
-    console.log('RESULTS', this.state.results.length)
     return (
 <<<<<<< HEAD
       <MapView
