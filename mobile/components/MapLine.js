@@ -11,7 +11,6 @@ export default class MapLine extends Component {
   }
 
   render() {
-    console.log('MAPLINE PROPS:', this.props)
     return (
       <View style={styles.container}>
         <Text style={styles.text}>
@@ -20,9 +19,7 @@ export default class MapLine extends Component {
         <Button style={styles.button}
           onPress={() => {
             console.log('pressed line, redirect to details for more info')
-            this.setState({
-              showDeets: !this.state.showDeets
-            })
+            this.props.navigation.navigate('Details', { route: this.props.line })
           }}
           title="Details"
           color='#841584'

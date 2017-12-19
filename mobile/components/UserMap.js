@@ -1,9 +1,10 @@
 import React, { Component } from 'react';
+import { Image, View, Text, Modal, Button } from 'react-native';
 import { Constants, Location, Permissions, MapView } from 'expo';
 import axios from 'axios';
 import geodist from 'geodist';
 import URL from '../env/urls';
-import MapDeets from './MapDeets';
+import MapLineNav from './MapLineNav';
 
 
 const GEOLOCATION_OPTIONS = { enableHighAccuracy: true, timeout: 20000, maximumAge: 1000 };
@@ -21,27 +22,6 @@ export default class UserMap extends Component {
 
   componentWillMount() {
     this.locationChanged()
-
-    .then((response) => {
-      console.log(response)
-      return axios.get(`${URL}/api/stops/coords`, {
-        sub: 'mta',
-        lat: this.state.location.coords.latitude,
-        long: this.state.location.coords.longitude,
-        dist: this.state.dist
-      })
-      .then((response) => {
-        this.setState({
-          results: response.data
-        })
-      })
-      .catch((err) => {
-        console.error(err)
-      })
-    })
-    .catch((err) => {
-      console.error(err)
-    })
   }
 
   locationChanged = async () => {
@@ -63,6 +43,7 @@ export default class UserMap extends Component {
         }
       })
       .then((response) => {
+        
         this.setState({
           results: response.data
         })
@@ -75,24 +56,50 @@ export default class UserMap extends Component {
 
   render() {
     return (
-      <MapView
-        style={{ flex: 1 }}
-        initialRegion={{
-          latitude: 40.750808794289775,
-          longitude: -73.97638340930507,
-          latitudeDelta: 0.01,
-          longitudeDelta: 0.05,
-        }}
-      >
-        {this.state.results.map((marker, idx) => (
-          <MapView.Marker
-            coordinate={{latitude: Number(marker.stop_lat), longitude: Number(marker.stop_lon)}}
-            title={marker.stop_id}
-            description={marker.stop_name}
-            key={idx}
+      <View style={{flex: 1}} >
+        <MapView
+          style={{ flex: 1 }}
+          initialRegion={{
+            latitude: 40.750808794289775,
+            longitude: -73.97638340930507,
+            latitudeDelta: 0.01,
+            longitudeDelta: 0.05,
+          }}
+        >
+          {this.state.results.map((marker, idx) => (
+            <MapView.Marker
+              coordinate={{latitude: Number(marker.stop_lat), longitude: Number(marker.stop_lon)}}
+              description={marker.stop_name}
+              onPress={() => {
+                this.setState({
+                  modalVisible: !this.state.modalVisible,
+                  selected: marker.stop_name
+                })
+              }}
+              key={idx}>            
+            </MapView.Marker>
+          ))}        
+        </MapView>
+        <Modal
+          animationType={"slide"}
+          transparent={false}
+          visible={this.state.modalVisible}
+          onRequestClose={() => console.log("Modal has been closed.")}
+        >
+          <MapLineNav
+            screenProps={this.state.results.filter((station, idx) => this.state.selected === station.stop_name)}
           />
-        ))}
-      </MapView>
+          <Button
+            onPress={() => {
+              this.setState({
+                modalVisible: false
+              })
+            }}
+            title="Go Back"
+            color='#841584'
+          />
+        </Modal>
+      </View>
     )
   }
 }

@@ -308,3 +308,7 @@ const styles = StyleSheet.create({
     bottom: 20
   }
 });
+
+Details.navigationOptions = {
+  title: 'Details'
+};
