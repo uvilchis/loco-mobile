@@ -21,7 +21,7 @@ export default class Lines extends Component {
           <Card
             key={idx}>
             <View style={styles.inner}>
-              <Text style={[styles.name, { color: this.props.color }]}>{route.name}</Text>
+              <Text style={[styles.name, { color: this.props.color }]}>{route.name.toUpperCase()}</Text>
               <Text style={styles.complaints}>{`${route.count} complaints in last 30 minutes`}</Text>
               <TouchableOpacity
                 style={styles.button}
@@ -49,7 +49,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold'
   },
   complaints: {
-    flex: 9
+    flex: 6
   },
   button: {
     flex: 1
