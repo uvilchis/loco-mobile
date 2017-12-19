@@ -91,7 +91,9 @@ export default class Details extends Component {
   }
 
   onFetchComplaints() {
-    if (!this.state.stopId || !this.state.direction) { return; }
+    if (!this.state.stopId || !this.state.direction) {
+      return this.setState({ selected: false });
+    }
 
     let stopId = this.state.stopId.slice(0, -1) + this.state.direction;
     axios.get(`${URL}/api/report/stoproute`, {

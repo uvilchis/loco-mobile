@@ -49,7 +49,12 @@ export default class StationSelect extends Component {
     let newState = {};
     newState.search = search;
     newState.filtered = this.state.all.filter((a) => a.stop_name.toLowerCase().includes(search.toLowerCase()));
-    this.setState(newState, this.anim);
+    this.setState(newState, () => {
+      this.anim();
+      if (!search.length) {
+        this.props.onStationSelect('');
+      }
+    });
   }
 
   _onSelect(idx) {
