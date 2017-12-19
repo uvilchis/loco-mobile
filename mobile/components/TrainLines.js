@@ -25,7 +25,7 @@ export default class TrainLines extends Component {
     .then(({ data }) => {
       newState.service.forEach((a) => {
         a.name = a.name.toLowerCase();
-        if (a.name === 'SIR') {
+        if (a.name === 'sir') {
           return a.countedRoutes = [{ name: a.name, count: data[a.name] || 0}];
         }
         a.countedRoutes = a.name.split('').reduce((acc, b) => {
