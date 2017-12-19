@@ -75,7 +75,6 @@ export default class UserMap extends Component {
 
   render() {
     return (
-<<<<<<< HEAD
       <MapView
         style={{ flex: 1 }}
         initialRegion={{
@@ -94,44 +93,6 @@ export default class UserMap extends Component {
           />
         ))}
       </MapView>
-=======
-      <View style={{flex: 1}} >
-        <MapView
-          style={{ flex: 1 }}
-          initialRegion={{
-            latitude: 40.750808794289775,
-            longitude: -73.97638340930507,
-            latitudeDelta: 0.01,
-            longitudeDelta: 0.05,
-          }}
-        >
-          {this.state.results.map((marker, idx) => (
-            <MapView.Marker
-              coordinate={{latitude: Number(marker.stop_lat), longitude: Number(marker.stop_lon)}}
-              description={marker.stop_name}
-              onPress={() => {
-                this.setState({
-                  modalVisible: !this.state.modalVisible,
-                  selected: marker.stop_name
-                })
-              }}
-              key={idx}>            
-            </MapView.Marker>
-          ))}        
-        </MapView>
-        <Modal
-          animationType={"slide"}
-          transparent={false}
-          visible={this.state.modalVisible}
-          onRequestClose={() => console.log("Modal has been closed.")}
-        >
-          <MapDeets 
-            results={this.state.results}
-            selected={this.state.selected}
-          />
-        </Modal>
-      </View>
->>>>>>> added Details component from markers
     )
   }
 }
