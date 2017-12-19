@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-
 import { Constants, Location, Permissions, MapView } from 'expo';
 import axios from 'axios';
 import geodist from 'geodist';
@@ -13,7 +12,8 @@ export default class UserMap extends Component {
     super(props)
     this.state = {
       location: [],
-      results: []
+      results: [],
+      iconLoaded: false
     };
   }
 
@@ -72,7 +72,7 @@ export default class UserMap extends Component {
   }
 
   render() {
-    console.log('RESULTS', this.state.results)
+    console.log('RESULTS', this.state.results.length)
     return (
       <MapView
         style={{ flex: 1 }}
