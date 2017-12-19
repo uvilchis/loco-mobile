@@ -72,7 +72,7 @@ export default class UserMap extends Component {
               description={marker.stop_name}
               onPress={() => {
                 this.setState({
-                  modalVisible: !this.state.modalVisible,
+                  modalVisible: true,
                   selected: marker.stop_name
                 })
               }}

@@ -32,8 +32,7 @@ export default class MapLine extends Component {
 
 const styles = StyleSheet.create({
   container: {
-    flexDirection: 'row',
-    fontSize: 20
+    flexDirection: 'row'
   }, 
   text: {
     flex: 2, 
