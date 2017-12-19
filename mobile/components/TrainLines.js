@@ -57,16 +57,15 @@ export default class TrainLines extends Component {
             return acc;
           }, []);
         });
-        this.setState(newState)
+        this.setState(newState);
       })
       .catch((error) => console.log(error));
     });
   }
 
-  // onDetailsPress(routeName) {
-  //   this.props.navigation.navigate('Details', { routeName: routeName })
   onDetailsPress(route) {
-    this.props.navigation.navigate('Details', { route })
+    // this.props.navigation.navigate('Details', { route });
+    console.log('details');
   }
 
   render() {
@@ -78,7 +77,7 @@ export default class TrainLines extends Component {
             refreshing={this.state.refreshing}
             onRefresh={this._onRefresh} /> }>
         {this.state.service.map((line, idx) =>
-          <TrainLine key={idx} line={line} idx={idx} onDetailsPress={this.onDetailsPress}/>)}
+          <TrainLine key={idx} line={line} idx={idx} onDetailsPress={this.props.onDetailsPress}/>)}
       </ScrollView>
     )
   }

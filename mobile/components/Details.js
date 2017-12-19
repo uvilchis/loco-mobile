@@ -312,5 +312,12 @@ const styles = StyleSheet.create({
 });
 
 Details.navigationOptions = {
-  title: 'Details'
+  title: 'Details',
+  headerStyle: {
+    backgroundColor: 'grey'
+  },
+  headerTitleStyle: {
+    color: 'white'
+  },
+  headerTintColor: 'white'
 };

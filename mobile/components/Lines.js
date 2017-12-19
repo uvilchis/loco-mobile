@@ -16,7 +16,7 @@ const Lines = (props) => (
           <Text style={styles.complaints}>{`${route.count} complaints in last 30 minutes`}</Text>
           <TouchableOpacity
             style={styles.button}
-            onPress={()=> props.onDetailsPress(route.name)}>
+            onPress={function() { props.onDetailsPress(route.name); }}>
             <EvilIcons
               name='arrow-right'
               color='darkgrey'

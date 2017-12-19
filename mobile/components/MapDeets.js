@@ -12,28 +12,23 @@ export default class MapDeets extends Component {
   }
 
   componentDidMount() {
-    this.setState({
-      lines: this.props.screenProps
-    }, () => {
-      var temp = {};
-      this.state.lines.forEach((item, idx) => {
-        temp[item.route_id] = item.route_id;
-      })
-      this.setState({
-        unique: Object.keys(temp)
-      })
+    console.log(this.props);
+    var unique = {};
+    this.props.lines.forEach((item) => {
+      unique[item.route_id] = item.route_id;
     })
+    this.setState({ unique: Object.keys(unique) })
   }
 
   render() {
     return (
       <ScrollView style={styles.container}>
-        <Text>{this.state.lines.station_name}</Text>
+        <Text>{this.props.stopName}</Text>
         {this.state.unique.map((line, idx) => 
           <MapLine key={idx} line={line} navigation={this.props.navigation} />
         )}
       </ScrollView>
-    )
+    );
   }
 }
 
