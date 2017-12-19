@@ -5,9 +5,6 @@ import MapLineNav from './MapLineNav';
 export default class MapLine extends Component {
   constructor(props) {
     super(props)
-    this.state = {
-      showDeets: false
-    }
   }
 
   render() {
@@ -20,14 +17,11 @@ export default class MapLine extends Component {
         <Button style={styles.button}
           onPress={() => {
             console.log('pressed line, redirect to details for more info')
-            this.setState({
-              showDeets: !this.state.showDeets
-            })
+            this.props.navigation.navigate('Details', { route: this.props.line })
           }}
           title="Details"
           color='#841584'
         />
-        {this.state.showDeets ? ( <MapLineNav /> ) : null }
       </View>
     )
   }
@@ -35,8 +29,7 @@ export default class MapLine extends Component {
 
 const styles = StyleSheet.create({
   container: {
-    flexDirection: 'row',
-    fontSize: 20
+    flexDirection: 'row'
   }, 
   text: {
     flex: 2, 

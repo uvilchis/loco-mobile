@@ -4,8 +4,7 @@ import { Constants, Location, Permissions, MapView } from 'expo';
 import axios from 'axios';
 import geodist from 'geodist';
 import URL from '../env/urls';
-import MapDeets from './MapDeets';
-
+import MapLineNav from './MapLineNav';
 
 const GEOLOCATION_OPTIONS = { enableHighAccuracy: true, timeout: 20000, maximumAge: 1000 };
 
@@ -22,27 +21,6 @@ export default class UserMap extends Component {
 
   componentWillMount() {
     this.locationChanged()
-
-    .then((response) => {
-      console.log(response)
-      return axios.get(`${URL}/api/stops/coords`, {
-        sub: 'mta',
-        lat: this.state.location.coords.latitude,
-        long: this.state.location.coords.longitude,
-        dist: this.state.dist
-      })
-      .then((response) => {
-        this.setState({
-          results: response.data
-        })
-      })
-      .catch((err) => {
-        console.error(err)
-      })
-    })
-    .catch((err) => {
-      console.error(err)
-    })
   }
 
   locationChanged = async () => {
@@ -51,8 +29,8 @@ export default class UserMap extends Component {
       this.setState({
         errorMessage: 'Permission to access location was denied',
       });
-    }
-
+    } 
+    
     let location = await Location.getCurrentPositionAsync({})
     this.setState({
       location: location
@@ -71,7 +49,7 @@ export default class UserMap extends Component {
       .catch((err) => {
         console.error('ERROR IN AXIOS REQUEST', err)
       })
-    });
+    })
   }
 
   render() {
@@ -106,9 +84,9 @@ export default class UserMap extends Component {
           visible={this.state.modalVisible}
           onRequestClose={() => console.log("Modal has been closed.")}
         >
-          <MapDeets 
-            results={this.state.results}
-            selected={this.state.selected}
+          <MapLineNav 
+            screenProps={this.state.results.filter(station => station.stop_name === this.state.selected)}
+            // selected={this.state.selected}
           />
         </Modal>
       </View>
