@@ -4,7 +4,6 @@ import { StyleSheet, Text, View, TextInput, TouchableOpacity, Image, Animated, E
 import { EvilIcons } from '@expo/vector-icons'
 import KEYS from '../env/key';
 import URL from '../env/urls';
-
 import axios from 'axios';
 
 const bgSource = '../images/backgrounds/escalator-bg.jpg';
