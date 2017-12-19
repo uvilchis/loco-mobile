@@ -29,7 +29,6 @@ export default class Login extends Component {
   componentWillMount() {
     this._panResponder = PanResponder.create({
       onPanResponderMove: (e, gestureState) => {
-        console.log(gestureState.dy);
         if (gestureState.dy > 100) {
           this.props.hideModal();
         }

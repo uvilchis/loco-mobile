@@ -17,6 +17,7 @@ export default class StationSelect extends Component {
     
     this._onChange = this._onChange.bind(this);
     this._onSelect = this._onSelect.bind(this);
+    this._clear = this._clear.bind(this);
     this._onFocus = this._onFocus.bind(this);
     this._toggle = this._toggle.bind(this);
   }
@@ -38,7 +39,7 @@ export default class StationSelect extends Component {
       this.spinValue,
       {
         toValue: final,
-        duration: 100,
+        duration: 150,
         easing: Easing.linear
       }
     ).start();
@@ -58,6 +59,10 @@ export default class StationSelect extends Component {
       filtered:[this.state.filtered[idx]],
       dropdown: false
     }, this.anim);
+  }
+
+  _clear() {
+    this.setState({ search: '' }, this._onChange(''));
   }
 
   _onFocus() {
@@ -82,19 +87,25 @@ export default class StationSelect extends Component {
               value={this.state.search}
               onFocus={this._onFocus}
               onChangeText={this._onChange}
-              underlineColorAndroid="transparent"
-              clearButtonMode="while-editing" />
+              underlineColorAndroid="transparent" />
+            {this.state.search ?
+              <Animated.View
+                style={styles.clear}>
+                <EvilIcons
+                  name="close"
+                  size={20}
+                  color="grey"
+                  onPress={this._clear} />
+              </Animated.View> : null}
             <Animated.View 
-              style={{
-                alignSelf: 'center',
-                marginRight: 4,
+              style={[styles.rotate, {
                 transform: [{
                   rotate: this.spinValue.interpolate({
                     inputRange: [0, 1],
                     outputRange: ['0deg', '-180deg']
                   })
                 }]
-              }}>
+              }]}>
               <EvilIcons
                 name="chevron-down"
                 size={32}
@@ -131,6 +142,13 @@ const styles = StyleSheet.create({
     flex: 1,
     flexDirection: 'row',
     justifyContent: 'space-between'
+  },
+  clear: {
+    alignSelf: 'center'
+  },
+  rotate: {
+    alignSelf: 'center',
+    marginRight: 4
   },
   input: {
     minHeight: 48,
