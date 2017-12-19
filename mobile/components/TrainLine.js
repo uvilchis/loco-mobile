@@ -46,10 +46,7 @@ export default class TrainLine extends Component {
 
   _setMin(e) {
     this.state.dropValue.setValue(e.nativeEvent.layout.height)
-    this.setState({
-      min: e.nativeEvent.layout.height,
-      show: true
-    });
+    this.setState({ min: e.nativeEvent.layout.height });
   }
 
   // True = rotate down, false = rotate up
@@ -59,6 +56,7 @@ export default class TrainLine extends Component {
 
     this.state.dropValue.setValue(init);
     this.spinValue.setValue(this.state.showLines ? 0 : 1);
+
     Animated.parallel([
       Animated.timing(
         this.spinValue,

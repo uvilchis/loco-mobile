@@ -10,13 +10,11 @@ export default class StationSelect extends Component {
       search: '',
       all: [],
       filtered: [],
-      height: new Animated.Value(0)
     };
 
     this.spinValue = new Animated.Value(0);
     this.anim = this.anim.bind(this);
     
-    this._setHeight = this._setHeight.bind(this);
     this._onChange = this._onChange.bind(this);
     this._onSelect = this._onSelect.bind(this);
     this._onFocus = this._onFocus.bind(this);
@@ -46,15 +44,11 @@ export default class StationSelect extends Component {
     ).start();
   }
 
-  _setHeight(e) {
-    // console.log(e.nativeEvent.layout);
-  }
-
   _onChange(search) {
     let newState = {};
     newState.search = search;
     newState.filtered = this.state.all.filter((a) => a.stop_name.toLowerCase().includes(search.toLowerCase()));
-    this.setState(newState);
+    this.setState(newState, this.anim);
   }
 
   _onSelect(idx) {
@@ -76,11 +70,11 @@ export default class StationSelect extends Component {
 
   render() {
     return (
-      <View style={[this.props.style, styles.container, { marginBottom: this.state.dropdown ? 60 : 20 }]}>
+      <View 
+        style={[this.props.style, styles.container]}>
         <TouchableWithoutFeedback
           onPress={this._toggle}>
-          <View
-            style={styles.inner}>
+          <View style={styles.inner}>
             <TextInput
               style={styles.input}
               name="search"
@@ -108,8 +102,8 @@ export default class StationSelect extends Component {
             </Animated.View>
           </View>
         </TouchableWithoutFeedback>
-        {this.state.dropdown ? 
-          <View style={[styles.dropdown]} onLayout={this._setHeight}>
+        {this.state.dropdown ?
+          <View>
             {this.state.filtered.map((station, idx) =>
               <TouchableOpacity
                 key={idx}
@@ -130,10 +124,11 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     marginHorizontal: 16,
     borderColor: 'lightgrey',
-    borderWidth: 1
+    borderWidth: 1,
+    overflow: 'hidden'
   },
   inner: {
-    flex: 1,
+    // flex: 1,
     flexDirection: 'row',
     justifyContent: 'space-between'
   },
