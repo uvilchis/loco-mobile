@@ -55,8 +55,6 @@ export default class UserMap extends Component {
   }
 
   render() {
-    console.log('USERMAP PROPS AND STATE:', this.props)
-    console.log('STATE OF RESULTS:', this.state.results)
     return (
       <View style={{flex: 1}} >
         <MapView

@@ -5,6 +5,9 @@ import MapLineNav from './MapLineNav';
 export default class MapLine extends Component {
   constructor(props) {
     super(props)
+    this.state = {
+      showDeets: false
+    }
   }
 
   render() {
@@ -21,6 +24,7 @@ export default class MapLine extends Component {
           title="Details"
           color='#841584'
         />
+        {this.state.showDeets ? ( <MapLineNav /> ) : null }
       </View>
     )
   }
@@ -28,7 +32,8 @@ export default class MapLine extends Component {
 
 const styles = StyleSheet.create({
   container: {
-    flexDirection: 'row'
+    flexDirection: 'row',
+    fontSize: 20
   }, 
   text: {
     flex: 2, 
