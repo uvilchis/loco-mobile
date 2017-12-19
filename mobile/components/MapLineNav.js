@@ -4,12 +4,6 @@ import MapDeets from './MapDeets';
 import Details from './Details';
 
 export default MapLineNav = StackNavigator({
-  MapDeets: {
-    screen: MapDeets,
-    navigationOptions: {
-      header: null, 
-      headerMode: 'screen'
-    }
-  },
+  MapDeets: { screen: MapDeets },
   Details: { screen: Details }
 })

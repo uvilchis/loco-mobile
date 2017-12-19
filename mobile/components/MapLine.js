@@ -8,7 +8,6 @@ export default class MapLine extends Component {
   }
 
   render() {
-    console.log('MAPLINE PROPS:', this.props)
     return (
       <View style={styles.container}>
         <Text style={styles.text}>

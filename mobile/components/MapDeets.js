@@ -13,7 +13,7 @@ export default class MapDeets extends Component {
 
   componentDidMount() {
     this.setState({
-      lines: this.props.screenProps // .filter(station => station.stop_name === this.props.selected)
+      lines: this.props.screenProps
     }, () => {
       var temp = {};
       this.state.lines.forEach((item, idx) => {
@@ -26,10 +26,9 @@ export default class MapDeets extends Component {
   }
 
   render() {
-    console.log('MAPDEETS PROPS:', this.props)
     return (
       <ScrollView style={styles.container}>
-        <Text>{this.props.selected}</Text>
+        <Text>{this.state.lines.station_name}</Text>
         {this.state.unique.map((line, idx) => 
           <MapLine key={idx} line={line} navigation={this.props.navigation} />
         )}

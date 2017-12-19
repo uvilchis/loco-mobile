@@ -1,10 +1,11 @@
 import React, { Component } from 'react';
-import { Image, View, Text, Modal } from 'react-native';
+import { Image, View, Text, Modal, Button } from 'react-native';
 import { Constants, Location, Permissions, MapView } from 'expo';
 import axios from 'axios';
 import geodist from 'geodist';
 import URL from '../env/urls';
 import MapLineNav from './MapLineNav';
+
 
 const GEOLOCATION_OPTIONS = { enableHighAccuracy: true, timeout: 20000, maximumAge: 1000 };
 
@@ -29,8 +30,8 @@ export default class UserMap extends Component {
       this.setState({
         errorMessage: 'Permission to access location was denied',
       });
-    } 
-    
+    }
+
     let location = await Location.getCurrentPositionAsync({})
     this.setState({
       location: location
@@ -42,6 +43,7 @@ export default class UserMap extends Component {
         }
       })
       .then((response) => {
+        
         this.setState({
           results: response.data
         })
@@ -49,10 +51,12 @@ export default class UserMap extends Component {
       .catch((err) => {
         console.error('ERROR IN AXIOS REQUEST', err)
       })
-    })
+    });
   }
 
   render() {
+    console.log('USERMAP PROPS AND STATE:', this.props)
+    console.log('STATE OF RESULTS:', this.state.results)
     return (
       <View style={{flex: 1}} >
         <MapView
@@ -84,9 +88,17 @@ export default class UserMap extends Component {
           visible={this.state.modalVisible}
           onRequestClose={() => console.log("Modal has been closed.")}
         >
-          <MapLineNav 
-            screenProps={this.state.results.filter(station => station.stop_name === this.state.selected)}
-            // selected={this.state.selected}
+          <MapLineNav
+            screenProps={this.state.results.filter((station, idx) => this.state.selected === station.stop_name)}
+          />
+          <Button
+            onPress={() => {
+              this.setState({
+                modalVisible: false
+              })
+            }}
+            title="Go Back"
+            color='#841584'
           />
         </Modal>
       </View>
