@@ -1,24 +1,3 @@
-// const markers = {
-//   "GOOD SERVICE": require('../images/markers/green.png'),
-//   "SERVICE CHANGE": require('../images/markers/red.png'),
-//   "PLANNED WORK": require('../images/markers/yellow.png'),
-//   "DELAYS": require('../images/markers/yellow.png')
-// };
-
-// const lines = {
-//   "123": require('../images/lines/123.png'),
-//   "456": require('../images/lines/456.png'),
-//   "7": require('../images/lines/7.png'),
-//   "ACE": require('../images/lines/ACE.png'),
-//   "BDFM": require('../images/lines/BDFM.png'),
-//   "G": require('../images/lines/G.png'),
-//   "JZ": require('../images/lines/JZ.png'),
-//   "L": require('../images/lines/L.png'),
-//   "NQR": require('../images/lines/NQR.png'),
-//   "S": require('../images/lines/S.png'),
-//   "SIR": require('../images/lines/SIR.png')
-// };
-
 const LineStyle = {
   '123': { color: '#e80909' },
   '456': { color: 'green' },
@@ -35,7 +14,21 @@ const LineStyle = {
 
 const WordHelper = (word) => word.charAt(0).toUpperCase() + word.slice(1);
 
+const DateHelper = (date) => {
+  date = date.split(':');
+  if (date[0] < 12) {
+    return `${date[0]}:${date[1]} AM`;
+  } else if (date[0] === 12) {
+    return `${date[0]}:${date[1]} PM`;
+  } else if (date < 24) {
+    return `${date[0] - 12}:${date[1]} PM`;
+  } else {
+    return `${date[0]-24}:${date[1]} AM tomorrow morning`;
+  }
+};
+
 export default Helpers = {
   LineStyle,
-  WordHelper
+  WordHelper,
+  DateHelper
 }; 

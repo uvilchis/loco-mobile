@@ -84,7 +84,7 @@ export default class TrainLine extends Component {
   }
 
   render() {
-    const style = Helpers.LineStyle[this.props.line.name] || {};
+    const style = Helpers.LineStyle[this.props.line.name.toUpperCase()] || {};
     const spin = this.spinValue.interpolate({
       inputRange: [0, 1],
       outputRange: ['0deg', '-180deg']
@@ -94,7 +94,7 @@ export default class TrainLine extends Component {
       <Animated.View style={[styles.container, { height: this.state.dropValue }]}>
         <View style={styles.inner} onLayout={this._setMin}>
           <View style={styles.icon}>
-              <Text style={[styles.symbols, { color: style.color }]}>{this.props.line.name}</Text>
+              <Text style={[styles.symbols, { color: style.color }]}>{this.props.line.name.toUpperCase()}</Text>
           </View>
           <View style={styles.buttons}>
             <TouchableOpacity style={{ height: 32, width: 32 }}>
