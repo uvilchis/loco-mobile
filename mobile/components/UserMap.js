@@ -69,7 +69,13 @@ export default class UserMap extends Component {
             <MapView.Marker
               coordinate={{latitude: Number(marker.stop_lat), longitude: Number(marker.stop_lon)}}
               description={marker.stop_name}
-              key={idx}>
+              onPress={() => {
+                this.setState({
+                  modalVisible: true,
+                  selected: marker.stop_name
+                })
+              }}
+              key={idx}>            
             </MapView.Marker>
           ))}
         </MapView>
