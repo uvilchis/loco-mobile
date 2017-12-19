@@ -33,7 +33,7 @@ export default class CustomToggle extends Component {
         this.leftValue,
         {
           toValue: leftFinal,
-          duration: 100,
+          duration: 150,
           easing: Easing.linear
         }
       ),
@@ -41,7 +41,7 @@ export default class CustomToggle extends Component {
         this.rightValue,
         {
           toValue: rightFinal,
-          duration: 100,
+          duration: 150,
           easing: Easing.linear
         }
       )

@@ -72,10 +72,7 @@ export default class Details extends Component {
       newState.rawComplaints = data;
       newState.currentComplaints = Object.entries(data.reduce((acc, el) => {
         let temp = el[0].split('-').pop().slice(0, -1);
-        console.log('el', el);
-        console.log(temp);
-        console.log('found', newState.stationsN.find((a) => a.stop_id.includes(temp)));
-        let name = newState.stationsN.find((a) => a.stop_id.includes(temp)).stop_name;
+        let name = newState.stationsN.find((a) => a.stop_id.toLowerCase().includes(temp)).stop_name;
         acc[name] = acc[name] ? acc[name] + el[1] : el[1];
         return acc;
       }, {}));
@@ -137,7 +134,7 @@ export default class Details extends Component {
       newState.rawComplaints = data;
       newState.currentComplaints = Object.entries(data.reduce((acc, el) => {
         let temp = el[0].split('-').pop().slice(0, -1);
-        let name = this.state.stationsN.find((a) => a.stop_id.includes(temp)).stop_name;
+        let name = this.state.stationsN.find((a) => a.stop_id.toLowerCase().includes(temp)).stop_name;
         acc[name] = acc[name] ? acc[name] + el[1] : el[1];
         return acc;
       }, {}));

@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { View, Text, StyleSheet } from 'react-native';
+import Helpers from '../lib/util';
 
 const Schedule = (props) => (
   <View style={styles.container}>
@@ -10,7 +11,7 @@ const Schedule = (props) => (
             backgroundColor: idx % 2 ? 'white' : 'cadetblue' 
           }]} 
           key={idx}>
-          Arriving at {el.arrival_time}
+          Arriving at {Helpers.DateHelper(el.arrival_time)}
         </Text>)}
   </View>
 );
