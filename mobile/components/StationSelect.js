@@ -15,7 +15,6 @@ export default class StationSelect extends Component {
     this.spinValue = new Animated.Value(0);
     this.anim = this.anim.bind(this);
 
-
     this._onChange = this._onChange.bind(this);
     this._onSelect = this._onSelect.bind(this);
     this._clear = this._clear.bind(this);
@@ -44,10 +43,6 @@ export default class StationSelect extends Component {
         easing: Easing.linear
       }
     ).start();
-  }
-
-  _setHeight(e) {
-    // console.log(e.nativeEvent.layout);
   }
 
   _onChange(search) {
