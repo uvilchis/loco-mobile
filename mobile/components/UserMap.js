@@ -72,16 +72,7 @@ export default class UserMap extends Component {
     try {
       let resp = await fetch(`https://maps.googleapis.com/maps/api/directions/json?origin=${ startLoc }&destination=${ destinationLoc }&mode=walking`)
       let respJson = await resp.json();
-
-      // SJK: This is a  bad antipattern. Just use respJson for whatever
-      // you're trying to get, then set state at one time. 
-      this.setState({
-        directionsData: respJson
-      }, () => {
-        console.log('THIS.STATE.DIRECTIONSDATA:', this.state.directionsData)
-        // console.log('THIS.STATE.DIRECTIONSDATA.ROUTES:', this.state.directionsData.routes)
-      })
-  
+      console.log('THIS IS THE RESPONSE', respJson)
       let points = Polyline.decode(respJson.routes[0].overview_polyline.points);
       let coords = points.map((point, index) => {
         return {
@@ -137,7 +128,7 @@ export default class UserMap extends Component {
                 coordinate={{latitude: Number(this.state.location.coords.latitude), longitude: Number(this.state.location.coords.longitude)}}
                 title={"HI! IT\'S ME!!!"}
                 onPress={() => {
-                  // console.log('you pressed me!!!')
+                  console.log('you pressed me!!!')
                   // console.log(`'${this.state.location.coords.latitude}', '${this.state.location.coords.longitude}'`)
                   // this.getDirections("40.750808794289775, -73.97638340930507", "40.750409, -73.9764837")
                   this.state.results.forEach((station, idx) => {
