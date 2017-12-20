@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import Expo from 'expo';
-import { StyleSheet, Text, View, TextInput, TouchableOpacity, Image, Animated, Easing, Dimensions } from 'react-native'
+import { StyleSheet, ScrollView, Text, View, TextInput, TouchableWithoutFeedback, TouchableOpacity, Image, Animated, Easing, Dimensions, PanResponder } from 'react-native'
 import { EvilIcons } from '@expo/vector-icons'
 import KEYS from '../env/key';
 import URL from '../env/urls';
@@ -24,6 +24,16 @@ export default class Login extends Component {
     this.handleLogin = this.handleLogin.bind(this);
     this.handleSignUp = this.handleSignUp.bind(this);
     this.handleGoogle = this.handleGoogle.bind(this);
+  }
+
+  componentWillMount() {
+    this._panResponder = PanResponder.create({
+      onPanResponderMove: (e, gestureState) => {
+        if (gestureState.dy > 100) {
+          this.props.hideModal();
+        }
+      }
+    })
   }
 
   componentDidMount() {
@@ -107,72 +117,79 @@ export default class Login extends Component {
 
   render() {
     return (
-      <View style={styles.main}>
-        <Animated.Image
-          style={{
-            opacity: this.fadeValue.interpolate({
-              inputRange: [0, 50, 950, 1000],
-              outputRange: [0, 1, 1, 0]
-            }),
-            position: 'absolute',
-            maxHeight: Math.max(960, Dimensions.get('window').height),
-            transform: [{
-              translateX: this.panValue.interpolate({
-                inputRange: [0, 1],
-                outputRange: [0, (-1440 + Dimensions.get('window').width)]
-              })
-            }]
-          }}
-          source={require('../images/backgrounds/escalator-bg.jpg')} />
-        <Animated.View
-          style={[styles.downButton, {
-            transform: [{
-              translateY: this.dropValue.interpolate({
-                inputRange: [0, 0.5, 1],
-                outputRange: [5, 0, 5]
-              })
-            }]
-          }]}>
-          <EvilIcons 
-            name="chevron-down" 
-            size={50}
-            color="white"
-            onPress={this.props.hideModal} />
-        </Animated.View>
-        <TextInput 
-          name="username"
-          placeholder="Username"
-          placeholderTextColor="white"
-          autoCapitalize={'none'}
-          style={styles.input}
-          onChangeText={(username) => this.setState({ username })}
-          value={this.state.username}
-          autoFocus={true} />
-        <TextInput
-          name="password"
-          placeholder="Password"
-          placeholderTextColor="white"
-          secureTextEntry={true}
-          autoCapitalize={'none'}
-          style={styles.input}
-          onChangeText={(password) => this.setState({ password })}
-          value={this.state.password} />
-        <TouchableOpacity
-          style={styles.buttonWrapper}
-          onPress={this.handleLogin}>
-          <Text style={styles.button}>Log in</Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={styles.buttonWrapper}
-          onPress={this.handleSignUp}>
-          <Text style={styles.button}>Sign up</Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={styles.buttonWrapper}
-          onPress={this.handleGoogle}>
-          <Text style={styles.button}>Sign in with Google+</Text>
-        </TouchableOpacity>
-      </View>
+      <ScrollView
+        style={styles.main}
+        scrollEnabled={false}
+        {...this._panResponder.panHandlers}>
+        <View style={{flex: 1}}>
+          <Animated.Image
+            style={{
+              opacity: this.fadeValue.interpolate({
+                inputRange: [0, 50, 950, 1000],
+                outputRange: [0, 1, 1, 0]
+              }),
+              position: 'absolute',
+              maxHeight: Dimensions.get('window').height,
+              transform: [{
+                translateX: this.panValue.interpolate({
+                  inputRange: [0, 1],
+                  outputRange: [0, (-1440 + Dimensions.get('window').width)]
+                })
+              }]
+            }}
+            source={require('../images/backgrounds/escalator-bg.jpg')}/>
+          <Animated.View
+            style={[styles.downButton, {
+              transform: [{
+                translateY: this.dropValue.interpolate({
+                  inputRange: [0, 0.5, 1],
+                  outputRange: [5, 0, 5]
+                })
+              }]
+            }]}>
+            <EvilIcons 
+              name="chevron-down" 
+              size={50}
+              color="white"
+              onPress={this.props.hideModal} />
+          </Animated.View>
+          <View style={styles.form}>
+            <TextInput 
+              name="username"
+              placeholder="Username"
+              placeholderTextColor="white"
+              autoCapitalize={'none'}
+              style={styles.input}
+              onChangeText={(username) => this.setState({ username })}
+              value={this.state.username}
+              autoFocus={true} />
+            <TextInput
+              name="password"
+              placeholder="Password"
+              placeholderTextColor="white"
+              secureTextEntry={true}
+              autoCapitalize={'none'}
+              style={styles.input}
+              onChangeText={(password) => this.setState({ password })}
+              value={this.state.password} />
+            <TouchableOpacity
+              style={styles.buttonWrapper}
+              onPress={this.handleLogin}>
+              <Text style={styles.button}>Log in</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={styles.buttonWrapper}
+              onPress={this.handleSignUp}>
+              <Text style={styles.button}>Sign up</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={styles.buttonWrapper}
+              onPress={this.handleGoogle}>
+              <Text style={styles.button}>Sign in with Google+</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </ScrollView>
     );
   }
 }
@@ -180,8 +197,6 @@ export default class Login extends Component {
 const styles = StyleSheet.create({
   main: {
     flex: 1,
-    padding: 20,
-    paddingTop: 100,
     backgroundColor: 'black'
   },
   downButton: {
@@ -197,6 +212,11 @@ const styles = StyleSheet.create({
     color: 'white',
     fontSize: 16,
     margin: 16
+  },
+  form: {
+    height: Dimensions.get('window').height,
+    marginTop: 160,
+    marginHorizontal: 20
   },
   input: {
     height: 40,

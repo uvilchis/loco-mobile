@@ -1,37 +1,37 @@
 import React, { Component } from 'react';
 import { TouchableOpacity, Alert } from 'react-native';
 
-import { EvilIcons } from '@expo/vector-icons';
+import { Feather } from '@expo/vector-icons';
 
 const StatusMarker = (props) => {
   let name, color;
   switch(props.status) {
     case 'DELAYS': {
       name = 'clock';
-      color = '#ff9872';
+      color = 'gold';
       break;
     }
     
     case 'PLANNED WORK': {
-      name = 'close-o';
+      name = 'flag';
       color = '#ff9872';
       break;
     }
 
     case 'SERVICE CHANGE': {
-      name = 'exclamation';
+      name = 'alert-octagon';
       color = 'red';
       break;
     }
     
     case 'GOOD SERVICE': {
-      name = 'check';
+      name = 'check-circle';
       color = 'darkseagreen'
       break;
     }
 
     default: {
-      name = 'question';
+      name = 'help-circle';
       color = 'black';
     }
   }
@@ -49,11 +49,11 @@ const StatusMarker = (props) => {
   return (
     <TouchableOpacity
       onLongPress={showAlert}>
-      <EvilIcons
+      <Feather
         name={name}
         color={color}
-        size={40}
-        style={{ marginTop: 4 }} />
+        size={26}
+        style={{ alignSelf: 'center' }} />
     </TouchableOpacity>
   );
 };
