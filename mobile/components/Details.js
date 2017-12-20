@@ -22,7 +22,7 @@ export default class Details extends Component {
     ];
 
     this.state = {
-      refreshing: false,
+      refreshing: true,
       modalVisible: false,
       station: false,
       direction: '',
@@ -51,7 +51,7 @@ export default class Details extends Component {
   componentDidMount() {
     this.jumpAnim();
 
-    let newState = {};
+    let newState = { refreshing: false };
     axios.get(`${URL}/api/route/stops`, {
       params: {
         sub: 'mta',

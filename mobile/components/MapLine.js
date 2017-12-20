@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { StyleSheet, View, TouchableOpacity, Text } from 'react-native';
+import { EvilIcons } from '@expo/vector-icons';
 
 export default class MapLine extends Component {
   constructor(props) {
@@ -16,12 +17,16 @@ export default class MapLine extends Component {
         <TouchableOpacity
           style={styles.button}
           onPress={() => this.props.onDetailsPress(this.props.line)}>
-          <Text style={styles.buttonText}>Details</Text>
+          <EvilIcons
+            name="arrow-right"
+            size={32}
+            color="dimgrey" />
         </TouchableOpacity>
       </View>
     );
   }
 }
+// <Text style={styles.buttonArrow}>Details</Text>
 
 const styles = StyleSheet.create({
   container: {
@@ -38,9 +43,10 @@ const styles = StyleSheet.create({
     fontSize: 20,
   },
   button: {
-    marginRight: 8
+    marginRight: 4
   },
-  buttonText: {
-    color: '#841584'
+  buttonArrow: {
+    color: 'dimgrey'
+    // color: '#841584'
   }
 });

@@ -105,13 +105,7 @@ export default class UserMap extends Component {
                 key={idx}>
                 <MapView.Callout
                   onPress={this.showModal}>
-                  <View style={{ flexDirection: 'row', alignItems: 'center', padding: 8 }}>
-                    <Text>{marker.stop_name}</Text>
-                    <EvilIcons
-                      name="chevron-right"
-                      color="lightgrey"
-                      size={22} />
-                  </View>
+                  <MapCallout stop={marker} />
                 </MapView.Callout>
               </MapView.Marker>)}
           </MapView>

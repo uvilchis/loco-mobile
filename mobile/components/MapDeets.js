@@ -109,6 +109,7 @@ const styles = StyleSheet.create({
     alignSelf: 'flex-start'
   },
   downButton: {
+    marginTop: 8,
     backgroundColor: 'transparent',
   }
 })
