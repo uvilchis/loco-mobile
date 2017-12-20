@@ -6,29 +6,27 @@ export default class MapDeets extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      lines: [],
       unique: []
     }
   }
 
   componentDidMount() {
-    this.setState({
-      lines: this.props.screenProps
-    }, () => {
-      var temp = {};
-      this.state.lines.forEach((item, idx) => {
+    var temp = {};
+    this.props.screenProps.forEach((item, idx) => {
         temp[item.route_id] = item.route_id;
-      })
-      this.setState({
-        unique: Object.keys(temp)
-      })
+    })
+    this.setState({
+      unique: Object.keys(temp)
     })
   }
 
   render() {
+    // console.log('MAPDEETS PROPS:', this.props.screenProps)
     return (
       <ScrollView style={styles.container}>
-        <Text>{this.state.lines.station_name}</Text>
+        <Text style={styles.text}>
+          {this.props.screenProps[0].stop_name}
+        </Text>
         {this.state.unique.map((line, idx) => 
           <MapLine key={idx} line={line} navigation={this.props.navigation} />
         )}
@@ -40,5 +38,9 @@ export default class MapDeets extends Component {
 const styles = StyleSheet.create({
   container: {
     flex: 1
+  },
+  text: {
+    fontWeight: 'bold',
+    fontSize: 20
   }
 })
