@@ -58,10 +58,9 @@ export default class UserMap extends Component {
       .then((response) => {
         this.setState({
           results: response.data
+        }, () => {
+          console.log('THIS.STATE.RESULTS:', this.state.results)
         })
-      }, () => {
-        console.log('THIS.STATE.RESULTS:', this.state.results)
-      })
       .catch((err) => {
         console.error('ERROR IN AXIOS REQUEST', err)
       })
@@ -72,7 +71,7 @@ export default class UserMap extends Component {
     try {
       let resp = await fetch(`https://maps.googleapis.com/maps/api/directions/json?origin=${ startLoc }&destination=${ destinationLoc }&mode=walking`)
       let respJson = await resp.json();
-      console.log('THIS IS THE RESPONSE', respJson)
+      // console.log('THIS IS THE RESPONSE', respJson)
       let points = Polyline.decode(respJson.routes[0].overview_polyline.points);
       let coords = points.map((point, index) => {
         return {
@@ -110,6 +109,8 @@ export default class UserMap extends Component {
   }
 
   render() {
+    // c2onsole.log('Yusakus State', this.state.yusaku)
+    console.log('RESULTS STATE:', this.state.results)
     return (
       <View style={styles.container}>
         <Animated.View
@@ -129,11 +130,12 @@ export default class UserMap extends Component {
                 title={"HI! IT\'S ME!!!"}
                 onPress={() => {
                   console.log('you pressed me!!!')
-                  // console.log(`'${this.state.location.coords.latitude}', '${this.state.location.coords.longitude}'`)
                   // this.getDirections("40.750808794289775, -73.97638340930507", "40.750409, -73.9764837")
+                  // console.log('YOYOYOYO', `${this.state.location.coords.latitude}, ${this.state.location.coords.longitude}`)
                   this.state.results.forEach((station, idx) => {
-                    this.getDirections(`'${this.state.location.coords.latitude}', '${this.state.location.coords.longitude}'`, `'${station.stop_lat}', '${station.stop_lon}'`)
-                })}}
+                    this.getDirections(`${this.state.location.coords.latitude}, ${this.state.location.coords.longitude}`, `${station.stop_lat}, ${station.stop_lon}`)
+                  })
+                }}
                 pinColor={'#38A2FF'}>
                 <MapView.Callout>
                   {/* <Text>{this.state.directionsData.routes[0].legs}</Text>
