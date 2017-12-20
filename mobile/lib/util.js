@@ -32,11 +32,19 @@ const LineStyleHelper = (routeId) => {
     if (key.includes(routeId)) { return LineStyle[key]; }
   }
   return { color: 'black' };
-}
+};
+
+const MarkerColorHelper = (count) => {
+  if (count === undefined) { return 'purple'; }
+  if (count > 100) { return 'red'; }
+  if (count > 50) { return 'yellow'; }
+  return 'green';
+};
 
 export default Helpers = {
   LineStyle,
   WordHelper,
   DateHelper,
-  LineStyleHelper
-};
+  LineStyleHelper,
+  MarkerColorHelper
+}; 

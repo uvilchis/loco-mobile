@@ -24,7 +24,6 @@ export default class Details extends Component {
     this.state = {
       refreshing: false,
       modalVisible: false,
-      station: false,
       direction: '',
       stopId: '',
       currentComplaints: [],
@@ -52,8 +51,11 @@ export default class Details extends Component {
 
   componentDidMount() {
     this.jumpAnim();
-
-    let newState = { refreshing: false };
+    let stopId = this.props.navigation.state.params.stop ? this.props.navigation.state.params.stop.stop_id : '';
+    let newState = {
+      refreshing: false,
+      stopId: stopId
+    };
     this._fetchStops()
     .then(({ data }) => {
       newState.stationsN = data.N;
@@ -204,6 +206,7 @@ export default class Details extends Component {
             <Text style={styles.sectionHeader}>Select a station</Text>
           </View>
           <StationSelect 
+            stop={this.props.navigation.state.params.stop}
             stations={this.state.stationsN} 
             onStationSelect={this.onStationSelect} />
 

@@ -7,9 +7,9 @@ export default class StationSelect extends Component {
     super(props);
     this.state = {
       dropdown: false,
-      search: '',
+      search: this.props.stop ? this.props.stop.stop_name : '',
       all: [],
-      filtered: []
+      filtered: this.props.stop ? [this.props.stop] : []
     };
 
     this.spinValue = new Animated.Value(0);
