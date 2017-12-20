@@ -6,12 +6,11 @@ import geodist from 'geodist';
 import URL from '../env/urls';
 import MapLineNav from './MapLineNav';
 
-
 const GEOLOCATION_OPTIONS = { enableHighAccuracy: true, timeout: 20000, maximumAge: 1000 };
 
 export default class UserMap extends Component {
   constructor(props) {
-    super(props)
+    super(props);
     this.state = {
       location: [],
       results: [],
@@ -43,7 +42,7 @@ export default class UserMap extends Component {
         }
       })
       .then((response) => {
-        
+
         this.setState({
           results: response.data
         })
@@ -51,7 +50,7 @@ export default class UserMap extends Component {
       .catch((err) => {
         console.error('ERROR IN AXIOS REQUEST', err)
       })
-    });
+    })
   }
 
   render() {
@@ -70,15 +69,9 @@ export default class UserMap extends Component {
             <MapView.Marker
               coordinate={{latitude: Number(marker.stop_lat), longitude: Number(marker.stop_lon)}}
               description={marker.stop_name}
-              onPress={() => {
-                this.setState({
-                  modalVisible: !this.state.modalVisible,
-                  selected: marker.stop_name
-                })
-              }}
-              key={idx}>            
+              key={idx}>
             </MapView.Marker>
-          ))}        
+          ))}
         </MapView>
         <Modal
           animationType={"slide"}
