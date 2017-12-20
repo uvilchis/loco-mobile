@@ -1,35 +1,36 @@
-import React, { Component } from 'react';
-import { StyleSheet, Text, View } from 'react-native';
-import TrainLines from './components/TrainLines';
+import React from 'react';
+import { Platform, StyleSheet, View, StatusBar } from 'react-native';
 import RootNav from './components/RootNav';
-import axios from 'axios';
+// TODO : Implement a favorites list
+// import Favorites from './components/Favorites'
+// import FavNav from './components/FavNav';
+// TODO : implement tab navigation
+import TabNav from './components/TabNav';
+// import URL from './env/urls';
 
-export default class App extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      service: []
-    }
-  }
+const App = (props) => (
+  <View style={styles.container}>
+    <TabNav />
+  </View>
+);
 
-  render() {
-    // console.log('APP PROPS:', this.props)
-    return (
-      <View style={{flex: 1}}>
-        <Text style={styles.title}>loco</Text>        
-        <RootNav />
-      </View>
-    );
-  }
-};
+// <TabNav /> needs to come here
+// we need to make sure the proper stack is being rendered
+/*
+  <Modal
+    animationType = {"slide"}
+    transparent = {false}
+    visible = {this.state.favoritesVisible}
+    onRequestClose = {() => console.log("Modal has been closed.")}>
+    <FavNav />
+  </Modal>
+*/
 
 const styles = StyleSheet.create({
-  title: {
-    flexDirection: 'row',
-    backgroundColor: '#6d6868',
-    color: 'white', 
-    fontWeight: 'bold',
-    fontSize: 30,
-    paddingVertical: 30
+  container: {
+    flex: 1,
+    paddingTop: Platform.OS === 'ios' ? 0 : StatusBar.currentHeight
   }
 });
+
+export default App;

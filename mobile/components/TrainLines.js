@@ -1,46 +1,92 @@
 import React, { Component } from 'react';
-import { StyleSheet, ScrollView, Text, Button } from 'react-native';
+import { StyleSheet, ScrollView, View, Text, RefreshControl, ActivityIndicator, Dimensions } from 'react-native';
 import axios from 'axios';
 import TrainLine from './TrainLine';
+import URL from '../env/urls';
 
 export default class TrainLines extends Component {
   constructor(props) {
-    super(props); 
+    super(props);
     this.state = {
-      service: []
+      service: [],
+      refreshing: false,
+      showIndicator: true
     };
-    this.navToLines = this.navToLines.bind(this);
+
+    this._onRefresh = this._onRefresh.bind(this);
+    this._fetch = this._fetch.bind(this);
+    this._fetchTimer = this._fetchTimer.bind(this);
   }
-  
+
   componentDidMount() {
-    axios.get(`http://ec2-18-221-253-159.us-east-2.compute.amazonaws.com/loco/service?sub=mta`)
-    .then((response) => {
-      this.setState({
-        service: response.data.lines 
-      })
-    })
-    .catch((err) => {
-      console.error(err);
-    })
+    this._fetch({ showIndicator: false });
   }
 
-  navToLines(idx) {
-    this.props.navigation.navigate('Lines', { lines: this.state.service[idx] })
+  componentWillUnmount() {
+    if (this.timer) { clearTimeout(this.timer); }
   }
 
-  render() {  
+  _onRefresh() {
+    this.setState({ refreshing: true }, () => {
+      this._fetch({ refreshing: false });
+    });
+  }
+
+  _fetch(newState = {}) {
+    axios.get(`${URL}/api/service?sub=mta`)
+    .then(({ data }) => {
+      newState.service = data.lines;
+      return axios.get(`${URL}/api/report/getallcomplaintcounts?sub=mta`);
+    })
+    .then(({ data }) => {
+      newState.service.forEach((a) => {
+        if (a.name === 'SIR') {
+          return a.countedRoutes = [{ name: a.name, count: data[a.name] || 0}];
+        }
+        a.countedRoutes = a.name.split('').reduce((acc, b) => {
+          acc.push({ name: b, count: data[b] || 0 });
+          return acc;
+        }, []);
+      });
+      this.setState(newState, this._fetchTimer);
+    })
+    .catch((error) => console.log(error));
+  }
+
+  _fetchTimer() {
+    if (this.timer) { clearTimeout(this.timer); } // Make sure timer is fresh
+    this.timer = setTimeout(this._fetch, 60000); // Refresh every minute
+  }
+
+  render() {
     return (
-      <ScrollView>
-        <Text style={styles.text}>Welcome to loco, your one stop resource for MTA delays</Text>
-        {this.state.service.map((line, idx) =>
-          <TrainLine key={idx} line={line} idx={idx} navToLines={this.navToLines} />
-        )}
+      <ScrollView
+        style={styles.main}
+        refreshControl={
+          <RefreshControl
+            refreshing={this.state.refreshing}
+            onRefresh={this._onRefresh} /> }>
+        {this.state.showIndicator ?
+          <View style={styles.loader}>
+            <ActivityIndicator size="large" color="cadetblue" />
+          </View> :
+          this.state.service.map((line, idx) =>
+            <TrainLine key={idx} line={line} idx={idx} onDetailsPress={this.props.onDetailsPress}/>)}
       </ScrollView>
-    )
+    );
   }
 }
 
 const styles = StyleSheet.create({
+  main: {
+    backgroundColor: 'white'
+  },
+  loader: {
+    flex: 1,
+    height: Dimensions.get('window').height,
+    alignItems: 'center',
+    justifyContent: 'center'
+  },
   text: {
     flexDirection: 'row',
     backgroundColor: '#fff',
@@ -51,4 +97,3 @@ const styles = StyleSheet.create({
     paddingVertical: 25
   }
 });
-

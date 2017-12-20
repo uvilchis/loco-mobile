@@ -1,133 +1,138 @@
 import React, { Component } from 'react';
-import { ScrollView, StyleSheet, Image, Text, Picker } from 'react-native';
-import { Card, ListItem, Button } from 'react-native-elements';
+import { View, StyleSheet, Text, Animated, Dimensions, Easing, ScrollView, PanResponder } from 'react-native';
+import { EvilIcons } from '@expo/vector-icons';
 import axios from 'axios';
-import ComplaintCard from './ComplaintCard';
+import URL from '../env/urls';
+
+import Schedule from './Schedule';
+import CustomToggle from './CustomToggle';
 
 export default class Cards extends Component {
   constructor(props) {
     super(props);
-    this.defaultComplaints = [
-      { name: 'delayed', count: 0 }, 
-      { name: 'closed', count: 0 },
-      { name: 'accident', count: 0 }, 
-      { name: 'crowded', count: 0 }
-    ];
     this.state = {
-      staticSched : false,
-      compressed: false,
       direction: '',
-      routeId: '',      
-      stopId : '',
-      stationsN : [],  
-      stationsS: [],    
-      complaints: this.defaultComplaints.map((el) => Object.assign({}, el))
-    }
-    this.handleChange = this.handleChange.bind(this)
-    this.handleAdd = this.handleAdd.bind(this)
+      schedule : [], // This should be optional
+    };
+
+    this.onDirectionSelect = this.onDirectionSelect.bind(this);
+    this.onFetchSchedule = this.onFetchSchedule.bind(this);
+
+    this.dropValue = new Animated.Value(0);
+    this.drop = this.drop.bind(this);
   }
-  
+
+  componentWillMount() {
+    this._panResponder = PanResponder.create({
+      onPanResponderMove: (e, gestureState) => {
+        if (gestureState.dy > 100) {
+          this.props.hideModal();
+        }
+      }
+    })
+  }
+
   componentDidMount() {
-    axios.get(`http://10.16.1.191:3000/api/route/stops`, {
-      params: { 
-        sub: 'mta', 
-        route_id: this.props.routeId 
+    this.drop();
+  }
+
+  onDirectionSelect(direction) {
+    if (direction !== this.state.direction) {
+      this.setState({ direction }, this.onFetchSchedule);
+    }
+  }
+
+  onFetchSchedule() {
+    let stopId = this.props.stopId.slice(0, -1) + this.state.direction;
+
+    let dayTranslator = { 0: 'SUN', 6: 'SAT' };
+    let day = dayTranslator[new Date().getDay()] || 'WKD';
+    let time = new Date().toLocaleTimeString('en-gb');
+
+    axios.get(`${URL}/api/times/stoproute`, {
+      params: {
+        sub: 'mta',
+        stop_id: stopId,
+        route_id: this.props.routeId
       }
     })
     .then(({ data }) => {
-      this.setState({ 
-        routeId: this.props.routeId,
-        stationsN: data.N,
-        stationsS: data.S
-      })
+      let schedule = data.filter((el) => el.route_type === day && el.arrival_time >= time).slice(0, 30)
+      if (!schedule.length) { schedule = [{ arrival_time: 'No further trains today' }]; }
+      this.setState({ schedule });
     })
     .catch((error) => console.log(error));
   }
 
-  handleChange(itemValue) {
-    let newState= {};
-    this.setState({
-      stopId: itemValue
-    }, () => {
-      axios.get(`http://10.16.1.191:3000/api/report/stoproute?sub=mta&stop_id=${this.state.stopId}&route_id=${this.state.routeId}`)
-      .then((response) => {
-        let defaults = this.defaultComplaints.map((a) => Object.assign({}, a));
-        let newComplaints = response.data.reduce((acc, b) => {
-          let temp = acc.find((el) => el.name === b.name);
-          temp ? temp.count = b.count : acc.push(b);
-          return acc;
-        }, defaults);
-      
-        newState.complaints = newComplaints;
-        this.setState(newState);
-      })
-      .catch((err) => {
-        console.error(err)
-      })
-    })
-  }
-
-  handleAdd(type) {
-    this.setState({
-      currentComplaint: type
-    }, () => {
-      axios.post(`http://10.16.1.191:3000/api/report/add`, {
-        sub: 'mta',
-        type: this.state.currentComplaint,
-        stop_id: this.state.stopId,
-        route_id: this.state.routeId
-      })
-      .then((response) => {
-        this.handleChange(this.state.stopId)
-      })
-      .catch((err) => {
-        console.error(err)
-      })
-    })    
+  drop() {
+    this.dropValue.setValue(0);
+    Animated.timing(
+      this.dropValue,
+      {
+        toValue: 1,
+        duration: 2000,
+        easing: Easing.linear
+      }
+    ).start(this.drop);
   }
 
   render() {
     return (
-      <ScrollView style={styles.cards}>
-        <Picker style={styles.picker}
-          selectedValue={this.state.direction}
-          onValueChange={(itemValue, itemIndex) => this.setState({direction: itemValue})}>
-          <Picker.Item label='Please select a direction...' value='' />
-          <Picker.Item label='Northbound' value='N' />
-          <Picker.Item label='Southbound' value='S' />
-        </Picker>   
-        <Picker style={styles.picker}
-          selectedValue={this.state.stopId}
-          onValueChange={(itemValue, itemIndex) => this.handleChange(itemValue)}>
-          <Picker.Item label='Please select a station...' value='' />
-          {this.state.direction === 'N' ?
-            (this.state.stationsN.map((station, idx) => {
-              return <Picker.Item label={station.stop_name} value={station.stop_id} key={idx}
-                route_id={station.route_id}
-              />})) : (this.state.stationsS.map((station, idx) => {
-                return <Picker.Item label={station.stop_name} value={station.stop_id} key={idx}
-                  route_id={station.route_id}
-              />
-              }))
-          }
-        </Picker>             
-        {this.state.stopId !== '' ? (
-          this.state.complaints.map((complaint, idx) => 
-            <ComplaintCard complaint={complaint.name} count={complaint.count} 
-              key={idx} train={this.state.routeId} selected={this.state.stopId}
-              handleAdd={this.handleAdd}
-            />
-        )) : null }       
+      <ScrollView
+        style={styles.container}
+        {...this._panResponder.panHandlers}>
+        <Animated.View
+          style={[styles.downButton, {
+            transform: [{
+              translateY: this.dropValue.interpolate({
+                inputRange: [0, 0.5, 1],
+                outputRange: [5, 0, 5]
+              })
+            }]
+          }]}>
+          <EvilIcons
+            name="chevron-down"
+            size={50}
+            color="black"
+            onPress={this.props.hideModal} />
+        </Animated.View>
+        <View style={styles.inner}>
+          <Text style={styles.directionSelect}>Select direction</Text>
+          <CustomToggle onDirectionSelect={this.onDirectionSelect} />
+          <Text style={styles.stationSelect}>Schedule</Text>
+          <Schedule schedule={this.state.schedule} />
+        </View>
       </ScrollView>
-    )
+    );
   }
 }
 
 const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    paddingTop: 40
+  },
+  inner: {
+    marginTop: 60
+  },
   picker: {
     borderColor: 'black'
   },
   cards: {
     paddingVertical: 10
+  },
+  downButton: {
+    position: 'absolute',
+    left: (Dimensions.get('window').width / 2) - 25
+  },
+  directionSelect: {
+    fontSize: 24,
+    marginTop: 20,
+    margin: 12
+  },
+  stationSelect: {
+    fontSize: 24,
+    margin: 12,
+    marginTop: 24
   }
 })
