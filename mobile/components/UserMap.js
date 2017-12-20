@@ -4,10 +4,11 @@ import { Constants, Location, Permissions, MapView } from 'expo';
 import { EvilIcons } from '@expo/vector-icons';
 import axios from 'axios';
 import geodist from 'geodist';
+
 import URL from '../env/urls';
-import MapLineNav from './MapLineNav';
 import MapDeets from './MapDeets';
 import MapCallout from './MapCallout';
+import MapRoutePicker from './MapRoutePicker';
 
 const GEOLOCATION_OPTIONS = { enableHighAccuracy: true, timeout: 20000, maximumAge: 1000 };
 
@@ -110,6 +111,7 @@ export default class UserMap extends Component {
               </MapView.Marker>)}
           </MapView>
         </Animated.View>
+        <MapRoutePicker />
         <Modal
           animationType={"fade"}
           transparent={true}
