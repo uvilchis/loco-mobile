@@ -9,9 +9,8 @@ export default class TrainLines extends Component {
     super(props);
     this.state = {
       service: [],
-      refreshing: false
+      refreshing: true
     };
-    this.onDetailsPress = this.onDetailsPress.bind(this);
     this._onRefresh = this._onRefresh.bind(this);
   }
 
@@ -61,11 +60,6 @@ export default class TrainLines extends Component {
       })
       .catch((error) => console.log(error));
     });
-  }
-
-  onDetailsPress(route) {
-    // this.props.navigation.navigate('Details', { route });
-    console.log('details');
   }
 
   render() {

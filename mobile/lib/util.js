@@ -27,8 +27,16 @@ const DateHelper = (date) => {
   }
 };
 
+LineStyleHelper = (routeId) => {
+  for (let key in LineStyle) {
+    if (key.includes(routeId)) { return LineStyle[key]; }
+  }
+  return { color: 'black' };
+} 
+
 export default Helpers = {
   LineStyle,
   WordHelper,
-  DateHelper
+  DateHelper,
+  LineStyleHelper
 }; 

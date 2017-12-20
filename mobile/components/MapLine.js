@@ -1,46 +1,46 @@
 import React, { Component } from 'react';
-import { StyleSheet, View, Button, Image, Text } from 'react-native';
-import MapLineNav from './MapLineNav';
+import { StyleSheet, View, TouchableOpacity, Text } from 'react-native';
 
 export default class MapLine extends Component {
   constructor(props) {
-    super(props)
-    this.state = {
-      showDeets: false
-    }
+    super(props);
   }
 
   render() {
     return (
-      <View style={styles.container}>
-        <Text style={styles.text}>
+      <View 
+        style={styles.container}>
+        <Text style={[styles.text, this.props.color]}>
           {this.props.line}
         </Text>
-        <Button style={styles.button}
-          onPress={() => {
-            console.log('pressed line, redirect to details for more info')
-            this.props.navigation.navigate('Details', { route: this.props.line })
-          }}
-          title="Details"
-          color='#841584'
-        />
-        {this.state.showDeets ? ( <MapLineNav /> ) : null }
+        <TouchableOpacity
+          style={styles.button}
+          onPress={() => this.props.onDetailsPress(this.props.line)}>
+          <Text style={styles.buttonText}>Details</Text>
+        </TouchableOpacity>
       </View>
-    )
+    );
   }
 }
 
 const styles = StyleSheet.create({
   container: {
-    flexDirection: 'row'
+    flexDirection: 'row',
+    alignItems: 'center',
+    padding: 6,
+    borderBottomColor: 'lightgrey',
+    borderBottomWidth: 1
   },
   text: {
     fontSize: 20,
-    flex: 2, 
+    flex: 1, 
     fontWeight: 'bold',
-    fontSize: 20
+    fontSize: 20,
   },
   button: {
-    flex: 1
+    marginRight: 8
+  },
+  buttonText: {
+    color: '#841584'
   }
-})
+});

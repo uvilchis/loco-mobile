@@ -1,11 +1,13 @@
 import React, { Component } from 'react';
-import { Image, View, Text, Modal, Button, StyleSheet } from 'react-native';
+import { Image, View, Text, Modal, StyleSheet, Animated } from 'react-native';
 import { Constants, Location, Permissions, MapView } from 'expo';
+import { EvilIcons } from '@expo/vector-icons';
 import axios from 'axios';
 import geodist from 'geodist';
 import URL from '../env/urls';
 import MapLineNav from './MapLineNav';
 import MapDeets from './MapDeets';
+import MapCallout from './MapCallout';
 
 const GEOLOCATION_OPTIONS = { enableHighAccuracy: true, timeout: 20000, maximumAge: 1000 };
 
@@ -19,16 +21,12 @@ export default class UserMap extends Component {
       selected: ''
     };
 
-    this.showModal.bind(this);
-    this.hideModal.bind(this);
-  }
+    this.showModal = this.showModal.bind(this);
+    this.hideModal = this.hideModal.bind(this);
+    this.onDetailsPress = this.onDetailsPress.bind(this);
 
-  showModal() {
-    this.setState({ modalVisible: true });
-  }
-
-  hideModal() {
-    this.setState({ modalVisible: false });
+    this.opacityValue = new Animated.Value(1);
+    this._fade = this._fade.bind(this);
   }
 
   componentWillMount() {
@@ -64,50 +62,70 @@ export default class UserMap extends Component {
     });
   }
 
+  onDetailsPress(route) {
+    this.hideModal();
+    this.props.navigation.navigate('Details', { route });
+  }
+
+  showModal() {
+    this.setState({ modalVisible: true }, () => this._fade(0.4));
+  }
+
+  hideModal() {
+    this.setState({ modalVisible: false }, () => this._fade(1));
+  }
+
+  _fade(final = 1) {
+    Animated.timing(
+      this.opacityValue,
+      {
+        toValue: final
+      }
+    ).start();
+  }
+
   render() {
     return (
-      <View style={{flex: 1}} >
-        <MapView
-          style={{ flex: 1 }}
-          initialRegion={{
-            latitude: 40.750808794289775,
-            longitude: -73.97638340930507,
-            latitudeDelta: 0.01,
-            longitudeDelta: 0.05,
-          }}>
-          {this.state.results.map((marker, idx) =>
-            <MapView.Marker
-              coordinate={{latitude: Number(marker.stop_lat), longitude: Number(marker.stop_lon)}}
-              description={marker.stop_name}
-              onPress={() => {
-                this.setState({
-                  // modalVisible: !this.state.modalVisible,
-                  selected: marker.stop_name
-                })
-              }}
-              key={idx}>
-                <Text>Hello</Text>
-            </MapView.Marker>)}
-        </MapView>
+      <View
+        style={styles.container}>
+        <Animated.View
+          style={[styles.map, { opacity: this.opacityValue }]}>
+          <MapView
+            style={styles.map}
+            initialRegion={{
+              latitude: 40.750808794289775,
+              longitude: -73.97638340930507,
+              latitudeDelta: 0.01,
+              longitudeDelta: 0.05,
+            }}>
+            {this.state.results.map((marker, idx) =>
+              <MapView.Marker
+                coordinate={{latitude: Number(marker.stop_lat), longitude: Number(marker.stop_lon)}}
+                onPress={() => this.setState({ selected: marker.stop_name })}
+                key={idx}>
+                <MapView.Callout
+                  onPress={this.showModal}>
+                  <View style={{ flexDirection: 'row', alignItems: 'center', padding: 8 }}>
+                    <Text>{marker.stop_name}</Text>
+                    <EvilIcons
+                      name="chevron-right"
+                      color="lightgrey"
+                      size={22} />
+                  </View>
+                </MapView.Callout>
+              </MapView.Marker>)}
+          </MapView>
+        </Animated.View>
         <Modal
-          animationType={"slide"}
-          transparent={false}
+          animationType={"fade"}
+          transparent={true}
           visible={this.state.modalVisible}
-          onRequestClose={() => console.log("Modal has been closed.")}>
+          onRequestClose={this.hideModal}>
           <MapDeets
             stopName={this.state.selected}
-            lines={this.state.results.filter((station, idx) => this.state.selected === station.stop_name)}/>
-          {/* <MapLineNav
-            screenProps={this.state.results.filter((station, idx) => this.state.selected === station.stop_name)}
-          /> */}
-          <Button
-            onPress={() => {
-              this.setState({
-                modalVisible: false
-              })
-            }}
-            title="Go Back"
-            color='#841584' />
+            lines={this.state.results.filter((station, idx) => this.state.selected === station.stop_name)}
+            hideModal={this.hideModal}
+            onDetailsPress={this.onDetailsPress} />
         </Modal>
       </View>
     );
@@ -115,7 +133,13 @@ export default class UserMap extends Component {
 }
 
 const styles = StyleSheet.create({
-
+  container: {
+    flex: 1,
+    backgroundColor: 'dimgrey'
+  },
+  map: {
+    flex: 1
+  }
 });
 
 UserMap.navigationOptions = {
