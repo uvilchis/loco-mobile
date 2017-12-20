@@ -11,7 +11,7 @@ export default class Favorite extends Component {
   }
   // note: the color helper doesn't accomodate individual trainlines
   render() {
-    const style = Helpers.LineStyle[this.props.routeId.toUpperCase()] || {};
+    const style = Helpers.LineStyleHelper(this.props.routeId.toUpperCase()) || {};
     return (
       <View style={styles.inner}>
         <View style={styles.icon}>
