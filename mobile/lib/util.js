@@ -18,9 +18,9 @@ const DateHelper = (date) => {
   date = date.split(':');
   if (date[0] < 12) {
     return `${date[0]}:${date[1]} AM`;
-  } else if (date[0] === 12) {
+  } else if (date[0] === '12') {
     return `${date[0]}:${date[1]} PM`;
-  } else if (date[0] < 24) {
+  } else if (date[0] > 12 && date[0] < 24) {
     return `${date[0] - 12}:${date[1]} PM`;
   } else {
     return `${date[0]-24}:${date[1]} AM tomorrow morning`;
