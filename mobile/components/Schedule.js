@@ -5,14 +5,14 @@ import Helpers from '../lib/util';
 const Schedule = (props) => (
   <View style={styles.container}>
     {props.schedule.map((el, idx) => 
-        <Text 
-          style={[styles.entry, { 
-            color: idx % 2 ? 'black' : 'white', 
-            backgroundColor: idx % 2 ? 'white' : 'cadetblue' 
-          }]} 
-          key={idx}>
-          Arriving at {Helpers.DateHelper(el.arrival_time)}
-        </Text>)}
+      <Text 
+        style={[styles.entry, { 
+          color: idx % 2 ? 'black' : 'white', 
+          backgroundColor: idx % 2 ? 'white' : 'cadetblue' 
+        }]} 
+        key={idx}>
+        Arriving at {Helpers.DateHelper(el.arrival_time)}
+      </Text>)}
   </View>
 );
 
@@ -24,6 +24,7 @@ const styles = StyleSheet.create({
   },
   entry: {
     padding: 8,
+    fontSize: 16,
     borderColor: 'lightgrey',
     borderWidth: 1
   }

@@ -1,45 +1,52 @@
 import React, { Component } from 'react';
-import { StyleSheet, View, Button, Image, Text } from 'react-native';
-import MapLineNav from './MapLineNav';
+import { StyleSheet, View, TouchableOpacity, Text } from 'react-native';
+import { EvilIcons } from '@expo/vector-icons';
 
 export default class MapLine extends Component {
   constructor(props) {
-    super(props)
-    this.state = {
-      showDeets: false
-    }
+    super(props);
   }
 
   render() {
     return (
-      <View style={styles.container}>
-        <Text style={styles.text}>
+      <View 
+        style={styles.container}>
+        <Text style={[styles.text, this.props.color]}>
           {this.props.line}
         </Text>
-        <Button style={styles.button}
-          onPress={() => {
-            console.log('pressed line, redirect to details for more info')
-            this.props.navigation.navigate('Details', { route: this.props.line })
-          }}
-          title="Details"
-          color='#841584'
-        />
-        {this.state.showDeets ? ( <MapLineNav /> ) : null }
+        <TouchableOpacity
+          style={styles.button}
+          onPress={() => this.props.onDetailsPress(this.props.line)}>
+          <EvilIcons
+            name="arrow-right"
+            size={32}
+            color="dimgrey" />
+        </TouchableOpacity>
       </View>
-    )
+    );
   }
 }
+// <Text style={styles.buttonArrow}>Details</Text>
 
 const styles = StyleSheet.create({
   container: {
-    flexDirection: 'row'
-  }, 
+    flexDirection: 'row',
+    alignItems: 'center',
+    padding: 6,
+    borderBottomColor: 'lightgrey',
+    borderBottomWidth: 1
+  },
   text: {
-    flex: 2, 
+    fontSize: 20,
+    flex: 1, 
     fontWeight: 'bold',
-    fontSize: 20
+    fontSize: 20,
   },
   button: {
-    flex: 1
+    marginRight: 4
+  },
+  buttonArrow: {
+    color: 'dimgrey'
+    // color: '#841584'
   }
-})
+});

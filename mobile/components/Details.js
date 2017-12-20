@@ -51,7 +51,7 @@ export default class Details extends Component {
   componentDidMount() {
     this.jumpAnim();
 
-    let newState = {};
+    let newState = { refreshing: false };
     axios.get(`${URL}/api/route/stops`, {
       params: {
         sub: 'mta',
@@ -91,7 +91,9 @@ export default class Details extends Component {
   }
 
   onFetchComplaints() {
-    if (!this.state.stopId || !this.state.direction) { return; }
+    if (!this.state.stopId || !this.state.direction) {
+      return this.setState({ selected: false });
+    }
 
     let stopId = this.state.stopId.slice(0, -1) + this.state.direction;
     axios.get(`${URL}/api/report/stoproute`, {
@@ -310,5 +312,12 @@ const styles = StyleSheet.create({
 });
 
 Details.navigationOptions = {
-  title: 'Details'
+  title: 'Details',
+  headerStyle: {
+    backgroundColor: 'grey'
+  },
+  headerTitleStyle: {
+    color: 'white'
+  },
+  headerTintColor: 'white'
 };

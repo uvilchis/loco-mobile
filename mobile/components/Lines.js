@@ -6,37 +6,26 @@ import { EvilIcons } from '@expo/vector-icons';
 import Details from './Details.js';
 import URL from '../env/urls';
 
-export default class Lines extends Component {
-  constructor(props) {
-    super(props);
-  }
-
-
-  // onPress={() => this.props.onDetailsPress(route)}>
-
-  render() {
-    return (
-      <View>
-        {this.props.countedRoutes.map((route, idx) =>
-          <Card
-            key={idx}>
-            <View style={styles.inner}>
-              <Text style={[styles.name, { color: this.props.color }]}>{route.name.toUpperCase()}</Text>
-              <Text style={styles.complaints}>{`${route.count} complaints in last 30 minutes`}</Text>
-              <TouchableOpacity
-                style={styles.button}
-                onPress={()=> this.props.onDetailsPress(route.name)}>
-                <EvilIcons
-                  name='arrow-right'
-                  color='darkgrey'
-                  size={32} />
-              </TouchableOpacity>
-            </View>
-          </Card>)}
-      </View>
-    );
-  }
-}
+const Lines = (props) => (
+  <View>
+    {props.countedRoutes.map((route, idx) =>
+      <Card
+        key={idx}>
+        <View style={styles.inner}>
+          <Text style={[styles.name, { color: props.color }]}>{route.name.toUpperCase()}</Text>
+          <Text style={styles.complaints}>{`${route.count} complaints in last 30 minutes`}</Text>
+          <TouchableOpacity
+            style={styles.button}
+            onPress={function() { props.onDetailsPress(route.name); }}>
+            <EvilIcons
+              name='arrow-right'
+              color='darkgrey'
+              size={32} />
+          </TouchableOpacity>
+        </View>
+      </Card>)}
+  </View>
+);
 
 const styles = StyleSheet.create({
   inner: {
@@ -55,3 +44,5 @@ const styles = StyleSheet.create({
     flex: 1
   }
 });
+
+export default Lines;

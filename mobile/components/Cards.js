@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
-import { View, StyleSheet, Image, Text, Animated, Dimensions, Easing, ScrollView } from 'react-native';
-import { Card, ListItem, Button } from 'react-native-elements';
+import { View, StyleSheet, Text, Animated, Dimensions, Easing, ScrollView, PanResponder } from 'react-native';
 import { EvilIcons } from '@expo/vector-icons';
 import axios from 'axios';
 import URL from '../env/urls';
@@ -21,6 +20,16 @@ export default class Cards extends Component {
 
     this.dropValue = new Animated.Value(0);
     this.drop = this.drop.bind(this);
+  }
+
+  componentWillMount() {
+    this._panResponder = PanResponder.create({
+      onPanResponderMove: (e, gestureState) => {
+        if (gestureState.dy > 100) {
+          this.props.hideModal();
+        }
+      }
+    })
   }
 
   componentDidMount() {
@@ -69,7 +78,9 @@ export default class Cards extends Component {
 
   render() {
     return (
-      <ScrollView style={styles.container}>
+      <ScrollView
+        style={styles.container}
+        {...this._panResponder.panHandlers}>
         <Animated.View
           style={[styles.downButton, {
             transform: [{
