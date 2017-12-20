@@ -49,7 +49,27 @@ export default class AddFavorite extends Component {
   }
 
   onStationSelect(stopId) {
-    this.setState({ stopId }, () => {console.log('new stopid state confirmed', this.state.stopId)})
+    this.setState({ stopId }, () => {
+      // TODO : first make a get request to obtain the station name, be sure to send that in the post request
+      axios.get(`${URL}/api/stop?sub=mta`, {
+        params : {
+          stop_id : stopId
+        }
+      })
+      .then(({ data }) => {
+        let stopName = data[0].stop_name;
+        return axios.post(`${URL}/api/favorites/add`, {
+          route_id: this.state.routeId,
+          stop_id: this.state.stopId,
+          stop_name: stopName
+        })
+      })
+      .then(({ data }) => {
+        this.props.handleAddFavorite(data.favorites)
+        this.props.hideModal()
+      })
+      .catch((err) => console.error(err))
+    });
   }
 
   render() {
@@ -57,7 +77,7 @@ export default class AddFavorite extends Component {
       <SafeAreaView style={styles.container}>
         <ScrollView style={styles.scroll}>
           <View style={styles.section}>
-            <Text style={styles.sectionHeader}>Select a Line</Text>
+            <Text style={styles.sectionHeader}>Add a Favorite</Text>
             <RouteSelect
               style={styles.stationStyle}
               routes={this.state.routes}

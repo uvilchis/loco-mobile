@@ -9,13 +9,13 @@ export default class StationSelect extends Component {
       dropdown: false,
       search: '',
       all: [],
-      filtered: [],
+      filtered: []
     };
 
     this.spinValue = new Animated.Value(0);
     this.anim = this.anim.bind(this);
 
-    this._setHeight = this._setHeight.bind(this);
+
     this._onChange = this._onChange.bind(this);
     this._onSelect = this._onSelect.bind(this);
     this._onFocus = this._onFocus.bind(this);
@@ -43,6 +43,10 @@ export default class StationSelect extends Component {
         easing: Easing.linear
       }
     ).start();
+  }
+
+  _setHeight(e) {
+    // console.log(e.nativeEvent.layout);
   }
 
   _onChange(search) {

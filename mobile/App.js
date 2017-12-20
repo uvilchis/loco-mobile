@@ -6,6 +6,7 @@ import Login from './components/Login';
 import RootNav from './components/RootNav';
 // TODO : Implement a favorites list
 import Favorites from './components/Favorites'
+import FavNav from './components/FavNav';
 // TODO : implement tab navigation
 import TabNav from './components/TabNav';
 import URL from './env/urls';
@@ -125,9 +126,7 @@ export default class App extends Component {
           transparent = {false}
           visible = {this.state.favoritesVisible}
           onRequestClose = {() => console.log("Modal has been closed.")}>
-          <Favorites
-            hideFavorites={this.hideFavorites}
-          />
+          <FavNav />
         </Modal>
         {this.state.showMap ? ( <MapNav /> ) : ( <RootNav /> )}
       </View>

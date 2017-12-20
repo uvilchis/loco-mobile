@@ -66,6 +66,7 @@ export default class TrainLines extends Component {
   // onDetailsPress(routeName) {
   //   this.props.navigation.navigate('Details', { routeName: routeName })
   onDetailsPress(route) {
+    console.log(this.props.navigation)
     this.props.navigation.navigate('Details', { route })
   }
 
