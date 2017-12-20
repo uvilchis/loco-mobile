@@ -60,7 +60,7 @@ export default class UserMap extends Component {
           results: response.data
         }, () => {
           console.log('THIS.STATE.RESULTS:', this.state.results)
-        })
+        })})
       .catch((err) => {
         console.error('ERROR IN AXIOS REQUEST', err)
       })
@@ -109,8 +109,7 @@ export default class UserMap extends Component {
   }
 
   render() {
-    // c2onsole.log('Yusakus State', this.state.yusaku)
-    console.log('RESULTS STATE:', this.state.results)
+    console.log('DIRECTIONS DATA:', this.state.directionsData)
     return (
       <View style={styles.container}>
         <Animated.View
@@ -130,25 +129,20 @@ export default class UserMap extends Component {
                 title={"HI! IT\'S ME!!!"}
                 onPress={() => {
                   console.log('you pressed me!!!')
-                  // this.getDirections("40.750808794289775, -73.97638340930507", "40.750409, -73.9764837")
-                  // console.log('YOYOYOYO', `${this.state.location.coords.latitude}, ${this.state.location.coords.longitude}`)
-                  this.state.results.forEach((station, idx) => {
-                    this.getDirections(`${this.state.location.coords.latitude}, ${this.state.location.coords.longitude}`, `${station.stop_lat}, ${station.stop_lon}`)
-                  })
                 }}
                 pinColor={'#38A2FF'}>
-                <MapView.Callout>
-                  {/* <Text>{this.state.directionsData.routes[0].legs}</Text>
-                  <Text>{station.duration.text}</Text>
-                  <Text>{station.distance.text}</Text> */}
-                </MapView.Callout>
               </MapView.Marker> ) : null }
 
             {this.state.results.map((marker, idx) =>
               <MapView.Marker
+                key={idx}
                 coordinate={{latitude: Number(marker.stop_lat), longitude: Number(marker.stop_lon)}}
-                onPress={() => this.setState({ selected: marker.stop_name })}
-                key={idx}>
+                onPress={() => {
+                  this.setState({ 
+                    selected: marker.stop_name,
+                    directionsData: this.getDirections(`${this.state.location.coords.latitude}, ${this.state.location.coords.longitude}`, `${marker.stop_lat}, ${marker.stop_lon}`)
+                  })
+                }}>
                 <MapView.Callout
                   onPress={this.showModal}>
                   <MapCallout stop={marker} />
@@ -156,10 +150,7 @@ export default class UserMap extends Component {
               </MapView.Marker>)}
 
               <MapView.Polyline
-                coordinates= {[{
-                  latitude : 40.750409,
-                  longitude : -73.9764837
-                }]}
+                coordinates= {this.state.coords}
                 strokeWidth={4}
                 strokeColor="blue" />
           </MapView>
