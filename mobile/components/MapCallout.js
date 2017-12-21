@@ -10,20 +10,13 @@ export default class MapCallout extends Component {
     }
   }
 
-  componentWillReceiveProps(nextProps) {
-    nextProps.directionsData.duration ? 
-    this.setState({
-      duration: nextProps.directionsData.duration.text
-    }) : null
-  }
-  
   render () {
     return (
       <View style={styles.container}>
         <View style={styles.inner}>
           <Text style={styles.name}>{this.props.stop.stop_name}</Text>
           <Text style={styles.count}>{`${this.props.stop.count || 0} complaints`}</Text>
-          <Text>{this.state.duration.length !== 0 ? this.state.duration + ' away' : 'loading...'}</Text>
+          <Text>{this.props.directionsData.duration ? this.props.directionsData.duration.text + ' away' : 'loading...'}</Text>
         </View>
         <EvilIcons
           style={styles.button}
@@ -34,18 +27,6 @@ export default class MapCallout extends Component {
     );
   }
 };
-
-// const MapCallout = (props) => (
-//     <View style={styles.inner}>
-//       <Text style={styles.name}>{props.stop.stop_name}</Text>
-//     </View>
-//     <EvilIcons
-//       style={styles.button}
-//       name="plus"
-//       color="darkgrey"
-//       size={24} />
-//   </View>
-// );
 
 const styles = StyleSheet.create({
   container: {

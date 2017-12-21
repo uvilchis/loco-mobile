@@ -10,7 +10,6 @@ import URL from '../env/urls';
 import MapDeets from './MapDeets';
 import MapCallout from './MapCallout';
 import MapRoutePicker from './MapRoutePicker';
-import Helpers from '../lib/util';
 
 const GEOLOCATION_OPTIONS = { enableHighAccuracy: true, timeout: 20000, maximumAge: 1000 };
 
@@ -21,112 +20,82 @@ export default class UserMap extends Component {
       location: {},
       results: [],
       modalVisible: false,
-      stop: null,
       selected: '',
       coords: [],
-      directionsData: {},
-      route: ''
+      directionsData: {}
     };
 
     this.showModal = this.showModal.bind(this);
     this.hideModal = this.hideModal.bind(this);
     this.onDetailsPress = this.onDetailsPress.bind(this);
-    this.onRoutePick = this.onRoutePick.bind(this);
 
     this.opacityValue = new Animated.Value(1);
     this._fade = this._fade.bind(this);
+    this.locationChanged = async () => {
+      let { status } = await Permissions.askAsync(Permissions.LOCATION);
+      if (status !== 'granted') {
+        this.setState({
+          errorMessage: 'Permission to access location was denied',
+        });
+      }
+  
+      let location = await Location.getCurrentPositionAsync({})
+      this.setState({
+        location: location
+      }, () => {
+        axios.get(`${URL}/api/stops/location`, {
+          params: {
+            lat: this.state.location.coords.latitude,
+            lon: this.state.location.coords.longitude
+          }
+        })
+        .then((response) => {
+          this.setState({
+            results: response.data
+          })})
+        .catch((err) => {
+          console.error('ERROR IN AXIOS REQUEST', err)
+        })
+      })
+    }
+
+    this.getDirections = async (startLoc, destinationLoc, stopName) => {
+      try {
+        let resp = await fetch(`https://maps.googleapis.com/maps/api/directions/json?origin=${ startLoc }&destination=${ destinationLoc }&mode=walking`)
+        let respJson = await resp.json();
+        let points = Polyline.decode(respJson.routes[0].overview_polyline.points);
+        let coords = points.map((point, index) => {
+          return {
+            latitude : point[0],
+            longitude : point[1]
+          }
+        });
+        let temp = this.state.results.slice();
+        this.setState({
+          selected: stopName,
+          coords: coords,
+          directionsData: respJson.routes[0].legs[0],
+          results: temp
+        }, () => console.log('UserMap directionsData state set....'))
+        return coords;
+      } catch (error) {
+        console.log(error);
+      }
+    }
+  }
+
+  forceUpdateHandler() {
+    this.forceUpdate()
   }
 
   componentWillMount() {
-    this.locationChanged()
-  }
-
-  locationChanged = async () => {
-    let { status } = await Permissions.askAsync(Permissions.LOCATION);
-    if (status !== 'granted') {
-      this.setState({
-        errorMessage: 'Permission to access location was denied',
-      });
-    }
-
-    let location = await Location.getCurrentPositionAsync({})
-    this.setState({
-      location: location
-    }, () => {
-      axios.get(`${URL}/api/stops/location`, {
-        params: {
-          lat: this.state.location.coords.latitude,
-          lon: this.state.location.coords.longitude
-        }
-      })
-      .then((response) => {
-        this.setState({
-          results: response.data
-        })})
-      .catch((err) => {
-        console.error('ERROR IN AXIOS REQUEST', err)
-      })
-    })
-  }
-
-  getDirections = async (startLoc, destinationLoc) => {
-    try {
-      let resp = await fetch(`https://maps.googleapis.com/maps/api/directions/json?origin=${ startLoc }&destination=${ destinationLoc }&mode=walking`)
-      let respJson = await resp.json();
-      let points = Polyline.decode(respJson.routes[0].overview_polyline.points);
-      let coords = points.map((point, index) => {
-        return {
-          latitude : point[0],
-          longitude : point[1]
-        }
-      })
-      console.log('data is setting');
-      this.setState({
-        coords: coords,
-        directionsData: respJson.routes[0].legs[0]
-      })
-      return coords;
-    } catch (error) {
-      console.log(error);
-    }
+    this.locationChanged();
+    this.getDirections();
   }
 
   onDetailsPress(route) {
     this.hideModal();
-    this.props.navigation.navigate('Details', { route, stop: this.state.stop });
-  }
-
-  onRoutePick(route) {
-    if (route === this.state.route) {
-      return this.setState({ results: [], route: '' }, this.locationChanged);
-    }
-    let newState = { route };
-    axios.get(`${URL}/api/route/stops`, {
-      params: {
-        sub: 'mta',
-        route_id: route
-      }
-    })
-    .then(({ data }) => {
-      newState.results = data.N;
-      return axios.get(`${URL}/api/report/reports`, {
-        params: {
-          sub: 'mta',
-          route_id: route
-        }
-      });
-    })
-    .then(({ data }) => {
-      data.forEach((el, idx) => {
-        el[0] = el[0].split('-').pop().slice(0, -1);
-        let temp = newState.results.find((a) => a.stop_id.includes(el[0]));
-        temp && temp.count !== undefined ? temp.count += el[1] : temp.count = el[1];
-      });
-      
-      // Temp fix for known React Native bug
-      this.setState(newState);
-    })
-    .catch((error) => console.log(error));
+    this.props.navigation.navigate('Details', { route });
   }
 
   showModal() {
@@ -160,36 +129,27 @@ export default class UserMap extends Component {
               longitudeDelta: 0.05
             }}>
 
-            {/*this.state.location.coords ? (
+            {this.state.location.coords ? (
               <MapView.Marker
                 coordinate={{latitude: Number(this.state.location.coords.latitude), longitude: Number(this.state.location.coords.longitude)}}
-                title={"HI! IT\'S ME!!!"}
                 onPress={() => {
                   console.log('you pressed me!!!')
                 }}
                 pinColor={'#38A2FF'}>
-                <MapView.Callout>
-                  {/* <Text>{this.state.directionsData.routes[0].legs}</Text>
-                  <Text>{station.duration.text}</Text>
-                  <Text>{station.distance.text}</Text>
-                </MapView.Callout>
-            </MapView.Marker> ) : null */}
+              </MapView.Marker> ) : null }
 
             {this.state.results.map((marker, idx) =>
               <MapView.Marker
                 key={idx}
                 coordinate={{latitude: Number(marker.stop_lat), longitude: Number(marker.stop_lon)}}
                 onPress={() => {
-                  this.getDirections(`${this.state.location.coords.latitude}, ${this.state.location.coords.longitude}`, `${marker.stop_lat}, ${marker.stop_lon}`)
-                  this.setState({ stop: marker, selected: marker.stop_name })}}
-                pinColor={Helpers.MarkerColorHelper(marker.count || 0)}>
+                  this.getDirections(`${this.state.location.coords.latitude}, ${this.state.location.coords.longitude}`, `${marker.stop_lat}, ${marker.stop_lon}`, marker.stop_name)
+                }}>
                 <MapView.Callout
-                  key={idx}
-                  onPress={this.showModal}>                  
-                    <MapCallout 
-                      stop={marker} 
+                  onPress={this.showModal}>
+                    <MapCallout stop={marker} 
                       directionsData={this.state.directionsData}
-                      count={marker.count || 0} />             
+                    />             
                 </MapView.Callout>
               </MapView.Marker>)}
 
@@ -197,10 +157,9 @@ export default class UserMap extends Component {
                 coordinates= {this.state.coords}
                 strokeWidth={4}
                 strokeColor="blue" />
-
           </MapView>
         </Animated.View>
-        <MapRoutePicker onRoutePick={this.onRoutePick} />
+        <MapRoutePicker />
         <Modal
           animationType={"fade"}
           transparent={true}
