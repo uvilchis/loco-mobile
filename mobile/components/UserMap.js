@@ -107,6 +107,7 @@ export default class UserMap extends Component {
     let location = await Location.getCurrentPositionAsync({});
     axios.get(`${URL}/api/stops/location`, {
       params: {
+        sub: 'mta',
         lat: location.coords.latitude,
         lon: location.coords.longitude
       }
