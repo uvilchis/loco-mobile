@@ -126,8 +126,8 @@ export default class TrainLine extends Component {
 const styles = StyleSheet.create({
   container: {
     overflow: 'hidden',
-    borderColor: 'grey',
-    borderWidth: 1
+    borderBottomColor: 'grey',
+    borderBottomWidth: 1
   },
   inner: {
     padding: 12,

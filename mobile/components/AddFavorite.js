@@ -1,6 +1,6 @@
 
 import React, { Component } from 'react';
-import { StyleSheet, ScrollView, Text, Animated, Dimensions, Easing, RefreshControl, View, PanResponder } from 'react-native';
+import { StyleSheet, Text, ScrollView, Animated, Dimensions, Easing, RefreshControl, View, PanResponder, TouchableOpacity } from 'react-native';
 import { EvilIcons } from '@expo/vector-icons';
 import axios from 'axios';
 import URL from '../env/urls';
@@ -14,10 +14,12 @@ export default class AddFavorite extends Component {
       routes : [],
       routeId: '',
       stationsN: [],
-      stationsS: []
+      stationsS: [],
+      touchableEnabled: false
     };
     this.onRouteSelect = this.onRouteSelect.bind(this);
     this.onStationSelect = this.onStationSelect.bind(this);
+    this.onConfirm = this.onConfirm.bind(this);
 
     this._dropValue = new Animated.Value(0);
     this._drop = this._drop.bind(this);
@@ -59,16 +61,23 @@ export default class AddFavorite extends Component {
   }
 
   onStationSelect(stopId, stopName) {
-    axios.post(`${URL}/api/favorites/add`, {
-      route_id: this.state.routeId,
-      stop_id: stopId,
-      stop_name: stopName
-    })
-    .then(({ data }) => {
-      this.props.handleAddFavorite(data.favorites);
-      this.props.hideModal();
-    })
-    .catch((error) => console.log(error));
+    this.setState({
+      stopId: stopId,
+      stopName: stopName,
+      touchableEnabled: true
+    });
+  }
+
+  onConfirm() {
+    if (this.state.touchableEnabled) {
+      axios.post(`${URL}/api/favorites/add`, {
+        route_id: this.state.routeId,
+        stop_id: this.state.stopId,
+        stop_name: this.state.stopName
+      })
+      .then(({ data }) => this.props.handleAddFavorite(data.favorites))
+      .catch((error) => console.log(error));
+    }
   }
 
   _drop() {
@@ -117,6 +126,11 @@ export default class AddFavorite extends Component {
             style={styles.stationStyle}
             stations={this.state.stationsN}
             onStationSelect={this.onStationSelect} />
+          <TouchableOpacity
+            onPress={this.onConfirm}
+            style={[styles.confirmButton, { backgroundColor: this.state.touchableEnabled ? 'cadetblue' : 'lightgrey' }]}>
+            <Text style={styles.confirmText}>Confirm</Text>
+          </TouchableOpacity>
         </View>
       </ScrollView>
     );
@@ -146,5 +160,16 @@ const styles = StyleSheet.create({
   sectionHeader: {
     fontSize: 24,
     marginBottom: 4
+  },
+  confirmButton: {
+    marginTop: 16,
+    paddingHorizontal: 16,
+    paddingVertical: 8,
+    alignSelf: 'center',
+    borderRadius: 20
+  },
+  confirmText: {
+    color: 'white',
+    fontSize: 20
   }
 });

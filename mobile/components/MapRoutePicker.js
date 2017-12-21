@@ -41,8 +41,13 @@ export default class MapRoutePicker extends Component {
     .catch((error) => console.log(error));
   }
 
-  handleRoutePick(routeId) {
-    this.setState({ selected: routeId }, () => this.props.onRoutePick(routeId));
+  handleRoutePick(selected) {
+    let routes = this.state.routes.map((el) => {
+      el.selected = selected === this.state.selected ? false : el.route_id === selected;
+      return el;
+    });
+    if (selected === this.state.selected) { selected = ''; }
+    this.setState({ selected, routes }, () => this.props.onRoutePick(selected));
   }
 
   _toggleExpand() {
@@ -101,7 +106,7 @@ export default class MapRoutePicker extends Component {
           renderItem={({ item }) =>
             <Text
               onPress={() => this.handleRoutePick(item.route_id)}
-              style={[styles.text, Helpers.LineStyleHelper(item.route_id)]}>
+              style={[styles.text, Helpers.LineStyleHelper(item.route_id), { opacity: item.selected ? 1 : 0.5 }]}>
                 {item.route_id}
             </Text>}
           horizontal={true} />

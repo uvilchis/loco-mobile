@@ -1,5 +1,9 @@
 import React, { Component } from 'react';
+<<<<<<< HEAD
 import { StyleSheet, View, ScrollView, Text, Button, RefreshControl, Modal, Alert } from 'react-native';
+=======
+import { StyleSheet, View, ScrollView, Text, TouchableOpacity, RefreshControl, Modal } from 'react-native';
+>>>>>>> ui improvements
 import { SafeAreaView } from 'react-navigation'
 import axios from 'axios';
 import URL from '../env/urls';
@@ -119,7 +123,8 @@ export default class Favorites extends Component {
     .then(({ data }) => this.setState({favorites: data.favorites}))
     .catch(err => console.log(err))
   }
-  handleAddFavorite = (favorites) => this.setState({ favorites : favorites });
+  
+  handleAddFavorite = (favorites) => this.setState({ addFavoriteVisible: false, favorites: favorites });
 
   onMapPress = () => this.props.navigation.navigate('MapNav');
 
@@ -163,19 +168,28 @@ export default class Favorites extends Component {
           <RefreshControl
             refreshing={this.state.refreshing}
             onRefresh={this._onRefresh} />}>
-        <View>
+        <View style={styles.inner}>
           {this.state.favorites.map((element, idx)=>
             <Favorite
               key ={idx}
               routeId={element.route_id}
               stopId={element.stop_id}
               stopName={element.stop_name}
+<<<<<<< HEAD
               onDetailsPress={this.onDetailsPress}
               showAlert={this.showAlert} />)}
           <Button
             title="Add Favorite"
             onPress={this.showAddFavorite}
           />
+=======
+              onDetailsPress={this.onDetailsPress} />)}
+          <TouchableOpacity
+            style={styles.addFavoriteButton}
+            onPress={this.showAddFavorite}>
+            <Text style={styles.addFavoriteText}>Add a favorite</Text>
+          </TouchableOpacity>
+>>>>>>> ui improvements
           <Modal
             animationType={"slide"}
             transparent={false}
@@ -209,6 +223,10 @@ const styles = StyleSheet.create({
   main: {
     backgroundColor: 'white'
   },
+  inner: {
+    borderTopColor: 'grey',
+    borderTopWidth: 1
+  },
   text: {
     flexDirection: 'row',
     backgroundColor: '#fff',
@@ -217,5 +235,17 @@ const styles = StyleSheet.create({
     fontSize: 20,
     textAlign: 'center',
     paddingVertical: 25
+  },
+  addFavoriteButton: {
+    backgroundColor: 'cadetblue',
+    marginVertical: 16,
+    paddingHorizontal: 16,
+    paddingVertical: 8,
+    alignSelf: 'center',
+    borderRadius: 20
+  },
+  addFavoriteText: {
+    color: 'white',
+    fontSize: 20
   }
 });
