@@ -11,7 +11,7 @@ export default class Cards extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      direction: '',
+      direction: this.props.direction ? this.props.direction : '',
       schedule : [], // This should be optional
     };
 
@@ -34,6 +34,9 @@ export default class Cards extends Component {
 
   componentDidMount() {
     this._drop();
+    if (this.props.direction) {
+      this.onFetchSchedule();
+    }
   }
 
   onDirectionSelect(direction) {
@@ -98,7 +101,9 @@ export default class Cards extends Component {
         </Animated.View>
         <View style={styles.inner}>
           <Text style={styles.directionSelect}>Select direction</Text>
-          <CustomToggle onDirectionSelect={this.onDirectionSelect} />
+          <CustomToggle
+            onDirectionSelect={this.onDirectionSelect}
+            direction={this.state.direction} />
           <Text style={styles.stationSelect}>Schedule</Text>
           <Schedule schedule={this.state.schedule} />
         </View>

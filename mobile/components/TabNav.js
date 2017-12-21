@@ -24,7 +24,11 @@ export default TabNav = TabNavigator ({
   swipeEnabled : true,
   tabBarOptions: {
     labelStyle: {
-      fontSize: 20
+      fontSize: 20,
+      alignSelf: 'center'
+    },
+    tabStyle: {
+      paddingBottom: 8
     },
     style: {
       backgroundColor: 'grey'

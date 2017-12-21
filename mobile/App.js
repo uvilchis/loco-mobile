@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import axios from 'axios';
-import { Platform, StyleSheet, View, StatusBar } from 'react-native';
+import { Platform, StyleSheet, View, StatusBar, SafeAreaView } from 'react-native';
 
 import TabNav from './components/TabNav';
 import URL from './env/urls';
