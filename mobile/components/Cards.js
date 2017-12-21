@@ -25,7 +25,7 @@ export default class Cards extends Component {
   componentWillMount() {
     this._panResponder = PanResponder.create({
       onPanResponderMove: (e, gestureState) => {
-        if (gestureState.dy > 100) {
+        if (gestureState.dy > 200) {
           this.props.hideModal();
         }
       }
