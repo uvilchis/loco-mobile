@@ -58,8 +58,6 @@ export default class UserMap extends Component {
       .then((response) => {
         this.setState({
           results: response.data
-        }, () => {
-          console.log('THIS.STATE.RESULTS:', this.state.results)
         })})
       .catch((err) => {
         console.error('ERROR IN AXIOS REQUEST', err)
@@ -71,7 +69,6 @@ export default class UserMap extends Component {
     try {
       let resp = await fetch(`https://maps.googleapis.com/maps/api/directions/json?origin=${ startLoc }&destination=${ destinationLoc }&mode=walking`)
       let respJson = await resp.json();
-      // console.log('THIS IS THE RESPONSE', respJson)
       let points = Polyline.decode(respJson.routes[0].overview_polyline.points);
       let coords = points.map((point, index) => {
         return {
@@ -79,7 +76,11 @@ export default class UserMap extends Component {
           longitude : point[1]
         }
       })
-      this.setState({coords: coords})
+      console.log('data is setting');
+      this.setState({
+        coords: coords,
+        directionsData: respJson.routes[0].legs[0]
+      })
       return coords;
     } catch (error) {
       console.log(error);
@@ -109,7 +110,6 @@ export default class UserMap extends Component {
   }
 
   render() {
-    console.log('DIRECTIONS DATA:', this.state.directionsData)
     return (
       <View style={styles.container}>
         <Animated.View
@@ -138,14 +138,17 @@ export default class UserMap extends Component {
                 key={idx}
                 coordinate={{latitude: Number(marker.stop_lat), longitude: Number(marker.stop_lon)}}
                 onPress={() => {
+                  this.getDirections(`${this.state.location.coords.latitude}, ${this.state.location.coords.longitude}`, `${marker.stop_lat}, ${marker.stop_lon}`)
                   this.setState({ 
-                    selected: marker.stop_name,
-                    directionsData: this.getDirections(`${this.state.location.coords.latitude}, ${this.state.location.coords.longitude}`, `${marker.stop_lat}, ${marker.stop_lon}`)
+                    selected: marker.stop_name
                   })
                 }}>
                 <MapView.Callout
                   onPress={this.showModal}>
-                  <MapCallout stop={marker} />
+                  
+                    <MapCallout stop={marker} 
+                      directionsData={this.state.directionsData}
+                    />             
                 </MapView.Callout>
               </MapView.Marker>)}
 
