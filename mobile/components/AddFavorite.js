@@ -71,6 +71,7 @@ export default class AddFavorite extends Component {
   onConfirm() {
     if (this.state.touchableEnabled) {
       axios.post(`${URL}/api/favorites/add`, {
+        sub: 'mta',
         route_id: this.state.routeId,
         stop_id: this.state.stopId,
         stop_name: this.state.stopName

@@ -51,13 +51,13 @@ export default class Favorites extends Component {
     return { title, headerTitleStyle, headerStyle, headerRight };
   }
 
-  showAlert(stopId) {
+  showAlert(routeId, stopId) {
     Alert.alert(
       'Remove from favorites?',
       '',
       [
-        { text: 'Cancel'},
-        { text: 'Yes', onPress: () => this.handleDeleteFavorite(stopId) }
+        { text: 'Cancel' },
+        { text: 'Yes', onPress: () => this.handleDeleteFavorite(routeId, stopId) }
       ]
     );
   }
@@ -100,16 +100,16 @@ export default class Favorites extends Component {
     .then(({ data }) => {
       newState.favorites = data;
       this.setState(newState);
-      console.log(this.state.favorites)
     })
     .catch((error) => console.log(error));
   }
 
-  handleDeleteFavorite (stopId) {
+  handleDeleteFavorite (routeId, stopId) {
     axios.post(`${URL}/api/favorites/delete`, {
-      stop_id: stopId
+      stop_id: stopId,
+      route_id: routeId
     })
-    .then(({ data }) => this.setState({favorites: data.favorites}))
+    .then(({ data }) => this.setState({ favorites: data.favorites }))
     .catch(err => console.log(err))
   }
   

@@ -8,7 +8,7 @@ import Helpers from '../lib/util';
 const Favorite = (props) => (
   <TouchableOpacity
     onPress={() => props.onDetailsPress(props.routeId, { stop_id: props.stopId, stop_name: props.stopName })}
-    onLongPress={() => props.showAlert(props.stopId)}>
+    onLongPress={() => props.showAlert(props.routeId, props.stopId)}>
     <View style={styles.container}>
       <View style={styles.icon}>
         <Text style={[styles.symbols, Helpers.LineStyleHelper(props.routeId)]}>{props.routeId.toUpperCase()}</Text>

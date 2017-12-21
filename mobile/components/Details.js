@@ -222,27 +222,27 @@ export default class Details extends Component {
             stationComplaints={this.state.stationComplaints}
             selected={this.state.selected}
             onAdd={this.onAdd} />
+          {this.state.selected ? 
+            <TouchableOpacity
+              onPress={this.showModal}
+              style={styles.bottomButton}>
+              <Animated.View
+                style={{ 
+                  transform: [{
+                    translateY: this._jumpValue.interpolate({
+                      inputRange: [0, 0.5, 1],
+                      outputRange: [5, -2, 5]
+                    })
+                  }]
+                }}>
+                  <EvilIcons
+                    name='chevron-up'
+                    size={32}
+                    style={{ backgroundColor: 'transparent' }} />
+                </Animated.View>
+                <Text>View Schedule</Text>
+            </TouchableOpacity> : null}
         </ScrollView>
-
-        {this.state.selected ? <TouchableOpacity
-          onPress={this.showModal}
-          style={styles.add}>
-          <Animated.View
-            style={{ 
-              transform: [{
-                translateY: this._jumpValue.interpolate({
-                  inputRange: [0, 0.5, 1],
-                  outputRange: [5, -2, 5]
-                })
-              }]
-            }}>
-            <EvilIcons
-              name='chevron-up'
-              size={32}
-              style={{ backgroundColor: 'transparent' }} />
-          </Animated.View>
-          <Text>View Schedule</Text>
-        </TouchableOpacity> : null}
 
         <Modal
           animationType={'slide'}
@@ -284,12 +284,11 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center'
   },
-  add: {
+  bottomButton: {
     alignItems: 'center',
     alignSelf: 'center',
-    position: 'absolute',
     backgroundColor: 'transparent',
-    bottom: 20
+    marginBottom: 20
   }
 });
 
