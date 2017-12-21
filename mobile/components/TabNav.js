@@ -22,6 +22,16 @@ export default TabNav = TabNavigator ({
   },
   {
     tabBarPosition: 'bottom',
-    animationEnabled : false,
-    swipeEnabled : false
+    animationEnabled : true,
+    swipeEnabled : true,
+    tabBarOptions: {
+      labelStyle: {
+        fontSize: 20
+      },
+      style: {
+        backgroundColor: 'grey'
+      },
+      activeTintColor: 'white',
+      inactiveTintColor: 'lightgrey'
+    }
   });

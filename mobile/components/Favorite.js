@@ -1,38 +1,28 @@
-import React, { Component } from 'react';
-import { View, StyleSheet, Image, Button, Text, Alert, Animated, Easing, TouchableOpacity } from 'react-native';
-import { Entypo, EvilIcons } from '@expo/vector-icons';
+import React from 'react';
+import { View, StyleSheet, Text} from 'react-native';
+import { EvilIcons } from '@expo/vector-icons';
 import StatusMarker from './StatusMarker';
 
 import Helpers from '../lib/util';
 
-export default class Favorite extends Component {
-  constructor(props){
-    super(props);
-  }
-  // note: the color helper doesn't accomodate individual trainlines
-  render() {
-    const style = Helpers.LineStyleHelper(this.props.routeId.toUpperCase()) || {};
-    return (
-      <View style={styles.inner}>
-        <View style={styles.icon}>
-          <Text style={[styles.symbols, { color: style.color }]}>{this.props.routeId.toUpperCase()}</Text>
-        </View>
-        <View>
-          <Text>{this.props.stopName}</Text>
-        </View>
-        <View>
-          <EvilIcons
-            name="chevron-right"
-            color='darkgrey'
-            size={32}
-            onPress={() => this.props.onDetailsPress(this.props.routeId)}
-          />
-        </View>
-      </View>
-    )
-  }
-
-}
+const Favorite = (props) => (
+  <View style={styles.inner}>
+    <View style={styles.icon}>
+      <Text style={[styles.symbols, Helpers.LineStyleHelper(props.routeId)]}>{props.routeId.toUpperCase()}</Text>
+    </View>
+    <View>
+      <Text>{props.stopName}</Text>
+    </View>
+    <View>
+      <EvilIcons
+        style={{ alignSelf: 'center' }}
+        name="chevron-right"
+        color='darkgrey'
+        size={32}
+        onPress={() => props.onDetailsPress(props.routeId, { stop_id: props.stopId, stop_name: props.stopName })}/>
+    </View>
+  </View>
+);
 
 const styles = StyleSheet.create({
   container: {
@@ -71,3 +61,5 @@ const styles = StyleSheet.create({
     marginTop: 2
   }
 });
+
+export default Favorite;

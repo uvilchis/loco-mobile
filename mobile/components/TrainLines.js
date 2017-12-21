@@ -33,6 +33,7 @@ export default class TrainLines extends Component {
   }
 
   _fetch(newState = {}) {
+    newState.showIndicator = false;
     axios.get(`${URL}/api/service?sub=mta`)
     .then(({ data }) => {
       newState.service = data.lines;
