@@ -156,7 +156,7 @@ export default class UserMap extends Component {
               <MapView.Marker
                 key={idx}
                 coordinate={{ latitude: Number(marker.stop_lat), longitude: Number(marker.stop_lon) }}
-                onPress={() => this.getDirections(`${this.state.location.coords.latitude}, ${this.state.location.coords.longitude}`, `${marker.stop_lat}, ${marker.stop_lon}`, marker.stop_name)}
+                onPress={() => this.getDirections(`${this.state.location.coords.latitude}, ${this.state.location.coords.longitude}`, `${marker.stop_lat}, ${marker.stop_lon}`, marker)}
                 pinColor={Helpers.MarkerColorHelper(marker.count || 0)}>
                 <MapView.Callout
                   onPress={this.showModal}>
