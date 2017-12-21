@@ -49,7 +49,6 @@ export default class MapDeets extends Component {
   }
 
   render() {
-    // console.log('MAPDEETS PROPS:', this.props.screenProps)
     return (
       <View
         style={styles.container}
