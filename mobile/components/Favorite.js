@@ -1,73 +1,56 @@
-import React, { Component } from 'react';
-import { View, StyleSheet, Image, Button, Text, Alert, Animated, Easing, TouchableOpacity } from 'react-native';
-import { Entypo, EvilIcons } from '@expo/vector-icons';
+import React from 'react';
+import { View, StyleSheet, Text, TouchableOpacity } from 'react-native';
+import { EvilIcons } from '@expo/vector-icons';
 import StatusMarker from './StatusMarker';
 
 import Helpers from '../lib/util';
 
-export default class Favorite extends Component {
-  constructor(props){
-    super(props);
-  }
-  // note: the color helper doesn't accomodate individual trainlines
-  render() {
-    const style = Helpers.LineStyleHelper(this.props.routeId.toUpperCase()) || {};
-    return (
-      <View style={styles.inner}>
-        <View style={styles.icon}>
-          <Text style={[styles.symbols, { color: style.color }]}>{this.props.routeId.toUpperCase()}</Text>
-        </View>
-        <View>
-          <Text>{this.props.stopName}</Text>
-        </View>
-        <View>
+const Favorite = (props) => (
+  <TouchableOpacity
+    onPress={() => props.onDetailsPress(props.routeId, { stop_id: props.stopId, stop_name: props.stopName })}
+    onLongPress={() => props.showAlert(props.routeId, props.stopId)}>
+    <View style={styles.container}>
+      <View style={styles.icon}>
+        <Text style={[styles.symbols, Helpers.LineStyleHelper(props.routeId)]}>{props.routeId.toUpperCase()}</Text>
+      </View>
+      <View>
+        <Text>{props.stopName}</Text>
+      </View>
+      <View>
+        <TouchableOpacity
+          onPress={() => props.onDetailsPress(props.routeId, { stop_id: props.stopId, stop_name: props.stopName })}>
           <EvilIcons
+            style={{ alignSelf: 'center' }}
             name="chevron-right"
             color='darkgrey'
-            size={32}
-            onPress={() => this.props.onDetailsPress(this.props.routeId)}
-          />
-        </View>
+            size={32} />
+        </TouchableOpacity>
       </View>
-    )
-  }
-
-}
+    </View>
+  </TouchableOpacity>
+);
 
 const styles = StyleSheet.create({
   container: {
     overflow: 'hidden',
-    borderColor: 'grey',
-    borderWidth: 1
-  },
-  inner: {
+    borderBottomColor: 'grey',
+    borderBottomWidth: 1,
     padding: 12,
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'space-between',
+    justifyContent: 'space-between'
   },
   icon: {
     flexDirection: 'row',
     flex: 2
   },
-  buttons: {
-    flex: 2,
-    padding: 2,
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center'
-  },
   symbols: {
     fontWeight: 'bold',
-    fontSize: 30,
+    fontSize: 28,
     textShadowOffset: { width: 1, height: 1},
     textShadowRadius: 1,
     textShadowColor: '#dddddd'
-  },
-  rotateArrow: {
-    height: 28,
-    width: 28,
-    marginRight: 8,
-    marginTop: 2
   }
 });
+
+export default Favorite;

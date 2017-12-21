@@ -7,17 +7,17 @@ export default class StationSelect extends Component {
     super(props);
     this.state = {
       dropdown: false,
-      search: '',
+      search: this.props.stop ? this.props.stop.stop_name : '',
       all: [],
-      filtered: []
+      filtered: this.props.stop ? [this.props.stop] : []
     };
 
-    this.spinValue = new Animated.Value(0);
-    this.anim = this.anim.bind(this);
+    this.onSelect = this.onSelect.bind(this);
 
+    this._spinValue = new Animated.Value(0);
+    this._anim = this._anim.bind(this);
 
     this._onChange = this._onChange.bind(this);
-    this._onSelect = this._onSelect.bind(this);
     this._clear = this._clear.bind(this);
     this._onFocus = this._onFocus.bind(this);
     this._toggle = this._toggle.bind(this);
@@ -32,12 +32,12 @@ export default class StationSelect extends Component {
     }
   }
 
-  anim() {
+  _anim() {
     let init = this.state.dropdown ? 0 : 1;
     let final = this.state.dropdown ? 1 : 0;
 
     Animated.timing(
-      this.spinValue,
+      this._spinValue,
       {
         toValue: final,
         duration: 150,
@@ -46,29 +46,25 @@ export default class StationSelect extends Component {
     ).start();
   }
 
-  _setHeight(e) {
-    // console.log(e.nativeEvent.layout);
-  }
-
   _onChange(search) {
     let newState = {};
     newState.search = search;
     newState.filtered = this.state.all.filter((a) => a.stop_name.toLowerCase().includes(search.toLowerCase()));
     this.setState(newState, () => {
-      this.anim();
+      this._anim();
       if (!search.length) {
         this.props.onStationSelect('');
       }
     });
   }
 
-  _onSelect(idx) {
-    this.props.onStationSelect(this.state.filtered[idx].stop_id, this.state.filtered[idx].route_id);
+  onSelect(idx) {
+    this.props.onStationSelect(this.state.filtered[idx].stop_id, this.state.filtered[idx].stop_name);
     this.setState({
       search: this.state.filtered[idx].stop_name,
       filtered:[this.state.filtered[idx]],
       dropdown: false
-    }, this.anim);
+    }, this._anim);
   }
 
   _clear() {
@@ -76,11 +72,11 @@ export default class StationSelect extends Component {
   }
 
   _onFocus() {
-    this.setState({ dropdown: true }, this.anim);
+    this.setState({ dropdown: true }, this._anim);
   }
 
   _toggle() {
-    this.setState({ dropdown: !this.state.dropdown }, this.anim);
+    this.setState({ dropdown: !this.state.dropdown }, this._anim);
   }
 
   render() {
@@ -110,7 +106,7 @@ export default class StationSelect extends Component {
             <Animated.View 
               style={[styles.rotate, {
                 transform: [{
-                  rotate: this.spinValue.interpolate({
+                  rotate: this._spinValue.interpolate({
                     inputRange: [0, 1],
                     outputRange: ['0deg', '-180deg']
                   })
@@ -129,7 +125,7 @@ export default class StationSelect extends Component {
               <TouchableOpacity
                 key={idx}
                 style={styles.item}
-                onPress={this._onSelect.bind(null, idx)}>
+                onPress={this.onSelect.bind(null, idx)}>
                 <Text style={styles.station}>{station.stop_name}</Text>
               </TouchableOpacity>)}
           </View> : null}

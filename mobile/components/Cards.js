@@ -11,21 +11,21 @@ export default class Cards extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      direction: '',
+      direction: this.props.direction ? this.props.direction : '',
       schedule : [], // This should be optional
     };
 
     this.onDirectionSelect = this.onDirectionSelect.bind(this);
     this.onFetchSchedule = this.onFetchSchedule.bind(this);
 
-    this.dropValue = new Animated.Value(0);
-    this.drop = this.drop.bind(this);
+    this._dropValue = new Animated.Value(0);
+    this._drop = this._drop.bind(this);
   }
 
   componentWillMount() {
     this._panResponder = PanResponder.create({
       onPanResponderMove: (e, gestureState) => {
-        if (gestureState.dy > 100) {
+        if (gestureState.dy > 200) {
           this.props.hideModal();
         }
       }
@@ -33,7 +33,10 @@ export default class Cards extends Component {
   }
 
   componentDidMount() {
-    this.drop();
+    this._drop();
+    if (this.props.direction) {
+      this.onFetchSchedule();
+    }
   }
 
   onDirectionSelect(direction) {
@@ -64,10 +67,10 @@ export default class Cards extends Component {
     .catch((error) => console.log(error));
   }
 
-  drop() {
-    this.dropValue.setValue(0);
+  _drop() {
+    this._dropValue.setValue(0);
     Animated.timing(
-      this.dropValue,
+      this._dropValue,
       {
         toValue: 1,
         duration: 2000,
@@ -84,7 +87,7 @@ export default class Cards extends Component {
         <Animated.View
           style={[styles.downButton, {
             transform: [{
-              translateY: this.dropValue.interpolate({
+              translateY: this._dropValue.interpolate({
                 inputRange: [0, 0.5, 1],
                 outputRange: [5, 0, 5]
               })
@@ -98,7 +101,9 @@ export default class Cards extends Component {
         </Animated.View>
         <View style={styles.inner}>
           <Text style={styles.directionSelect}>Select direction</Text>
-          <CustomToggle onDirectionSelect={this.onDirectionSelect} />
+          <CustomToggle
+            onDirectionSelect={this.onDirectionSelect}
+            direction={this.state.direction} />
           <Text style={styles.stationSelect}>Schedule</Text>
           <Schedule schedule={this.state.schedule} />
         </View>

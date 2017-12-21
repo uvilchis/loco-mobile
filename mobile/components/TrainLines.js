@@ -33,6 +33,7 @@ export default class TrainLines extends Component {
   }
 
   _fetch(newState = {}) {
+    newState.showIndicator = false;
     axios.get(`${URL}/api/service?sub=mta`)
     .then(({ data }) => {
       newState.service = data.lines;
@@ -44,7 +45,7 @@ export default class TrainLines extends Component {
           return a.countedRoutes = [{ name: a.name, count: data[a.name] || 0}];
         }
         a.countedRoutes = a.name.split('').reduce((acc, b) => {
-          acc.push({ name: b, count: data[b] || 0 });
+          acc.push({ name: b, count: data[b.toLowerCase()] || 0 });
           return acc;
         }, []);
       });
@@ -66,12 +67,14 @@ export default class TrainLines extends Component {
           <RefreshControl
             refreshing={this.state.refreshing}
             onRefresh={this._onRefresh} /> }>
-        {this.state.showIndicator ?
-          <View style={styles.loader}>
-            <ActivityIndicator size="large" color="cadetblue" />
-          </View> :
-          this.state.service.map((line, idx) =>
-            <TrainLine key={idx} line={line} idx={idx} onDetailsPress={this.props.onDetailsPress}/>)}
+        <View style={styles.inner}>
+          {this.state.showIndicator ?
+            <View style={styles.loader}>
+              <ActivityIndicator size="large" color="cadetblue" />
+            </View> :
+            this.state.service.map((line, idx) =>
+              <TrainLine key={idx} line={line} idx={idx} onDetailsPress={this.props.onDetailsPress}/>)}
+        </View>
       </ScrollView>
     );
   }
@@ -80,6 +83,10 @@ export default class TrainLines extends Component {
 const styles = StyleSheet.create({
   main: {
     backgroundColor: 'white'
+  },
+  inner: {
+    borderTopColor: 'grey',
+    borderTopWidth: 1
   },
   loader: {
     flex: 1,

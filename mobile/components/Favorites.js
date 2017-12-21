@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { StyleSheet, ScrollView, Text, Button, RefreshControl, Modal } from 'react-native';
+import { StyleSheet, View, ScrollView, Text, TouchableOpacity, RefreshControl, Modal, Alert } from 'react-native';
 import { SafeAreaView } from 'react-navigation'
 import axios from 'axios';
 import URL from '../env/urls';
@@ -10,7 +10,6 @@ import Header from './Header';
 import MapNav from './MapNav';
 import Login from './Login';
 
-
 export default class Favorites extends Component {
   constructor (props) {
     super(props);
@@ -18,18 +17,17 @@ export default class Favorites extends Component {
       addFavoriteVisible: false,
       favorites: [],
       modalVisible: false,
-      loggedIn: false
-    }
-    this.hideAddFavorite = this.hideAddFavorite.bind(this);
-    this.showAddFavorite = this.showAddFavorite.bind(this);
+      refreshing: false
+    };
+
+    this.showAlert = this.showAlert.bind(this);
+    this._onRefresh = this._onRefresh.bind(this);
+    this._fetchFavorites = this._fetchFavorites.bind(this);
     this.handleAddFavorite = this.handleAddFavorite.bind(this);
-    this.onDetailsPress = this.onDetailsPress.bind(this);
-    this.onMapPress = this.onMapPress.bind(this);
+    this.handleDeleteFavorite = this.handleDeleteFavorite.bind(this);
     this.onLogin = this.onLogin.bind(this);
     this.onLogout = this.onLogout.bind(this);
     this.onGoogle = this.onGoogle.bind(this);
-    this.hideModal = this.hideModal.bind(this);
-    this.showModal = this.showModal.bind(this);
   }
 
   static navigationOptions = ({ navigation }) => {
@@ -53,129 +51,131 @@ export default class Favorites extends Component {
     return { title, headerTitleStyle, headerStyle, headerRight };
   }
 
+  showAlert(routeId, stopId) {
+    Alert.alert(
+      'Remove from favorites?',
+      '',
+      [
+        { text: 'Cancel' },
+        { text: 'Yes', onPress: () => this.handleDeleteFavorite(routeId, stopId) }
+      ]
+    );
+  }
+
   componentDidMount() {
-    axios.get(`${URL}/api/favorites/allfavorites?sub=mta`)
-    .then(({ data }) => this.setState({ favorites : data }, ()=> console.log(this.state.favorites)))
-    .catch(err => console.log(err))
+    this._fetchFavorites();
 
     this.props.navigation.setParams({
       showModal: this.showModal,
       onMapPress: this.onMapPress,
-      onLogout: this.onLogout
+      onLogout: this.onLogout,
+      loggedIn: this.props.screenProps.isLoggedIn
     });
   }
 
   componentDidUpdate() {
     this.props.navigation.setParams({
-      loggedIn: this.state.loggedIn
+      loggedIn: this.props.screenProps.isLoggedIn
     });
-
-    axios.get(`${URL}/api/favorites/allfavorites?sub=mta`)
-    .then(({ data }) => this.setState({ favorites : data }, ()=> console.log(this.state.favorites)))
-    .catch(err => console.log(err))
-
+    this._fetchFavorites();
   }
 
   shouldComponentUpdate(nextProps, nextState) {
-    return (nextState.loggedIn !== this.state.loggedIn) ||
+    return (nextProps.screenProps.isLoggedIn !== this.props.screenProps.isLoggedIn) ||
            (nextState.modalVisible !== this.state.modalVisible) ||
-           (nextState.addFavoriteVisible !== this.state.addFavoriteVisible);
+           (nextState.addFavoriteVisible !== this.state.addFavoriteVisible) ||
+           (nextState.favorites.length !== this.state.favorites.length);
   }
 
-  showAddFavorite() {
-    this.setState({ addFavoriteVisible: true })
+  _onRefresh() {
+    this.setState({ refreshing: true }, () => this._fetchFavorites({ refreshing: false }));
   }
 
-  hideAddFavorite() {
-    this.setState({ addFavoriteVisible: false })
+  _fetchFavorites(newState = {}) {
+    axios.get(`${URL}/api/favorites/allfavorites`, {
+      params: {
+        sub: 'mta'
+      }
+    })
+    .then(({ data }) => {
+      newState.favorites = data;
+      this.setState(newState);
+    })
+    .catch((error) => console.log(error));
   }
 
-  handleAddFavorite(favorites) {
-    this.setState({ favorites : favorites })
+  handleDeleteFavorite (routeId, stopId) {
+    axios.post(`${URL}/api/favorites/delete`, {
+      stop_id: stopId,
+      route_id: routeId
+    })
+    .then(({ data }) => this.setState({ favorites: data.favorites }))
+    .catch(err => console.log(err))
   }
+  
+  handleAddFavorite = (favorites) => this.setState({ addFavoriteVisible: false, favorites: favorites });
 
-  onMapPress() {
-    this.props.navigation.navigate('MapNav');
-  }
+  onMapPress = () => this.props.navigation.navigate('MapNav');
 
-  onDetailsPress(route) {
-    this.props.navigation.navigate('Details', { route })
-  }
+  onDetailsPress = (route, stop) => this.props.navigation.navigate('Details', { route, stop });
 
-  showModal() {
-    this.setState({ modalVisible: true });
-  }
+  showAddFavorite = () => this.setState({ addFavoriteVisible: true });
 
-  hideModal() {
-    this.setState({ modalVisible: false });
-  }
+  hideAddFavorite = () => this.setState({ addFavoriteVisible: false });
+
+  showModal = () => this.setState({ modalVisible: true });
+
+  hideModal = () => this.setState({ modalVisible: false });
 
   onLogin(userObj) {
     axios.post(`${URL}/api/user/login`, userObj)
-    .then(({ data }) => {
-      this.setState({
-        loggedIn: true,
-        modalVisible: false
-      });
-    })
+    .then(({ data }) => this.setState({ modalVisible: false }, this.props.screenProps.onLogin))
     .catch((error) => console.log(error));
   }
 
   onSignUp(userObj) {
     axios.post(`${URL}/api/user/signup`, userObj)
-    .then(({ data }) => {
-      this.setState({
-        loggedIn: true,
-        modalVisible: false
-      });
-    })
-    .catch((error) => {
-      console.log(error);
-    });
+    .then(({ data }) => this.setState({ modalVisible: false }, this.props.screenProps.onLogin))
+    .catch((error) => console.log(error));
   }
 
   onLogout() {
     axios.get(`${URL}/api/user/logout`)
-    .then(({ data }) => {
-      this.setState({
-        loggedIn: false
-      }, () => console.log('logged out'));
-    })
+    .then(({ data }) => this.setState({ favorites: [] }, this.props.screenProps.onLogout))
     .catch((error) => console.log(error));
   }
 
   onGoogle(data) {
-    this.setState({
-      loggedIn: true,
-      modalVisible: false
-    }, () => console.log('google auth successful'));
+    this.setState({ modalVisible: false }, this.props.screenProps.onLogin);
   }
 
   render () {
     return (
-      <ScrollView style={styles.main}>
-        <SafeAreaView>
-          <Text>FAVORITES</Text>
+      <ScrollView
+        style={styles.main}
+        refreshControl={
+          <RefreshControl
+            refreshing={this.state.refreshing}
+            onRefresh={this._onRefresh} />}>
+        <View style={styles.inner}>
           {this.state.favorites.map((element, idx)=>
             <Favorite
               key ={idx}
               routeId={element.route_id}
               stopId={element.stop_id}
               stopName={element.stop_name}
-              onDetailsPress={this.onDetailsPress} />)
-          }
-          <Button
-            title="Add Favorite"
-            onPress={()=> {
-              console.log('clicked', this.state.addFavoriteVisible)
-              this.showAddFavorite()
-              console.log('post click', this.state.addFavoriteVisible)
-            }}
-          />
+              onDetailsPress={this.onDetailsPress}
+              showAlert={this.showAlert} />)}
+          <TouchableOpacity
+            style={styles.addFavoriteButton}
+            onPress={this.showAddFavorite}>
+            <Text style={styles.addFavoriteText}>Add a favorite</Text>
+          </TouchableOpacity>
           <Modal
             animationType={"slide"}
             transparent={false}
-            visible={this.state.addFavoriteVisible}>
+            visible={this.state.addFavoriteVisible}
+            onRequestClose={this.hideAddFavorite}>
             <AddFavorite
               hideModal={this.hideAddFavorite}
               handleAddFavorite={this.handleAddFavorite} />
@@ -191,9 +191,9 @@ export default class Favorites extends Component {
               onGoogle={this.onGoogle}
               hideModal={this.hideModal} />
           </Modal>
-        </SafeAreaView>
+        </View>
       </ScrollView>
-    )
+    );
   }
 }
 
@@ -204,6 +204,10 @@ const styles = StyleSheet.create({
   main: {
     backgroundColor: 'white'
   },
+  inner: {
+    borderTopColor: 'grey',
+    borderTopWidth: 1
+  },
   text: {
     flexDirection: 'row',
     backgroundColor: '#fff',
@@ -212,5 +216,17 @@ const styles = StyleSheet.create({
     fontSize: 20,
     textAlign: 'center',
     paddingVertical: 25
+  },
+  addFavoriteButton: {
+    backgroundColor: 'cadetblue',
+    marginVertical: 16,
+    paddingHorizontal: 16,
+    paddingVertical: 8,
+    alignSelf: 'center',
+    borderRadius: 20
+  },
+  addFavoriteText: {
+    color: 'white',
+    fontSize: 20
   }
 });

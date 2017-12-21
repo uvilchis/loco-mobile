@@ -1,30 +1,52 @@
-import React from 'react';
-import { Platform, StyleSheet, View, StatusBar } from 'react-native';
-import RootNav from './components/RootNav';
-// TODO : Implement a favorites list
-// import Favorites from './components/Favorites'
-// import FavNav from './components/FavNav';
-// TODO : implement tab navigation
+import React, { Component } from 'react';
+import axios from 'axios';
+import { Platform, StyleSheet, View, StatusBar, SafeAreaView } from 'react-native';
+
 import TabNav from './components/TabNav';
-// import URL from './env/urls';
+import URL from './env/urls';
 
-const App = (props) => (
-  <View style={styles.container}>
-    <TabNav />
-  </View>
-);
+export default class App extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      isLoggedIn: false
+    };
 
-// <TabNav /> needs to come here
-// we need to make sure the proper stack is being rendered
-/*
-  <Modal
-    animationType = {"slide"}
-    transparent = {false}
-    visible = {this.state.favoritesVisible}
-    onRequestClose = {() => console.log("Modal has been closed.")}>
-    <FavNav />
-  </Modal>
-*/
+    this.onLogin = this.onLogin.bind(this);
+    this.onLogout = this.onLogout.bind(this);
+  }
+
+  componentWillMount() {
+    axios.get(`${URL}/api/user/start`, {
+      params: {
+        sub: 'mta'
+      }
+    })
+    .then((data) => this.setState({ isLoggedIn: true }))
+    .catch((error) => console.log(error));
+  }
+
+  onLogin() {
+    this.setState({ isLoggedIn: true });
+  }
+
+  onLogout() {
+    this.setState({ isLoggedIn: false });
+  }
+
+  render() {
+    return (
+      <View style={styles.container}>
+        <TabNav
+          screenProps={{
+            isLoggedIn: this.state.isLoggedIn,
+            onLogin: this.onLogin,
+            onLogout: this.onLogout
+          }} />
+      </View>
+    );
+  }
+}
 
 const styles = StyleSheet.create({
   container: {
@@ -32,5 +54,3 @@ const styles = StyleSheet.create({
     paddingTop: Platform.OS === 'ios' ? 0 : StatusBar.currentHeight
   }
 });
-
-export default App;
