@@ -69,7 +69,7 @@ export default class Details extends Component {
     .catch((error) => console.log(error));
   }
 
-  onStationSelect = (stopId) => this.setState({ stopId }, this.onFetchComplaints); 
+  onStationSelect = (stopId) => this.setState({ stopId }, this.onFetchComplaints);
 
   // True = uptown
   onDirectionSelect = (direction) => this.setState({ direction }, this.onFetchComplaints);
@@ -93,8 +93,8 @@ export default class Details extends Component {
     .then(({ data }) => {
       newState.stationComplaints = this.state.stationComplaints.slice();
       let temp = newState.stationComplaints.find((el) => el.name === complaintType);
-      if (temp) { 
-        temp.count = data.count; 
+      if (temp) {
+        temp.count = data.count;
       } else {
         newState.stationComplaints.push({ name: complaintType, count: data.count });
       }
@@ -205,9 +205,9 @@ export default class Details extends Component {
           <View style={styles.section}>
             <Text style={styles.sectionHeader}>Select a station</Text>
           </View>
-          <StationSelect 
+          <StationSelect
             stop={this.props.navigation.state.params.stop}
-            stations={this.state.stationsN} 
+            stations={this.state.stationsN}
             onStationSelect={this.onStationSelect} />
 
           <View style={styles.section}>
@@ -222,12 +222,12 @@ export default class Details extends Component {
             stationComplaints={this.state.stationComplaints}
             selected={this.state.selected}
             onAdd={this.onAdd} />
-          {this.state.selected ? 
+          {this.state.selected ?
             <TouchableOpacity
               onPress={this.showModal}
               style={styles.bottomButton}>
               <Animated.View
-                style={{ 
+                style={{
                   transform: [{
                     translateY: this._jumpValue.interpolate({
                       inputRange: [0, 0.5, 1],
@@ -249,7 +249,8 @@ export default class Details extends Component {
           transparent={false}
           visible={this.state.modalVisible}
           onRequestClose={this.hideModal}>
-          <Cards 
+          <Cards
+            direction={this.state.direction}
             hideModal={this.hideModal}
             routeId={this.props.navigation.state.params.route}
             stopId={this.state.stopId} />

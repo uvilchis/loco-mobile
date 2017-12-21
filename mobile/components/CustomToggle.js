@@ -16,6 +16,12 @@ export default class CustomToggle extends Component {
     this._anim = this._anim.bind(this);
   }
 
+  componentDidMount() {
+    if (this.props.direction) {
+      this.setState({ selected: true,  uptown: this.props.direction === 'N' }, this._anim);
+    }
+  }
+
   onSelect(uptown) {
     this.props.onDirectionSelect(uptown ? 'N' : 'S');
     if (uptown !== this.state.uptown) {
@@ -62,8 +68,8 @@ export default class CustomToggle extends Component {
                 outputRange: ['rgba(255, 255, 255, 1)', 'rgba(0, 102, 102, 1)']
               })
             }]}>
-            <Animated.Text 
-              style={[styles.text, { 
+            <Animated.Text
+              style={[styles.text, {
                 color: this._leftValue.interpolate({
                   inputRange: [0, 1],
                   outputRange: ['rgba(0, 102, 102, 1)', 'rgba(255, 255, 255, 1)']
@@ -84,8 +90,8 @@ export default class CustomToggle extends Component {
                 outputRange: ['rgba(255, 255, 255, 1)', 'rgba(0, 102, 102, 1)']
               })
             }]}>
-            <Animated.Text 
-              style={[styles.text, { 
+            <Animated.Text
+              style={[styles.text, {
                 color: this._rightValue.interpolate({
                   inputRange: [0, 1],
                   outputRange: ['rgba(0, 102, 102, 1)', 'rgba(255, 255, 255, 1)']
