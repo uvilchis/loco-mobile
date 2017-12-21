@@ -1,7 +1,7 @@
 
 import React, { Component } from 'react';
-import { StyleSheet, ScrollView, Text, Button, RefreshControl, Modal, Picker, View } from 'react-native';
-import { SafeAreaView } from 'react-navigation';
+import { StyleSheet, Text, ScrollView, Animated, Dimensions, Easing, RefreshControl, View, PanResponder, TouchableOpacity } from 'react-native';
+import { EvilIcons } from '@expo/vector-icons';
 import axios from 'axios';
 import URL from '../env/urls';
 import RouteSelect from './RouteSelect'
@@ -12,101 +12,145 @@ export default class AddFavorite extends Component {
     super(props);
     this.state = {
       routes : [],
-      stopId : '',
       routeId: '',
       stationsN: [],
-      stationsS: []
+      stationsS: [],
+      touchableEnabled: false
     };
     this.onRouteSelect = this.onRouteSelect.bind(this);
     this.onStationSelect = this.onStationSelect.bind(this);
+    this.onConfirm = this.onConfirm.bind(this);
+
+    this._dropValue = new Animated.Value(0);
+    this._drop = this._drop.bind(this);
   }
 
   componentDidMount() {
+    this._drop();
+
     let newState = {};
-    axios.get(`${URL}/api/routes?sub=mta`)
+    axios.get(`${URL}/api/routes`, {
+      params: {
+        sub: 'mta'
+      }
+    })
     .then(({ data }) => {
-      newState.routes = data;
+      newState.routes = data.reduce((acc, el) => {
+        if (el.route_id.length === 1) { acc.push(el); }
+        return acc;
+      }, []);
       this.setState(newState);
     })
     .catch((error) => console.log(error))
   }
 
   onRouteSelect(routeId) {
-    let newState = {}
-    this.setState({ routeId }, ()=> {
-      axios.get(`${URL}/api/route/stops?sub=mta`, {
-        params: {
-          route_id: this.state.routeId
-        }
-      })
-      .then(({ data }) => {
-        newState.stationsN = data.N;
-        newState.stationsS = data.S;
-        this.setState(newState)
-      })
-      .catch((data) => console.log(data))
+    let newState = { routeId };
+    axios.get(`${URL}/api/route/stops`, {
+      params: {
+        sub: 'mta',
+        route_id: routeId
+      }
     })
+    .then(({ data }) => {
+      newState.stationsN = data.N;
+      newState.stationsS = data.S;
+      this.setState(newState);
+    })
+    .catch((error) => console.log(error));
   }
 
-  onStationSelect(stopId) {
-    this.setState({ stopId }, () => {
-      // TODO : first make a get request to obtain the station name, be sure to send that in the post request
-      axios.get(`${URL}/api/stop?sub=mta`, {
-        params : {
-          stop_id : stopId
-        }
-      })
-      .then(({ data }) => {
-        let stopName = data[0].stop_name;
-        return axios.post(`${URL}/api/favorites/add`, {
-          route_id: this.state.routeId,
-          stop_id: this.state.stopId,
-          stop_name: stopName
-        })
-      })
-      .then(({ data }) => {
-        this.props.handleAddFavorite(data.favorites)
-        this.props.hideModal()
-      })
-      .catch((err) => console.error(err))
+  onStationSelect(stopId, stopName) {
+    this.setState({
+      stopId: stopId,
+      stopName: stopName,
+      touchableEnabled: true
     });
+  }
+
+  onConfirm() {
+    if (this.state.touchableEnabled) {
+      axios.post(`${URL}/api/favorites/add`, {
+        sub: 'mta',
+        route_id: this.state.routeId,
+        stop_id: this.state.stopId,
+        stop_name: this.state.stopName
+      })
+      .then(({ data }) => this.props.handleAddFavorite(data.favorites))
+      .catch((error) => console.log(error));
+    }
+  }
+
+  _drop() {
+    this._dropValue.setValue(0);
+    Animated.timing(
+      this._dropValue,
+      {
+        toValue: 1,
+        duration: 2000,
+        easing: Easing.linear
+      }
+    ).start(this._drop);
   }
 
   render() {
     return (
-      <SafeAreaView style={styles.container}>
-        <ScrollView style={styles.scroll}>
+      <ScrollView
+        style={styles.container}>
+        <Animated.View
+          style={[styles.downButton, {
+            transform: [{
+              translateY: this._dropValue.interpolate({
+                inputRange: [0, 0.5, 1],
+                outputRange: [5, 0, 5]
+              })
+            }]
+          }]}>
+          <EvilIcons
+            name="chevron-down"
+            size={50}
+            color="black"
+            onPress={this.props.hideModal} />
+        </Animated.View>
+        <View style={styles.inner}>
           <View style={styles.section}>
-            <Text style={styles.sectionHeader}>Add a Favorite</Text>
-            <RouteSelect
-              style={styles.stationStyle}
-              routes={this.state.routes}
-              onRouteSelect={this.onRouteSelect}
-            />
-            <StationSelect
-              style={styles.stationStyle}
-              stations={this.state.stationsN}
-              onStationSelect={this.onStationSelect}
-            />
-            <Button
-              title="Go Back"
-              onPress={() => this.props.hideModal()}
-            />
+            <Text style={styles.sectionHeader}>Select a route</Text>
           </View>
-        </ScrollView>
-      </SafeAreaView>
-    )
+          <RouteSelect
+            style={styles.stationStyle}
+            routes={this.state.routes}
+            onRouteSelect={this.onRouteSelect} />
+            <View style={styles.section}>
+              <Text style={styles.sectionHeader}>Select a station</Text>
+            </View>
+          <StationSelect
+            style={styles.stationStyle}
+            stations={this.state.stationsN}
+            onStationSelect={this.onStationSelect} />
+          <TouchableOpacity
+            onPress={this.onConfirm}
+            style={[styles.confirmButton, { backgroundColor: this.state.touchableEnabled ? 'cadetblue' : 'lightgrey' }]}>
+            <Text style={styles.confirmText}>Confirm</Text>
+          </TouchableOpacity>
+        </View>
+      </ScrollView>
+    );
   }
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
-    alignContent: 'center'
+    paddingTop: 60,
+    backgroundColor: 'white'
   },
-  scroll: {
-    flex: 1
+  inner: {
+    flex: 1,
+    marginTop: 40
+  },
+  downButton: {
+    position: 'absolute',
+    left: (Dimensions.get('window').width / 2) - 25
   },
   section: {
     borderBottomColor: 'lightgrey',
@@ -116,24 +160,17 @@ const styles = StyleSheet.create({
   },
   sectionHeader: {
     fontSize: 24,
-    marginTop: 20,
     marginBottom: 4
   },
-  stationStyle: {
-  },
-  icon: {
-    // flex: 2
-  },
-  buttons: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center'
-  },
-  add: {
-    alignItems: 'center',
+  confirmButton: {
+    marginTop: 16,
+    paddingHorizontal: 16,
+    paddingVertical: 8,
     alignSelf: 'center',
-    position: 'absolute',
-    backgroundColor: 'transparent',
-    bottom: 20
+    borderRadius: 20
+  },
+  confirmText: {
+    color: 'white',
+    fontSize: 20
   }
 });

@@ -2,31 +2,22 @@ import React, { Component } from 'react';
 import { StyleSheet, View, TouchableOpacity, Text } from 'react-native';
 import { EvilIcons } from '@expo/vector-icons';
 
-export default class MapLine extends Component {
-  constructor(props) {
-    super(props);
-  }
-
-  render() {
-    return (
-      <View 
-        style={styles.container}>
-        <Text style={[styles.text, this.props.color]}>
-          {this.props.line}
-        </Text>
-        <TouchableOpacity
-          style={styles.button}
-          onPress={() => this.props.onDetailsPress(this.props.line)}>
-          <EvilIcons
-            name="arrow-right"
-            size={32}
-            color="dimgrey" />
-        </TouchableOpacity>
-      </View>
-    );
-  }
-}
-// <Text style={styles.buttonArrow}>Details</Text>
+const MapLine = (props) => (
+  <View 
+    style={styles.container}>
+    <Text style={[styles.text, props.color]}>
+      {props.line}
+    </Text>
+    <TouchableOpacity
+      style={styles.button}
+      onPress={() => props.onDetailsPress(props.line)}>
+      <EvilIcons
+        name="arrow-right"
+        size={32}
+        color="dimgrey" />
+    </TouchableOpacity>
+  </View>
+);
 
 const styles = StyleSheet.create({
   container: {
@@ -47,6 +38,7 @@ const styles = StyleSheet.create({
   },
   buttonArrow: {
     color: 'dimgrey'
-    // color: '#841584'
   }
 });
+
+export default MapLine;

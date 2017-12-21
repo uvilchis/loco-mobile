@@ -7,7 +7,7 @@ export default class MapCallout extends Component {
     super(props)
     this.state = {
       duration: ''
-    }
+    };
   }
 
   render () {

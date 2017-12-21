@@ -31,7 +31,7 @@ const StationComplaints = (props) => {
 const styles = StyleSheet.create({
   container: {
     paddingHorizontal: 16,
-    marginBottom: 80
+    marginBottom: 30
   }
 });
 

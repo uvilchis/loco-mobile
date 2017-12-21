@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { View, TextInput, Text, StyleSheet, Animated, Easing, TouchableOpacity, TouchableWithoutFeedback } from 'react-native';
 import { EvilIcons } from '@expo/vector-icons';
+import Helpers from '../lib/util';
 
 export default class RouteSelect extends Component {
   constructor(props) {
@@ -9,16 +10,15 @@ export default class RouteSelect extends Component {
       dropdown: false,
       search: '',
       all: [],
-      filtered: [],
-      height: new Animated.Value(0)
+      filtered: []
     };
 
-    this.spinValue = new Animated.Value(0);
-    this.anim = this.anim.bind(this);
+    this.onSelect = this.onSelect.bind(this);
 
-    this._setHeight = this._setHeight.bind(this);
+    this._spinValue = new Animated.Value(0);
+    this._anim = this._anim.bind(this);
+
     this._onChange = this._onChange.bind(this);
-    this._onSelect = this._onSelect.bind(this);
     this._onFocus = this._onFocus.bind(this);
     this._toggle = this._toggle.bind(this);
   }
@@ -32,22 +32,12 @@ export default class RouteSelect extends Component {
     }
   }
 
-  anim() {
-    let init = this.state.dropdown ? 0 : 1;
-    let final = this.state.dropdown ? 1 : 0;
-
-    Animated.timing(
-      this.spinValue,
-      {
-        toValue: final,
-        duration: 100,
-        easing: Easing.linear
-      }
-    ).start();
-  }
-
-  _setHeight(e) {
-    // console.log(e.nativeEvent.layout);
+  onSelect(idx) {
+    this.props.onRouteSelect(this.state.filtered[idx].route_id)
+    this.setState({
+      search: this.state.filtered[idx].route_id,
+      dropdown: false
+    }, this._anim);
   }
 
   _onChange(search) {
@@ -57,20 +47,26 @@ export default class RouteSelect extends Component {
     this.setState(newState);
   }
 
-  _onSelect(idx) {
-    this.props.onRouteSelect(this.state.filtered[idx].route_id)
-    this.setState({
-      search: this.state.filtered[idx].route_id,
-      dropdown: false
-    }, this.anim);
-  }
-
   _onFocus() {
-    this.setState({ dropdown: true }, this.anim);
+    this.setState({ dropdown: true }, this._anim);
   }
 
   _toggle() {
-    this.setState({ dropdown: !this.state.dropdown }, this.anim);
+    this.setState({ dropdown: !this.state.dropdown }, this._anim);
+  }
+
+  _anim() {
+    let init = this.state.dropdown ? 0 : 1;
+    let final = this.state.dropdown ? 1 : 0;
+
+    Animated.timing(
+      this._spinValue,
+      {
+        toValue: final,
+        duration: 100,
+        easing: Easing.linear
+      }
+    ).start();
   }
 
   render() {
@@ -81,7 +77,7 @@ export default class RouteSelect extends Component {
         <View
           style={styles.inner}>
           <TextInput
-            style={styles.input}
+            style={[styles.input, styles.station, Helpers.LineStyleHelper(this.state.search)]}
             name="search"
             placeholder="Search for a route"
             value={this.state.search}
@@ -94,7 +90,7 @@ export default class RouteSelect extends Component {
                 alignSelf: 'center',
                 marginRight: 4,
                 transform: [{
-                  rotate: this.spinValue.interpolate({
+                  rotate: this._spinValue.interpolate({
                     inputRange: [0, 1],
                     outputRange: ['0deg', '-180deg']
                   })
@@ -108,17 +104,17 @@ export default class RouteSelect extends Component {
         </View>
       </TouchableWithoutFeedback>
       {this.state.dropdown ?
-        <View style={[styles.dropdown]} onLayout={this._setHeight}>
+        <View style={[styles.dropdown]}>
           {this.state.filtered.map((route, idx) =>
             <TouchableOpacity
               key={idx}
               style={styles.item}
-              onPress={this._onSelect.bind(null, idx)}>
-              <Text style={styles.station}>{route.route_id}</Text>
+              onPress={this.onSelect.bind(null, idx)}>
+              <Text style={[styles.station, Helpers.LineStyleHelper(route.route_id)]}>{route.route_id}</Text>
             </TouchableOpacity>)}
         </View> : null}
     </View>
-    )
+    );
   }
 }
 
@@ -150,8 +146,8 @@ const styles = StyleSheet.create({
     borderTopWidth: 1
   },
   station: {
-    fontSize: 14,
-    paddingVertical: 16,
+    fontSize: 20,
+    paddingVertical: 12,
     paddingLeft: 8
   }
 });
