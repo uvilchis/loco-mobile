@@ -4,7 +4,7 @@ import UserMap from './UserMap';
 import MapDeets from './MapDeets';
 import Details from './Details';
 
-export default MapNav = StackNavigator({   
+export default MapNav = StackNavigator({
   UserMap: {
     screen: UserMap
   },

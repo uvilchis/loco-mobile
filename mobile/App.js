@@ -5,15 +5,17 @@ import RootNav from './components/RootNav';
 // import Favorites from './components/Favorites'
 // import FavNav from './components/FavNav';
 // TODO : implement tab navigation
-// import TabNav from './components/TabNav';
+import TabNav from './components/TabNav';
 // import URL from './env/urls';
 
 const App = (props) => (
   <View style={styles.container}>
-    <RootNav />
+    <TabNav />
   </View>
 );
 
+// <TabNav /> needs to come here
+// we need to make sure the proper stack is being rendered
 /*
   <Modal
     animationType = {"slide"}

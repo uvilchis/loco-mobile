@@ -90,7 +90,7 @@ export default class AddFavorite extends Component {
             />
             <Button
               title="Go Back"
-              onPress={this.props.hideModal}
+              onPress={() => this.props.hideModal()}
             />
           </View>
         </ScrollView>
