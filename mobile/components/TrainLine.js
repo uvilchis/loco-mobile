@@ -11,18 +11,18 @@ export default class TrainLine extends Component {
     super(props);
     this.state = {
       showLines: false,
-      dropValue: new Animated.Value()
+      _dropValue: new Animated.Value()
     };
-    this.spinValue = new Animated.Value(0);
-    this.opacityValue = new Animated.Value(0);
-    this.showAlert = this.showAlert.bind(this);
-    this.toggleLines = this.toggleLines.bind(this);
+    this._spinValue = new Animated.Value(0);
+    this._opacityValue = new Animated.Value(0);
+    this._showAlert = this._showAlert.bind(this);
+    this._toggleLines = this._toggleLines.bind(this);
     this._setMax = this._setMax.bind(this);
     this._setMin = this._setMin.bind(this);
-    this.drop = this.drop.bind(this);
+    this._drop = this._drop.bind(this);
   }
 
-  showAlert() {
+  _showAlert() {
     Alert.alert(
       'Official Status',
       this.props.line.text,
@@ -32,34 +32,30 @@ export default class TrainLine extends Component {
     );
   }
 
-  toggleLines() {
-    this.setState({
-      showLines: !this.state.showLines
-    }, this.drop);
+  _toggleLines() {
+    this.setState({ showLines: !this.state.showLines }, this._drop);
   }
 
   _setMax(e) {
-    this.setState({
-      max: e.nativeEvent.layout.height + 16
-    });
+    this.setState({ max: e.nativeEvent.layout.height + 16 });
   }
 
   _setMin(e) {
-    this.state.dropValue.setValue(e.nativeEvent.layout.height)
+    this.state._dropValue.setValue(e.nativeEvent.layout.height)
     this.setState({ min: e.nativeEvent.layout.height });
   }
 
   // True = rotate down, false = rotate up
-  drop() {
+  _drop() {
     let init = this.state.showLines ? this.state.min : this.state.max + this.state.min;
     let final = this.state.showLines ? this.state.min + this.state.max : this.state.min;
 
-    this.state.dropValue.setValue(init);
-    this.spinValue.setValue(this.state.showLines ? 0 : 1);
+    this.state._dropValue.setValue(init);
+    this._spinValue.setValue(this.state.showLines ? 0 : 1);
 
     Animated.parallel([
       Animated.timing(
-        this.spinValue,
+        this._spinValue,
         {
           toValue: this.state.showLines ? 1 : 0,
           duration: 100,
@@ -67,13 +63,13 @@ export default class TrainLine extends Component {
         }
       ),
       Animated.spring(
-        this.state.dropValue,
+        this.state._dropValue,
         {
           toValue: final
         }
       ),
       Animated.timing(
-        this.opacityValue,
+        this._opacityValue,
         {
           toValue: this.state.showLines ? 100 : 0,
           duration: 200,
@@ -85,13 +81,13 @@ export default class TrainLine extends Component {
 
   render() {
     const style = Helpers.LineStyle[this.props.line.name.toUpperCase()] || {};
-    const spin = this.spinValue.interpolate({
+    const spin = this._spinValue.interpolate({
       inputRange: [0, 1],
       outputRange: ['0deg', '-180deg']
     });
 
     return (
-      <Animated.View style={[styles.container, { height: this.state.dropValue }]}>
+      <Animated.View style={[styles.container, { height: this.state._dropValue }]}>
         <View style={styles.inner} onLayout={this._setMin}>
           <View style={styles.icon}>
               <Text style={[styles.symbols, { color: style.color }]}>{this.props.line.name.toUpperCase()}</Text>
@@ -103,7 +99,7 @@ export default class TrainLine extends Component {
                   name="exclamation"
                   color='darkblue'
                   size={38}
-                  onPress={this.showAlert}/> : null}
+                  onPress={this._showAlert}/> : null}
             </TouchableOpacity>
             <StatusMarker status={this.props.line.status} />
             <Animated.View
@@ -112,11 +108,11 @@ export default class TrainLine extends Component {
                 name="chevron-down"
                 color='darkgrey'
                 size={32}
-                onPress={this.toggleLines} /> 
+                onPress={this._toggleLines} /> 
             </Animated.View>
           </View> 
         </View>
-        <Animated.View style={{ opacity: this.opacityValue }} onLayout={this._setMax}>
+        <Animated.View style={{ opacity: this._opacityValue }} onLayout={this._setMax}>
           <Lines
             countedRoutes={this.props.line.countedRoutes} 
             color={style.color}

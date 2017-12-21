@@ -11,7 +11,7 @@ export default class MapDeets extends Component {
       unique: []
     };
 
-    this.dropValue = new Animated.Value(0);
+    this._dropValue = new Animated.Value(0);
 
     this._drop = this._drop.bind(this);
   }
@@ -37,9 +37,9 @@ export default class MapDeets extends Component {
   }
 
   _drop() {
-    this.dropValue.setValue(0);
+    this._dropValue.setValue(0);
     Animated.timing(
-      this.dropValue,
+      this._dropValue,
       {
         toValue: 1,
         duration: 2000,
@@ -67,7 +67,7 @@ export default class MapDeets extends Component {
           <Animated.View
             style={[styles.downButton, {
               transform: [{
-                translateY: this.dropValue.interpolate({
+                translateY: this._dropValue.interpolate({
                   inputRange: [0, 0.5, 1],
                   outputRange: [5, 0, 5]
                 })

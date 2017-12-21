@@ -1,9 +1,7 @@
 import React, { Component } from 'react';
-import axios from 'axios';
-import { StyleSheet, Text, View, Animated, TouchableOpacity } from 'react-native';
-import { Card, ListItem, Button } from 'react-native-elements';
+import { StyleSheet, Text, View, TouchableOpacity } from 'react-native';
+import { Card } from 'react-native-elements';
 import { EvilIcons } from '@expo/vector-icons';
-import Details from './Details.js';
 import URL from '../env/urls';
 
 const Lines = (props) => (

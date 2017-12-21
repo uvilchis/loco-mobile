@@ -3,35 +3,33 @@ import { Button, ScrollView } from 'react-native';
 import { SafeAreaView, StackNavigator, TabNavigator } from 'react-navigation';
 import RootNav from './RootNav';
 import FavNav from './FavNav';
-// import UserMap from './UserMap';
-// TODO : This is on the backburner
 
 export default TabNav = TabNavigator ({
-    RootNav : {
-      screen : RootNav,
-      navigationOptions : {
-        tabBarLabel : 'Home'
-      }
-    },
-    FavNav : {
-      screen : FavNav,
-      navigationOptions : {
-        tabBarLabel : 'Favorites'
-      }
+  RootNav : {
+    screen : RootNav,
+    navigationOptions : {
+      tabBarLabel : 'Home'
     }
   },
-  {
-    tabBarPosition: 'bottom',
-    animationEnabled : true,
-    swipeEnabled : true,
-    tabBarOptions: {
-      labelStyle: {
-        fontSize: 20
-      },
-      style: {
-        backgroundColor: 'grey'
-      },
-      activeTintColor: 'white',
-      inactiveTintColor: 'lightgrey'
+  FavNav : {
+    screen : FavNav,
+    navigationOptions : {
+      tabBarLabel : 'Favorites'
     }
-  });
+  }
+},
+{
+  tabBarPosition: 'bottom',
+  animationEnabled : true,
+  swipeEnabled : true,
+  tabBarOptions: {
+    labelStyle: {
+      fontSize: 20
+    },
+    style: {
+      backgroundColor: 'grey'
+    },
+    activeTintColor: 'white',
+    inactiveTintColor: 'lightgrey'
+  }
+});
