@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { StyleSheet, View, ScrollView, Text, Button, RefreshControl, Modal } from 'react-native';
+import { StyleSheet, View, ScrollView, Text, Button, RefreshControl, Modal, Alert } from 'react-native';
 import { SafeAreaView } from 'react-navigation'
 import axios from 'axios';
 import URL from '../env/urls';
@@ -20,11 +20,14 @@ export default class Favorites extends Component {
       modalVisible: false,
       refreshing: false
     };
+
+    this.showAlert = this.showAlert.bind(this);
     this._onRefresh = this._onRefresh.bind(this);
     this._fetchFavorites = this._fetchFavorites.bind(this);
     this.hideAddFavorite = this.hideAddFavorite.bind(this);
     this.showAddFavorite = this.showAddFavorite.bind(this);
     this.handleAddFavorite = this.handleAddFavorite.bind(this);
+    this.handleDeleteFavorite = this.handleDeleteFavorite.bind(this);
     this.onDetailsPress = this.onDetailsPress.bind(this);
     this.onMapPress = this.onMapPress.bind(this);
     this.onLogin = this.onLogin.bind(this);
@@ -53,6 +56,17 @@ export default class Favorites extends Component {
     );
 
     return { title, headerTitleStyle, headerStyle, headerRight };
+  }
+
+  showAlert(stopId) {
+    Alert.alert(
+      'Remove from favorites?',
+      '',
+      [
+        { text: 'Cancel'},
+        { text: 'Yes', onPress: () => this.handleDeleteFavorite(stopId) }
+      ]
+    );
   }
 
   componentDidMount() {
@@ -85,16 +99,21 @@ export default class Favorites extends Component {
   }
 
   _fetchFavorites(newState = {}) {
-    axios.get(`${URL}/api/favorites/allfavorites?sub=mta`, {
-      params: {
-        sub: 'mta'
-      }
-    })
+    axios.get(`${URL}/api/favorites/allfavorites?sub=mta`)
     .then(({ data }) => {
       newState.favorites = data;
       this.setState(newState);
+      console.log(this.state.favorites)
     })
     .catch((error) => console.log(error));
+  }
+
+  handleDeleteFavorite (stopId) {
+    axios.post(`${URL}/api/favorites/delete`, {
+      stop_id: stopId
+    })
+    .then(({ data }) => this.setState({favorites: data.favorites}))
+    .catch(err => console.log(err))
   }
 
   handleAddFavorite(favorites) {
@@ -149,7 +168,7 @@ export default class Favorites extends Component {
 
   render () {
     return (
-      <ScrollView 
+      <ScrollView
         style={styles.main}
         refreshControl={
           <RefreshControl
@@ -162,7 +181,8 @@ export default class Favorites extends Component {
               routeId={element.route_id}
               stopId={element.stop_id}
               stopName={element.stop_name}
-              onDetailsPress={this.onDetailsPress} />)}
+              onDetailsPress={this.onDetailsPress}
+              showAlert={this.showAlert} />)}
           <Button
             title="Add Favorite"
             onPress={this.showAddFavorite}
