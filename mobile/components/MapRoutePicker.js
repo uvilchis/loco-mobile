@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, StyleSheet, Text, FlatList, Animated, Easing, TouchableOpacity } from 'react-native';
+import { View, StyleSheet, Text, FlatList, Animated, Easing, TouchableOpacity, Platform } from 'react-native';
 import axios from 'axios';
 import { EvilIcons } from '@expo/vector-icons';
 
@@ -14,6 +14,8 @@ export default class MapRoutePicker extends Component {
       selected: '',
       routes: []
     };
+
+    this.baseOpacity = Platform.OS === 'ios' ? 0.4 : 0.2;
 
     this.handleRoutePick = this.handleRoutePick.bind(this);
 
@@ -106,7 +108,7 @@ export default class MapRoutePicker extends Component {
           renderItem={({ item }) =>
             <Text
               onPress={() => this.handleRoutePick(item.route_id)}
-              style={[styles.text, Helpers.LineStyleHelper(item.route_id), { opacity: item.selected ? 1 : 0.2 }]}>
+              style={[styles.text, Helpers.LineStyleHelper(item.route_id), { opacity: item.selected ? 1 : this.baseOpacity }]}>
                 {item.route_id}
             </Text>}
           horizontal={true} />
