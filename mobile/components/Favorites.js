@@ -1,9 +1,5 @@
 import React, { Component } from 'react';
-<<<<<<< HEAD
-import { StyleSheet, View, ScrollView, Text, Button, RefreshControl, Modal, Alert } from 'react-native';
-=======
-import { StyleSheet, View, ScrollView, Text, TouchableOpacity, RefreshControl, Modal } from 'react-native';
->>>>>>> ui improvements
+import { StyleSheet, View, ScrollView, Text, TouchableOpacity, RefreshControl, Modal, Alert } from 'react-native';
 import { SafeAreaView } from 'react-navigation'
 import axios from 'axios';
 import URL from '../env/urls';
@@ -27,15 +23,8 @@ export default class Favorites extends Component {
     this.showAlert = this.showAlert.bind(this);
     this._onRefresh = this._onRefresh.bind(this);
     this._fetchFavorites = this._fetchFavorites.bind(this);
-<<<<<<< HEAD
-    this.hideAddFavorite = this.hideAddFavorite.bind(this);
-    this.showAddFavorite = this.showAddFavorite.bind(this);
     this.handleAddFavorite = this.handleAddFavorite.bind(this);
     this.handleDeleteFavorite = this.handleDeleteFavorite.bind(this);
-    this.onDetailsPress = this.onDetailsPress.bind(this);
-    this.onMapPress = this.onMapPress.bind(this);
-=======
->>>>>>> partial refactor
     this.onLogin = this.onLogin.bind(this);
     this.onLogout = this.onLogout.bind(this);
     this.onGoogle = this.onGoogle.bind(this);
@@ -175,21 +164,13 @@ export default class Favorites extends Component {
               routeId={element.route_id}
               stopId={element.stop_id}
               stopName={element.stop_name}
-<<<<<<< HEAD
               onDetailsPress={this.onDetailsPress}
               showAlert={this.showAlert} />)}
-          <Button
-            title="Add Favorite"
-            onPress={this.showAddFavorite}
-          />
-=======
-              onDetailsPress={this.onDetailsPress} />)}
           <TouchableOpacity
             style={styles.addFavoriteButton}
             onPress={this.showAddFavorite}>
             <Text style={styles.addFavoriteText}>Add a favorite</Text>
           </TouchableOpacity>
->>>>>>> ui improvements
           <Modal
             animationType={"slide"}
             transparent={false}
