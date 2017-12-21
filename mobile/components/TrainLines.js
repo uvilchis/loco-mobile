@@ -33,6 +33,7 @@ export default class TrainLines extends Component {
   }
 
   _fetch(newState = {}) {
+    newState.showIndicator = false;
     axios.get(`${URL}/api/service?sub=mta`)
     .then(({ data }) => {
       newState.service = data.lines;
@@ -44,7 +45,7 @@ export default class TrainLines extends Component {
           return a.countedRoutes = [{ name: a.name, count: data[a.name] || 0}];
         }
         a.countedRoutes = a.name.split('').reduce((acc, b) => {
-          acc.push({ name: b, count: data[b] || 0 });
+          acc.push({ name: b, count: data[b.toLowerCase()] || 0 });
           return acc;
         }, []);
       });

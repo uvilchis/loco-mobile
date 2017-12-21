@@ -7,14 +7,13 @@ export default class StationSelect extends Component {
     super(props);
     this.state = {
       dropdown: false,
-      search: '',
+      search: this.props.stop ? this.props.stop.stop_name : '',
       all: [],
-      filtered: []
+      filtered: this.props.stop ? [this.props.stop] : []
     };
 
     this.spinValue = new Animated.Value(0);
     this.anim = this.anim.bind(this);
-
 
     this._onChange = this._onChange.bind(this);
     this._onSelect = this._onSelect.bind(this);
@@ -44,10 +43,6 @@ export default class StationSelect extends Component {
         easing: Easing.linear
       }
     ).start();
-  }
-
-  _setHeight(e) {
-    // console.log(e.nativeEvent.layout);
   }
 
   _onChange(search) {

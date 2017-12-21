@@ -20,8 +20,9 @@ export default class MapCallout extends Component {
   render () {
     return (
       <View style={styles.container}>
-        <View style={styles.text}>
-          <Text>{this.props.stop.stop_name}</Text>
+        <View style={styles.inner}>
+          <Text style={styles.name}>{this.props.stop.stop_name}</Text>
+          <Text style={styles.count}>{`${this.props.stop.count || 0} complaints`}</Text>
           <Text>{this.state.duration.length !== 0 ? this.state.duration + ' away' : 'loading...'}</Text>
         </View>
         <EvilIcons
@@ -30,9 +31,21 @@ export default class MapCallout extends Component {
           color="darkgrey"
           size={24} />
       </View>
-    )
+    );
   }
 };
+
+// const MapCallout = (props) => (
+//     <View style={styles.inner}>
+//       <Text style={styles.name}>{props.stop.stop_name}</Text>
+//     </View>
+//     <EvilIcons
+//       style={styles.button}
+//       name="plus"
+//       color="darkgrey"
+//       size={24} />
+//   </View>
+// );
 
 const styles = StyleSheet.create({
   container: {
@@ -42,8 +55,14 @@ const styles = StyleSheet.create({
     padding: 4,
     paddingRight: 0
   },
-  text: {
-    flexDirection: 'column'
+  inner: {
+  },
+  name: {
+    fontSize: 16
+  },
+  count: {
+    fontSize: 12,
+    color: 'darkgrey'
   },
   button: {
     marginLeft: 12
