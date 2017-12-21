@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { StyleSheet, View, Modal } from 'react-native';
+import { StyleSheet, View, Modal, Text } from 'react-native';
 import axios from 'axios';
 
 import Login from './Login';
@@ -13,17 +13,12 @@ export default class Main extends Component {
     super(props);
     this.state = {
       modalVisible: false,
-      loggedIn: false
     };
 
-    this.onDetailsPress = this.onDetailsPress.bind(this);
-    this.onMapPress = this.onMapPress.bind(this);
     this.onSignUp = this.onSignUp.bind(this);
     this.onLogin = this.onLogin.bind(this);
     this.onLogout = this.onLogout.bind(this);
     this.onGoogle = this.onGoogle.bind(this);
-    this.hideModal = this.hideModal.bind(this);
-    this.showModal = this.showModal.bind(this);
   }
 
   static navigationOptions = ({ navigation }) => {
@@ -51,75 +46,50 @@ export default class Main extends Component {
     this.props.navigation.setParams({
       showModal: this.showModal,
       onMapPress: this.onMapPress,
-      onLogout: this.onLogout
+      onLogout: this.onLogout,
+      loggedIn: this.props.screenProps.isLoggedIn
     });
   }
 
   componentDidUpdate() {
     this.props.navigation.setParams({
-      loggedIn: this.state.loggedIn
+      loggedIn: this.props.screenProps.isLoggedIn
     });
   }
 
   shouldComponentUpdate(nextProps, nextState) {
-    return (nextState.loggedIn !== this.state.loggedIn) || (nextState.modalVisible !== this.state.modalVisible);
+    return (nextProps.screenProps.isLoggedIn !== this.props.screenProps.isLoggedIn) || 
+           (nextState.modalVisible !== this.state.modalVisible);
   }
 
-  onMapPress() {
-    this.props.navigation.navigate('MapNav');
-  }
+  onMapPress = () => this.props.navigation.navigate('MapNav')
 
-  onDetailsPress(route) {
-    this.props.navigation.navigate('Details', { route });
-  }
+  onDetailsPress = (route) => this.props.navigation.navigate('Details', { route });
 
-  showModal() {
-    this.setState({ modalVisible: true });
-  }
+  showModal = () => this.setState({ modalVisible: true });
 
-  hideModal() {
-    this.setState({ modalVisible: false });
-  }
+  hideModal = () => this.setState({ modalVisible: false });
 
   onLogin(userObj) {
     axios.post(`${URL}/api/user/login`, userObj)
-    .then(({ data }) => {
-      this.setState({
-        loggedIn: true,
-        modalVisible: false
-      });
-    })
+    .then(({ data }) => this.setState({ modalVisible: false }, this.props.screenProps.onLogin))
     .catch((error) => console.log(error));
   }
 
   onSignUp(userObj) {
     axios.post(`${URL}/api/user/signup`, userObj)
-    .then(({ data }) => {
-      this.setState({
-        loggedIn: true,
-        modalVisible: false
-      });
-    })
-    .catch((error) => {
-      console.log(error);
-    });
+    .then(({ data }) => this.setState({ modalVisible: false }, this.props.screenProps.onLogin))
+    .catch((error) => console.log(error));
   }
 
   onLogout() {
     axios.get(`${URL}/api/user/logout`)
-    .then(({ data }) => {
-      this.setState({
-        loggedIn: false
-      }, () => console.log('logged out'));
-    })
+    .then(({ data }) => this.props.screenProps.onLogout())
     .catch((error) => console.log(error));
   }
 
   onGoogle(data) {
-    this.setState({
-      loggedIn: true,
-      modalVisible: false
-    }, () => console.log('google auth successful'));
+    this.setState({ modalVisible: false }, this.props.screenProps.onLogin);
   }
   
   render() {

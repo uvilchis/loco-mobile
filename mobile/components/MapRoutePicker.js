@@ -11,10 +11,11 @@ export default class MapRoutePicker extends Component {
     super(props);
     this.state = {
       expanded: false,
+      selected: '',
       routes: []
     };
 
-    // this.onRoutePress = this.onRoutePress.bind(this);
+    this.handleRoutePick = this.handleRoutePick.bind(this);
 
     this._spinValue = new Animated.Value(1);
     this._heightValue = new Animated.Value(1);
@@ -38,6 +39,10 @@ export default class MapRoutePicker extends Component {
       this.setState({ routes });
     })
     .catch((error) => console.log(error));
+  }
+
+  handleRoutePick(routeId) {
+    this.setState({ selected: routeId }, () => this.props.onRoutePick(routeId));
   }
 
   _toggleExpand() {
@@ -95,6 +100,7 @@ export default class MapRoutePicker extends Component {
           data={this.state.routes}
           renderItem={({ item }) =>
             <Text
+              onPress={() => this.handleRoutePick(item.route_id)}
               style={[styles.text, Helpers.LineStyleHelper(item.route_id)]}>
                 {item.route_id}
             </Text>}
@@ -126,6 +132,7 @@ const styles = StyleSheet.create({
     marginHorizontal: 8
   },
   list: {
+    marginHorizontal: 4,
     marginTop: 4
   }
 });

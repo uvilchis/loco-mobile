@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { StyleSheet, ScrollView, Text, Button, RefreshControl, Modal } from 'react-native';
+import { StyleSheet, View, ScrollView, Text, Button, RefreshControl, Modal } from 'react-native';
 import { SafeAreaView } from 'react-navigation'
 import axios from 'axios';
 import URL from '../env/urls';
@@ -18,8 +18,10 @@ export default class Favorites extends Component {
       addFavoriteVisible: false,
       favorites: [],
       modalVisible: false,
-      loggedIn: false
-    }
+      refreshing: false
+    };
+    this._onRefresh = this._onRefresh.bind(this);
+    this._fetchFavorites = this._fetchFavorites.bind(this);
     this.hideAddFavorite = this.hideAddFavorite.bind(this);
     this.showAddFavorite = this.showAddFavorite.bind(this);
     this.handleAddFavorite = this.handleAddFavorite.bind(this);
@@ -54,40 +56,45 @@ export default class Favorites extends Component {
   }
 
   componentDidMount() {
-    axios.get(`${URL}/api/favorites/allfavorites?sub=mta`)
-    .then(({ data }) => this.setState({ favorites : data }, ()=> console.log(this.state.favorites)))
-    .catch(err => console.log(err))
+    this._fetchFavorites();
 
     this.props.navigation.setParams({
       showModal: this.showModal,
       onMapPress: this.onMapPress,
-      onLogout: this.onLogout
+      onLogout: this.onLogout,
+      loggedIn: this.props.screenProps.isLoggedIn
     });
   }
 
   componentDidUpdate() {
     this.props.navigation.setParams({
-      loggedIn: this.state.loggedIn
+      loggedIn: this.props.screenProps.isLoggedIn
     });
-
-    axios.get(`${URL}/api/favorites/allfavorites?sub=mta`)
-    .then(({ data }) => this.setState({ favorites : data }, ()=> console.log(this.state.favorites)))
-    .catch(err => console.log(err))
-
+    this._fetchFavorites();
   }
 
   shouldComponentUpdate(nextProps, nextState) {
-    return (nextState.loggedIn !== this.state.loggedIn) ||
+    return (nextProps.screenProps.isLoggedIn !== this.props.screenProps.isLoggedIn) ||
            (nextState.modalVisible !== this.state.modalVisible) ||
-           (nextState.addFavoriteVisible !== this.state.addFavoriteVisible);
+           (nextState.addFavoriteVisible !== this.state.addFavoriteVisible) ||
+           (nextState.favorites.length !== this.state.favorites.length);
   }
 
-  showAddFavorite() {
-    this.setState({ addFavoriteVisible: true })
+  _onRefresh() {
+    this.setState({ refreshing: true }, () => this._fetchFavorites({ refreshing: false }));
   }
 
-  hideAddFavorite() {
-    this.setState({ addFavoriteVisible: false })
+  _fetchFavorites(newState = {}) {
+    axios.get(`${URL}/api/favorites/allfavorites?sub=mta`, {
+      params: {
+        sub: 'mta'
+      }
+    })
+    .then(({ data }) => {
+      newState.favorites = data;
+      this.setState(newState);
+    })
+    .catch((error) => console.log(error));
   }
 
   handleAddFavorite(favorites) {
@@ -98,8 +105,16 @@ export default class Favorites extends Component {
     this.props.navigation.navigate('MapNav');
   }
 
-  onDetailsPress(route) {
-    this.props.navigation.navigate('Details', { route })
+  onDetailsPress(route, stop) {
+    this.props.navigation.navigate('Details', { route, stop })
+  }
+
+  showAddFavorite() {
+    this.setState({ addFavoriteVisible: true })
+  }
+
+  hideAddFavorite() {
+    this.setState({ addFavoriteVisible: false })
   }
 
   showModal() {
@@ -112,70 +127,51 @@ export default class Favorites extends Component {
 
   onLogin(userObj) {
     axios.post(`${URL}/api/user/login`, userObj)
-    .then(({ data }) => {
-      this.setState({
-        loggedIn: true,
-        modalVisible: false
-      });
-    })
+    .then(({ data }) => this.setState({ modalVisible: false }, this.props.screenProps.onLogin))
     .catch((error) => console.log(error));
   }
 
   onSignUp(userObj) {
     axios.post(`${URL}/api/user/signup`, userObj)
-    .then(({ data }) => {
-      this.setState({
-        loggedIn: true,
-        modalVisible: false
-      });
-    })
-    .catch((error) => {
-      console.log(error);
-    });
+    .then(({ data }) => this.setState({ modalVisible: false }, this.props.screenProps.onLogin))
+    .catch((error) => console.log(error));
   }
 
   onLogout() {
     axios.get(`${URL}/api/user/logout`)
-    .then(({ data }) => {
-      this.setState({
-        loggedIn: false
-      }, () => console.log('logged out'));
-    })
+    .then(({ data }) => this.setState({ favorites: [] }, this.props.screenProps.onLogout))
     .catch((error) => console.log(error));
   }
 
   onGoogle(data) {
-    this.setState({
-      loggedIn: true,
-      modalVisible: false
-    }, () => console.log('google auth successful'));
+    this.setState({ modalVisible: false }, this.props.screenProps.onLogin);
   }
 
   render () {
     return (
-      <ScrollView style={styles.main}>
-        <SafeAreaView>
-          <Text>FAVORITES</Text>
+      <ScrollView 
+        style={styles.main}
+        refreshControl={
+          <RefreshControl
+            refreshing={this.state.refreshing}
+            onRefresh={this._onRefresh} />}>
+        <View>
           {this.state.favorites.map((element, idx)=>
             <Favorite
               key ={idx}
               routeId={element.route_id}
               stopId={element.stop_id}
               stopName={element.stop_name}
-              onDetailsPress={this.onDetailsPress} />)
-          }
+              onDetailsPress={this.onDetailsPress} />)}
           <Button
             title="Add Favorite"
-            onPress={()=> {
-              console.log('clicked', this.state.addFavoriteVisible)
-              this.showAddFavorite()
-              console.log('post click', this.state.addFavoriteVisible)
-            }}
+            onPress={this.showAddFavorite}
           />
           <Modal
             animationType={"slide"}
             transparent={false}
-            visible={this.state.addFavoriteVisible}>
+            visible={this.state.addFavoriteVisible}
+            onRequestClose={this.hideModal}>
             <AddFavorite
               hideModal={this.hideAddFavorite}
               handleAddFavorite={this.handleAddFavorite} />
@@ -191,9 +187,9 @@ export default class Favorites extends Component {
               onGoogle={this.onGoogle}
               hideModal={this.hideModal} />
           </Modal>
-        </SafeAreaView>
+        </View>
       </ScrollView>
-    )
+    );
   }
 }
 
