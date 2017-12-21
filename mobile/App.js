@@ -17,7 +17,11 @@ export default class App extends Component {
   }
 
   componentWillMount() {
-    axios.get(`${URL}/api/user/start?sub=mta`)
+    axios.get(`${URL}/api/user/start`, {
+      params: {
+        sub: 'mta'
+      }
+    })
     .then((data) => this.setState({ isLoggedIn: true }))
     .catch((error) => console.log(error));
   }
@@ -33,11 +37,12 @@ export default class App extends Component {
   render() {
     return (
       <View style={styles.container}>
-        <TabNav screenProps={{
-          isLoggedIn: this.state.isLoggedIn,
-          onLogin: this.onLogin,
-          onLogout: this.onLogout
-        }} />
+        <TabNav
+          screenProps={{
+            isLoggedIn: this.state.isLoggedIn,
+            onLogin: this.onLogin,
+            onLogout: this.onLogout
+          }} />
       </View>
     );
   }
