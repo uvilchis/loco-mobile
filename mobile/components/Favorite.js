@@ -55,12 +55,6 @@ const styles = StyleSheet.create({
     textShadowOffset: { width: 1, height: 1},
     textShadowRadius: 1,
     textShadowColor: '#dddddd'
-  },
-  rotateArrow: {
-    height: 28,
-    width: 28,
-    marginRight: 8,
-    marginTop: 2
   }
 });
 

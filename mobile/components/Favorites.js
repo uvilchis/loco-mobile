@@ -10,7 +10,6 @@ import Header from './Header';
 import MapNav from './MapNav';
 import Login from './Login';
 
-
 export default class Favorites extends Component {
   constructor (props) {
     super(props);
@@ -24,17 +23,18 @@ export default class Favorites extends Component {
     this.showAlert = this.showAlert.bind(this);
     this._onRefresh = this._onRefresh.bind(this);
     this._fetchFavorites = this._fetchFavorites.bind(this);
+<<<<<<< HEAD
     this.hideAddFavorite = this.hideAddFavorite.bind(this);
     this.showAddFavorite = this.showAddFavorite.bind(this);
     this.handleAddFavorite = this.handleAddFavorite.bind(this);
     this.handleDeleteFavorite = this.handleDeleteFavorite.bind(this);
     this.onDetailsPress = this.onDetailsPress.bind(this);
     this.onMapPress = this.onMapPress.bind(this);
+=======
+>>>>>>> partial refactor
     this.onLogin = this.onLogin.bind(this);
     this.onLogout = this.onLogout.bind(this);
     this.onGoogle = this.onGoogle.bind(this);
-    this.hideModal = this.hideModal.bind(this);
-    this.showModal = this.showModal.bind(this);
   }
 
   static navigationOptions = ({ navigation }) => {
@@ -99,7 +99,11 @@ export default class Favorites extends Component {
   }
 
   _fetchFavorites(newState = {}) {
-    axios.get(`${URL}/api/favorites/allfavorites?sub=mta`)
+    axios.get(`${URL}/api/favorites/allfavorites`, {
+      params: {
+        sub: 'mta'
+      }
+    })
     .then(({ data }) => {
       newState.favorites = data;
       this.setState(newState);
@@ -115,34 +119,19 @@ export default class Favorites extends Component {
     .then(({ data }) => this.setState({favorites: data.favorites}))
     .catch(err => console.log(err))
   }
+  handleAddFavorite = (favorites) => this.setState({ favorites : favorites });
 
-  handleAddFavorite(favorites) {
-    this.setState({ favorites : favorites })
-  }
+  onMapPress = () => this.props.navigation.navigate('MapNav');
 
-  onMapPress() {
-    this.props.navigation.navigate('MapNav');
-  }
+  onDetailsPress = (route, stop) => this.props.navigation.navigate('Details', { route, stop });
 
-  onDetailsPress(route, stop) {
-    this.props.navigation.navigate('Details', { route, stop })
-  }
+  showAddFavorite = () => this.setState({ addFavoriteVisible: true });
 
-  showAddFavorite() {
-    this.setState({ addFavoriteVisible: true })
-  }
+  hideAddFavorite = () => this.setState({ addFavoriteVisible: false });
 
-  hideAddFavorite() {
-    this.setState({ addFavoriteVisible: false })
-  }
+  showModal = () => this.setState({ modalVisible: true });
 
-  showModal() {
-    this.setState({ modalVisible: true });
-  }
-
-  hideModal() {
-    this.setState({ modalVisible: false });
-  }
+  hideModal = () => this.setState({ modalVisible: false });
 
   onLogin(userObj) {
     axios.post(`${URL}/api/user/login`, userObj)
@@ -191,7 +180,7 @@ export default class Favorites extends Component {
             animationType={"slide"}
             transparent={false}
             visible={this.state.addFavoriteVisible}
-            onRequestClose={this.hideModal}>
+            onRequestClose={this.hideAddFavorite}>
             <AddFavorite
               hideModal={this.hideAddFavorite}
               handleAddFavorite={this.handleAddFavorite} />

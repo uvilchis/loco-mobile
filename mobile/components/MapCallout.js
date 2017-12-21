@@ -35,18 +35,6 @@ export default class MapCallout extends Component {
   }
 };
 
-// const MapCallout = (props) => (
-//     <View style={styles.inner}>
-//       <Text style={styles.name}>{props.stop.stop_name}</Text>
-//     </View>
-//     <EvilIcons
-//       style={styles.button}
-//       name="plus"
-//       color="darkgrey"
-//       size={24} />
-//   </View>
-// );
-
 const styles = StyleSheet.create({
   container: {
     flexDirection: 'row',

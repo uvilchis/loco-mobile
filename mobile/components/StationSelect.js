@@ -58,7 +58,7 @@ export default class StationSelect extends Component {
   }
 
   _onSelect(idx) {
-    this.props.onStationSelect(this.state.filtered[idx].stop_id, this.state.filtered[idx].route_id);
+    this.props.onStationSelect(this.state.filtered[idx].stop_id, this.state.filtered[idx].stop_name);
     this.setState({
       search: this.state.filtered[idx].stop_name,
       filtered:[this.state.filtered[idx]],

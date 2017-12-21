@@ -45,12 +45,12 @@ export default class Details extends Component {
     this._formatReports = this._formatReports.bind(this);
 
     // Animation handlers
-    this.jumpValue = new Animated.Value(0);
-    this.jumpAnim = this.jumpAnim.bind(this);
+    this._jumpValue = new Animated.Value(0);
+    this._jumpAnim = this._jumpAnim.bind(this);
   }
 
   componentDidMount() {
-    this.jumpAnim();
+    this._jumpAnim();
     let stopId = this.props.navigation.state.params.stop ? this.props.navigation.state.params.stop.stop_id : '';
     let newState = {
       refreshing: false,
@@ -172,16 +172,16 @@ export default class Details extends Component {
     }, {}));
   }
 
-  jumpAnim() {
-    this.jumpValue.setValue(0);
+  _jumpAnim() {
+    this._jumpValue.setValue(0);
     Animated.timing(
-      this.jumpValue,
+      this._jumpValue,
       {
         toValue: 1,
         duration: 2000,
         easing: Easing.linear
       }
-    ).start(this.jumpAnim);
+    ).start(this._jumpAnim);
   }
 
   showModal = () => this.setState({ modalVisible: true });
@@ -230,7 +230,7 @@ export default class Details extends Component {
           <Animated.View
             style={{ 
               transform: [{
-                translateY: this.jumpValue.interpolate({
+                translateY: this._jumpValue.interpolate({
                   inputRange: [0, 0.5, 1],
                   outputRange: [5, -2, 5]
                 })
@@ -295,11 +295,7 @@ const styles = StyleSheet.create({
 
 Details.navigationOptions = {
   title: 'Details',
-  headerStyle: {
-    backgroundColor: 'grey'
-  },
-  headerTitleStyle: {
-    color: 'white'
-  },
+  headerStyle: { backgroundColor: 'grey' },
+  headerTitleStyle: { color: 'white' },
   headerTintColor: 'white'
 };
