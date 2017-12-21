@@ -106,7 +106,7 @@ export default class MapRoutePicker extends Component {
           renderItem={({ item }) =>
             <Text
               onPress={() => this.handleRoutePick(item.route_id)}
-              style={[styles.text, Helpers.LineStyleHelper(item.route_id), { opacity: item.selected ? 1 : 0.5 }]}>
+              style={[styles.text, Helpers.LineStyleHelper(item.route_id), { opacity: item.selected ? 1 : 0.2 }]}>
                 {item.route_id}
             </Text>}
           horizontal={true} />
