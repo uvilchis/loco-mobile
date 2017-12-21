@@ -6,7 +6,9 @@ import StatusMarker from './StatusMarker';
 import Helpers from '../lib/util';
 
 const Favorite = (props) => (
-  <TouchableOpacity onLongPress={() => props.showAlert(props.stopId)}>
+  <TouchableOpacity
+    onPress={() => props.onDetailsPress(props.routeId, { stop_id: props.stopId, stop_name: props.stopName })}
+    onLongPress={() => props.showAlert(props.stopId)}>
     <View style={styles.container}>
       <View style={styles.icon}>
         <Text style={[styles.symbols, Helpers.LineStyleHelper(props.routeId)]}>{props.routeId.toUpperCase()}</Text>
@@ -15,12 +17,14 @@ const Favorite = (props) => (
         <Text>{props.stopName}</Text>
       </View>
       <View>
-        <EvilIcons
-          style={{ alignSelf: 'center' }}
-          name="chevron-right"
-          color='darkgrey'
-          size={32}
-          onPress={() => props.onDetailsPress(props.routeId, { stop_id: props.stopId, stop_name: props.stopName })}/>
+        <TouchableOpacity
+          onPress={() => props.onDetailsPress(props.routeId, { stop_id: props.stopId, stop_name: props.stopName })}>
+          <EvilIcons
+            style={{ alignSelf: 'center' }}
+            name="chevron-right"
+            color='darkgrey'
+            size={32} />
+        </TouchableOpacity>
       </View>
     </View>
   </TouchableOpacity>
