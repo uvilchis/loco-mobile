@@ -1,27 +1,29 @@
 import React from 'react';
-import { View, StyleSheet, Text} from 'react-native';
+import { View, StyleSheet, Text, TouchableOpacity } from 'react-native';
 import { EvilIcons } from '@expo/vector-icons';
 import StatusMarker from './StatusMarker';
 
 import Helpers from '../lib/util';
 
 const Favorite = (props) => (
-  <View style={styles.inner}>
-    <View style={styles.icon}>
-      <Text style={[styles.symbols, Helpers.LineStyleHelper(props.routeId)]}>{props.routeId.toUpperCase()}</Text>
+  <TouchableOpacity onLongPress={() => props.showAlert(props.stopId)}>
+    <View style={styles.inner}>
+        <View style={styles.icon}>
+          <Text style={[styles.symbols, Helpers.LineStyleHelper(props.routeId)]}>{props.routeId.toUpperCase()}</Text>
+        </View>
+        <View>
+          <Text>{props.stopName}</Text>
+        </View>
+        <View>
+          <EvilIcons
+            style={{ alignSelf: 'center' }}
+            name="chevron-right"
+            color='darkgrey'
+            size={32}
+            onPress={() => props.onDetailsPress(props.routeId, { stop_id: props.stopId, stop_name: props.stopName })}/>
+        </View>
     </View>
-    <View>
-      <Text>{props.stopName}</Text>
-    </View>
-    <View>
-      <EvilIcons
-        style={{ alignSelf: 'center' }}
-        name="chevron-right"
-        color='darkgrey'
-        size={32}
-        onPress={() => props.onDetailsPress(props.routeId, { stop_id: props.stopId, stop_name: props.stopName })}/>
-    </View>
-  </View>
+  </TouchableOpacity>
 );
 
 const styles = StyleSheet.create({
