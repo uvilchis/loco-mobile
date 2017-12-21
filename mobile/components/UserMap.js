@@ -58,10 +58,7 @@ export default class UserMap extends Component {
       .then((response) => {
         this.setState({
           results: response.data
-        })
-      }, () => {
-        console.log('THIS.STATE.RESULTS:', this.state.results)
-      })
+        })})
       .catch((err) => {
         console.error('ERROR IN AXIOS REQUEST', err)
       })
@@ -72,16 +69,6 @@ export default class UserMap extends Component {
     try {
       let resp = await fetch(`https://maps.googleapis.com/maps/api/directions/json?origin=${ startLoc }&destination=${ destinationLoc }&mode=walking`)
       let respJson = await resp.json();
-
-      // SJK: This is a  bad antipattern. Just use respJson for whatever
-      // you're trying to get, then set state at one time. 
-      this.setState({
-        directionsData: respJson
-      }, () => {
-        console.log('THIS.STATE.DIRECTIONSDATA:', this.state.directionsData)
-        // console.log('THIS.STATE.DIRECTIONSDATA.ROUTES:', this.state.directionsData.routes)
-      })
-  
       let points = Polyline.decode(respJson.routes[0].overview_polyline.points);
       let coords = points.map((point, index) => {
         return {
@@ -89,7 +76,11 @@ export default class UserMap extends Component {
           longitude : point[1]
         }
       })
-      this.setState({coords: coords})
+      console.log('data is setting');
+      this.setState({
+        coords: coords,
+        directionsData: respJson.routes[0].legs[0]
+      })
       return coords;
     } catch (error) {
       console.log(error);
@@ -137,36 +128,32 @@ export default class UserMap extends Component {
                 coordinate={{latitude: Number(this.state.location.coords.latitude), longitude: Number(this.state.location.coords.longitude)}}
                 title={"HI! IT\'S ME!!!"}
                 onPress={() => {
-                  // console.log('you pressed me!!!')
-                  // console.log(`'${this.state.location.coords.latitude}', '${this.state.location.coords.longitude}'`)
-                  // this.getDirections("40.750808794289775, -73.97638340930507", "40.750409, -73.9764837")
-                  this.state.results.forEach((station, idx) => {
-                    this.getDirections(`'${this.state.location.coords.latitude}', '${this.state.location.coords.longitude}'`, `'${station.stop_lat}', '${station.stop_lon}'`)
-                })}}
+                  console.log('you pressed me!!!')
+                }}
                 pinColor={'#38A2FF'}>
-                <MapView.Callout>
-                  {/* <Text>{this.state.directionsData.routes[0].legs}</Text>
-                  <Text>{station.duration.text}</Text>
-                  <Text>{station.distance.text}</Text> */}
-                </MapView.Callout>
               </MapView.Marker> ) : null }
 
             {this.state.results.map((marker, idx) =>
               <MapView.Marker
+                key={idx}
                 coordinate={{latitude: Number(marker.stop_lat), longitude: Number(marker.stop_lon)}}
-                onPress={() => this.setState({ selected: marker.stop_name })}
-                key={idx}>
+                onPress={() => {
+                  this.getDirections(`${this.state.location.coords.latitude}, ${this.state.location.coords.longitude}`, `${marker.stop_lat}, ${marker.stop_lon}`)
+                  this.setState({ 
+                    selected: marker.stop_name
+                  })
+                }}>
                 <MapView.Callout
                   onPress={this.showModal}>
-                  <MapCallout stop={marker} />
+                  
+                    <MapCallout stop={marker} 
+                      directionsData={this.state.directionsData}
+                    />             
                 </MapView.Callout>
               </MapView.Marker>)}
 
               <MapView.Polyline
-                coordinates= {[{
-                  latitude : 40.750409,
-                  longitude : -73.9764837
-                }]}
+                coordinates= {this.state.coords}
                 strokeWidth={4}
                 strokeColor="blue" />
           </MapView>
