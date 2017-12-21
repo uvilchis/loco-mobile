@@ -15,12 +15,12 @@ export default class Login extends Component {
       username: '',
       password: ''
     };
-    this.panValue = new Animated.Value(0);
-    this.fadeValue = new Animated.Value();
-    this.dropValue = new Animated.Value(0);
+    this._panValue = new Animated.Value(0);
+    this._fadeValue = new Animated.Value();
+    this._dropValue = new Animated.Value(0);
 
-    this.drop = this.drop.bind(this);
-    this.pan = this.pan.bind(this);
+    this._drop = this._drop.bind(this);
+    this._pan = this._pan.bind(this);
     this.handleLogin = this.handleLogin.bind(this);
     this.handleSignUp = this.handleSignUp.bind(this);
     this.handleGoogle = this.handleGoogle.bind(this);
@@ -37,29 +37,29 @@ export default class Login extends Component {
   }
 
   componentDidMount() {
-    this.pan();
-    this.drop();
+    this._pan();
+    this._drop();
   }
 
-  drop() {
-    this.dropValue.setValue(0);
+  _drop() {
+    this._dropValue.setValue(0);
     Animated.timing(
-      this.dropValue,
+      this._dropValue,
       {
         toValue: 1,
         duration: 2000,
         easing: Easing.linear
       }
-    ).start(this.drop);
+    ).start(this._drop);
   }
 
-  pan() {
-    this.panValue.setValue(0);
-    this.fadeValue.setValue(0);
+  _pan() {
+    this._panValue.setValue(0);
+    this._fadeValue.setValue(0);
 
     Animated.parallel([
       Animated.timing(
-        this.panValue,
+        this._panValue,
         {
           toValue: 1,
           duration: 35000,
@@ -67,14 +67,14 @@ export default class Login extends Component {
         }
       ),
       Animated.timing(
-        this.fadeValue,
+        this._fadeValue,
         {
           toValue: 1000,
           duration: 35000,
           easing: Easing.linear
         }
       )
-    ]).start(this.pan);
+    ]).start(this._pan);
   }
 
   handleLogin() {
@@ -124,14 +124,14 @@ export default class Login extends Component {
         <View style={{flex: 1}}>
           <Animated.Image
             style={{
-              opacity: this.fadeValue.interpolate({
+              opacity: this._fadeValue.interpolate({
                 inputRange: [0, 50, 950, 1000],
                 outputRange: [0, 1, 1, 0]
               }),
               position: 'absolute',
               maxHeight: Dimensions.get('window').height,
               transform: [{
-                translateX: this.panValue.interpolate({
+                translateX: this._panValue.interpolate({
                   inputRange: [0, 1],
                   outputRange: [0, (-1440 + Dimensions.get('window').width)]
                 })
@@ -141,7 +141,7 @@ export default class Login extends Component {
           <Animated.View
             style={[styles.downButton, {
               transform: [{
-                translateY: this.dropValue.interpolate({
+                translateY: this._dropValue.interpolate({
                   inputRange: [0, 0.5, 1],
                   outputRange: [5, 0, 5]
                 })

@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, StyleSheet, Text, FlatList, Animated, Easing, TouchableOpacity } from 'react-native';
+import { View, StyleSheet, Text, FlatList, Animated, Easing, TouchableOpacity, Platform } from 'react-native';
 import axios from 'axios';
 import { EvilIcons } from '@expo/vector-icons';
 
@@ -14,6 +14,8 @@ export default class MapRoutePicker extends Component {
       selected: '',
       routes: []
     };
+
+    this.baseOpacity = Platform.OS === 'ios' ? 0.4 : 0.2;
 
     this.handleRoutePick = this.handleRoutePick.bind(this);
 
@@ -41,8 +43,13 @@ export default class MapRoutePicker extends Component {
     .catch((error) => console.log(error));
   }
 
-  handleRoutePick(routeId) {
-    this.setState({ selected: routeId }, () => this.props.onRoutePick(routeId));
+  handleRoutePick(selected) {
+    let routes = this.state.routes.map((el) => {
+      el.selected = selected === this.state.selected ? false : el.route_id === selected;
+      return el;
+    });
+    if (selected === this.state.selected) { selected = ''; }
+    this.setState({ selected, routes }, () => this.props.onRoutePick(selected));
   }
 
   _toggleExpand() {
@@ -101,7 +108,7 @@ export default class MapRoutePicker extends Component {
           renderItem={({ item }) =>
             <Text
               onPress={() => this.handleRoutePick(item.route_id)}
-              style={[styles.text, Helpers.LineStyleHelper(item.route_id)]}>
+              style={[styles.text, Helpers.LineStyleHelper(item.route_id), { opacity: item.selected ? 1 : this.baseOpacity }]}>
                 {item.route_id}
             </Text>}
           horizontal={true} />

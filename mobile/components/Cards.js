@@ -18,8 +18,8 @@ export default class Cards extends Component {
     this.onDirectionSelect = this.onDirectionSelect.bind(this);
     this.onFetchSchedule = this.onFetchSchedule.bind(this);
 
-    this.dropValue = new Animated.Value(0);
-    this.drop = this.drop.bind(this);
+    this._dropValue = new Animated.Value(0);
+    this._drop = this._drop.bind(this);
   }
 
   componentWillMount() {
@@ -33,7 +33,7 @@ export default class Cards extends Component {
   }
 
   componentDidMount() {
-    this.drop();
+    this._drop();
   }
 
   onDirectionSelect(direction) {
@@ -64,10 +64,10 @@ export default class Cards extends Component {
     .catch((error) => console.log(error));
   }
 
-  drop() {
-    this.dropValue.setValue(0);
+  _drop() {
+    this._dropValue.setValue(0);
     Animated.timing(
-      this.dropValue,
+      this._dropValue,
       {
         toValue: 1,
         duration: 2000,
@@ -84,7 +84,7 @@ export default class Cards extends Component {
         <Animated.View
           style={[styles.downButton, {
             transform: [{
-              translateY: this.dropValue.interpolate({
+              translateY: this._dropValue.interpolate({
                 inputRange: [0, 0.5, 1],
                 outputRange: [5, 0, 5]
               })

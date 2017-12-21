@@ -45,12 +45,12 @@ export default class Details extends Component {
     this._formatReports = this._formatReports.bind(this);
 
     // Animation handlers
-    this.jumpValue = new Animated.Value(0);
-    this.jumpAnim = this.jumpAnim.bind(this);
+    this._jumpValue = new Animated.Value(0);
+    this._jumpAnim = this._jumpAnim.bind(this);
   }
 
   componentDidMount() {
-    this.jumpAnim();
+    this._jumpAnim();
     let stopId = this.props.navigation.state.params.stop ? this.props.navigation.state.params.stop.stop_id : '';
     let newState = {
       refreshing: false,
@@ -172,16 +172,16 @@ export default class Details extends Component {
     }, {}));
   }
 
-  jumpAnim() {
-    this.jumpValue.setValue(0);
+  _jumpAnim() {
+    this._jumpValue.setValue(0);
     Animated.timing(
-      this.jumpValue,
+      this._jumpValue,
       {
         toValue: 1,
         duration: 2000,
         easing: Easing.linear
       }
-    ).start(this.jumpAnim);
+    ).start(this._jumpAnim);
   }
 
   showModal = () => this.setState({ modalVisible: true });
@@ -222,27 +222,27 @@ export default class Details extends Component {
             stationComplaints={this.state.stationComplaints}
             selected={this.state.selected}
             onAdd={this.onAdd} />
+          {this.state.selected ? 
+            <TouchableOpacity
+              onPress={this.showModal}
+              style={styles.bottomButton}>
+              <Animated.View
+                style={{ 
+                  transform: [{
+                    translateY: this._jumpValue.interpolate({
+                      inputRange: [0, 0.5, 1],
+                      outputRange: [5, -2, 5]
+                    })
+                  }]
+                }}>
+                  <EvilIcons
+                    name='chevron-up'
+                    size={32}
+                    style={{ backgroundColor: 'transparent' }} />
+                </Animated.View>
+                <Text>View Schedule</Text>
+            </TouchableOpacity> : null}
         </ScrollView>
-
-        {this.state.selected ? <TouchableOpacity
-          onPress={this.showModal}
-          style={styles.add}>
-          <Animated.View
-            style={{ 
-              transform: [{
-                translateY: this.jumpValue.interpolate({
-                  inputRange: [0, 0.5, 1],
-                  outputRange: [5, -2, 5]
-                })
-              }]
-            }}>
-            <EvilIcons
-              name='chevron-up'
-              size={32}
-              style={{ backgroundColor: 'transparent' }} />
-          </Animated.View>
-          <Text>View Schedule</Text>
-        </TouchableOpacity> : null}
 
         <Modal
           animationType={'slide'}
@@ -284,22 +284,17 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center'
   },
-  add: {
+  bottomButton: {
     alignItems: 'center',
     alignSelf: 'center',
-    position: 'absolute',
     backgroundColor: 'transparent',
-    bottom: 20
+    marginBottom: 20
   }
 });
 
 Details.navigationOptions = {
   title: 'Details',
-  headerStyle: {
-    backgroundColor: 'grey'
-  },
-  headerTitleStyle: {
-    color: 'white'
-  },
+  headerStyle: { backgroundColor: 'grey' },
+  headerTitleStyle: { color: 'white' },
   headerTintColor: 'white'
 };

@@ -67,12 +67,14 @@ export default class TrainLines extends Component {
           <RefreshControl
             refreshing={this.state.refreshing}
             onRefresh={this._onRefresh} /> }>
-        {this.state.showIndicator ?
-          <View style={styles.loader}>
-            <ActivityIndicator size="large" color="cadetblue" />
-          </View> :
-          this.state.service.map((line, idx) =>
-            <TrainLine key={idx} line={line} idx={idx} onDetailsPress={this.props.onDetailsPress}/>)}
+        <View style={styles.inner}>
+          {this.state.showIndicator ?
+            <View style={styles.loader}>
+              <ActivityIndicator size="large" color="cadetblue" />
+            </View> :
+            this.state.service.map((line, idx) =>
+              <TrainLine key={idx} line={line} idx={idx} onDetailsPress={this.props.onDetailsPress}/>)}
+        </View>
       </ScrollView>
     );
   }
@@ -81,6 +83,10 @@ export default class TrainLines extends Component {
 const styles = StyleSheet.create({
   main: {
     backgroundColor: 'white'
+  },
+  inner: {
+    borderTopColor: 'grey',
+    borderTopWidth: 1
   },
   loader: {
     flex: 1,

@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { StyleSheet, View, ScrollView, Text, Button, RefreshControl, Modal, Alert } from 'react-native';
+import { StyleSheet, View, ScrollView, Text, TouchableOpacity, RefreshControl, Modal, Alert } from 'react-native';
 import { SafeAreaView } from 'react-navigation'
 import axios from 'axios';
 import URL from '../env/urls';
@@ -9,7 +9,6 @@ import Favorite from './Favorite';
 import Header from './Header';
 import MapNav from './MapNav';
 import Login from './Login';
-
 
 export default class Favorites extends Component {
   constructor (props) {
@@ -24,17 +23,11 @@ export default class Favorites extends Component {
     this.showAlert = this.showAlert.bind(this);
     this._onRefresh = this._onRefresh.bind(this);
     this._fetchFavorites = this._fetchFavorites.bind(this);
-    this.hideAddFavorite = this.hideAddFavorite.bind(this);
-    this.showAddFavorite = this.showAddFavorite.bind(this);
     this.handleAddFavorite = this.handleAddFavorite.bind(this);
     this.handleDeleteFavorite = this.handleDeleteFavorite.bind(this);
-    this.onDetailsPress = this.onDetailsPress.bind(this);
-    this.onMapPress = this.onMapPress.bind(this);
     this.onLogin = this.onLogin.bind(this);
     this.onLogout = this.onLogout.bind(this);
     this.onGoogle = this.onGoogle.bind(this);
-    this.hideModal = this.hideModal.bind(this);
-    this.showModal = this.showModal.bind(this);
   }
 
   static navigationOptions = ({ navigation }) => {
@@ -58,13 +51,13 @@ export default class Favorites extends Component {
     return { title, headerTitleStyle, headerStyle, headerRight };
   }
 
-  showAlert(stopId) {
+  showAlert(routeId, stopId) {
     Alert.alert(
       'Remove from favorites?',
       '',
       [
-        { text: 'Cancel'},
-        { text: 'Yes', onPress: () => this.handleDeleteFavorite(stopId) }
+        { text: 'Cancel' },
+        { text: 'Yes', onPress: () => this.handleDeleteFavorite(routeId, stopId) }
       ]
     );
   }
@@ -99,50 +92,40 @@ export default class Favorites extends Component {
   }
 
   _fetchFavorites(newState = {}) {
-    axios.get(`${URL}/api/favorites/allfavorites?sub=mta`)
+    axios.get(`${URL}/api/favorites/allfavorites`, {
+      params: {
+        sub: 'mta'
+      }
+    })
     .then(({ data }) => {
       newState.favorites = data;
       this.setState(newState);
-      console.log(this.state.favorites)
     })
     .catch((error) => console.log(error));
   }
 
-  handleDeleteFavorite (stopId) {
+  handleDeleteFavorite (routeId, stopId) {
     axios.post(`${URL}/api/favorites/delete`, {
-      stop_id: stopId
+      stop_id: stopId,
+      route_id: routeId
     })
-    .then(({ data }) => this.setState({favorites: data.favorites}))
+    .then(({ data }) => this.setState({ favorites: data.favorites }))
     .catch(err => console.log(err))
   }
+  
+  handleAddFavorite = (favorites) => this.setState({ addFavoriteVisible: false, favorites: favorites });
 
-  handleAddFavorite(favorites) {
-    this.setState({ favorites : favorites })
-  }
+  onMapPress = () => this.props.navigation.navigate('MapNav');
 
-  onMapPress() {
-    this.props.navigation.navigate('MapNav');
-  }
+  onDetailsPress = (route, stop) => this.props.navigation.navigate('Details', { route, stop });
 
-  onDetailsPress(route, stop) {
-    this.props.navigation.navigate('Details', { route, stop })
-  }
+  showAddFavorite = () => this.setState({ addFavoriteVisible: true });
 
-  showAddFavorite() {
-    this.setState({ addFavoriteVisible: true })
-  }
+  hideAddFavorite = () => this.setState({ addFavoriteVisible: false });
 
-  hideAddFavorite() {
-    this.setState({ addFavoriteVisible: false })
-  }
+  showModal = () => this.setState({ modalVisible: true });
 
-  showModal() {
-    this.setState({ modalVisible: true });
-  }
-
-  hideModal() {
-    this.setState({ modalVisible: false });
-  }
+  hideModal = () => this.setState({ modalVisible: false });
 
   onLogin(userObj) {
     axios.post(`${URL}/api/user/login`, userObj)
@@ -174,7 +157,7 @@ export default class Favorites extends Component {
           <RefreshControl
             refreshing={this.state.refreshing}
             onRefresh={this._onRefresh} />}>
-        <View>
+        <View style={styles.inner}>
           {this.state.favorites.map((element, idx)=>
             <Favorite
               key ={idx}
@@ -183,15 +166,16 @@ export default class Favorites extends Component {
               stopName={element.stop_name}
               onDetailsPress={this.onDetailsPress}
               showAlert={this.showAlert} />)}
-          <Button
-            title="Add Favorite"
-            onPress={this.showAddFavorite}
-          />
+          <TouchableOpacity
+            style={styles.addFavoriteButton}
+            onPress={this.showAddFavorite}>
+            <Text style={styles.addFavoriteText}>Add a favorite</Text>
+          </TouchableOpacity>
           <Modal
             animationType={"slide"}
             transparent={false}
             visible={this.state.addFavoriteVisible}
-            onRequestClose={this.hideModal}>
+            onRequestClose={this.hideAddFavorite}>
             <AddFavorite
               hideModal={this.hideAddFavorite}
               handleAddFavorite={this.handleAddFavorite} />
@@ -220,6 +204,10 @@ const styles = StyleSheet.create({
   main: {
     backgroundColor: 'white'
   },
+  inner: {
+    borderTopColor: 'grey',
+    borderTopWidth: 1
+  },
   text: {
     flexDirection: 'row',
     backgroundColor: '#fff',
@@ -228,5 +216,17 @@ const styles = StyleSheet.create({
     fontSize: 20,
     textAlign: 'center',
     paddingVertical: 25
+  },
+  addFavoriteButton: {
+    backgroundColor: 'cadetblue',
+    marginVertical: 16,
+    paddingHorizontal: 16,
+    paddingVertical: 8,
+    alignSelf: 'center',
+    borderRadius: 20
+  },
+  addFavoriteText: {
+    color: 'white',
+    fontSize: 20
   }
 });

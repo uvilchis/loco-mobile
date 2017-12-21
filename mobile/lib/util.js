@@ -37,7 +37,7 @@ const LineStyleHelper = (routeId) => {
 const MarkerColorHelper = (count) => {
   if (count === undefined) { return 'purple'; }
   if (count > 100) { return 'red'; }
-  if (count > 50) { return 'yellow'; }
+  if (count > 50) { return 'orange'; }
   return 'green';
 };
 

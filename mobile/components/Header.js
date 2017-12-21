@@ -1,6 +1,5 @@
 import React from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
-// import { Header } from 'react-native-elements';
 import { Entypo } from '@expo/vector-icons';
 
 const Header = (props) => (
