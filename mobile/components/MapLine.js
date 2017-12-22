@@ -10,7 +10,7 @@ const MapLine = (props) => (
     </Text>
     <TouchableOpacity
       style={styles.button}
-      onPress={() => props.onDetailsPress(props.line)}>
+      onPress={() => props.onDetailsPress(props.line, props.stop)}>
       <EvilIcons
         name="arrow-right"
         size={32}

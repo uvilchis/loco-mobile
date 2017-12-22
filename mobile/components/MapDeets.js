@@ -55,12 +55,13 @@ export default class MapDeets extends Component {
         {...this._panResponder.panHandlers}>
         <View style={styles.inner}>
           <View style={styles.titleWrapper}>
-            <Text style={styles.title}>{this.props.stopName}</Text>
+            <Text style={styles.title}>{this.props.stop.stop_name}</Text>
           </View>
           {this.state.unique.map((line, idx) => 
             <MapLine 
               key={idx}
               color={Helpers.LineStyleHelper(line)}
+              stop={this.props.stop}
               line={line}
               onDetailsPress={this.props.onDetailsPress} />)}
           <Animated.View

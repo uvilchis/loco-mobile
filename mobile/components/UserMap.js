@@ -42,9 +42,9 @@ export default class UserMap extends Component {
     this.getDirections();
   }
 
-  onDetailsPress(route) {
+  onDetailsPress(route, stop) {
     this.hideModal();
-    this.props.navigation.navigate('Details', { route });
+    this.props.navigation.navigate('Details', { route, stop });
   }
 
   onRoutePick(route) {
@@ -69,7 +69,7 @@ export default class UserMap extends Component {
     })
     .then(({ data }) => {
       data.forEach((el, idx) => {
-        el[0] = el[0].split('-').pop().slice(0, -1);
+        el[0] = el[0].split('-').pop().slice(0, -1).toUpperCase();
         let temp = newState.results.find((a) => a.stop_id.includes(el[0]));
         temp && temp.count !== undefined ? temp.count += el[1] : temp.count = el[1];
       });
@@ -182,7 +182,7 @@ export default class UserMap extends Component {
           visible={this.state.modalVisible}
           onRequestClose={this.hideModal}>
           <MapDeets
-            stopName={this.state.selected}
+            stop={this.state.stop}
             lines={this.state.results.filter((station, idx) => this.state.selected === station.stop_name)}
             hideModal={this.hideModal}
             onDetailsPress={this.onDetailsPress} />

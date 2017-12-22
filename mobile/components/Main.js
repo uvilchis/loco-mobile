@@ -103,7 +103,7 @@ export default class Main extends Component {
           onRequestClose={this.hideModal}>
           <Login
             onLogin={this.onLogin}
-            onSignup={this.onSignup}
+            onSignUp={this.onSignUp}
             onGoogle={this.onGoogle}
             hideModal={this.hideModal} />
         </Modal>

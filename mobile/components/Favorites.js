@@ -27,6 +27,7 @@ export default class Favorites extends Component {
     this.handleDeleteFavorite = this.handleDeleteFavorite.bind(this);
     this.onLogin = this.onLogin.bind(this);
     this.onLogout = this.onLogout.bind(this);
+    this.onSignUp = this.onSignUp.bind(this);
     this.onGoogle = this.onGoogle.bind(this);
   }
 
@@ -187,7 +188,7 @@ export default class Favorites extends Component {
             onRequestClose={this.hideModal}>
             <Login
               onLogin={this.onLogin}
-              onSignup={this.onSignup}
+              onSignUp={this.onSignUp}
               onGoogle={this.onGoogle}
               hideModal={this.hideModal} />
           </Modal>

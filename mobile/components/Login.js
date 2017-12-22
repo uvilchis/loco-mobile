@@ -112,6 +112,7 @@ export default class Login extends Component {
     })
     .catch((error) => {
       console.log(error);
+      this.props.hideModal();
     });
   }
 

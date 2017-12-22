@@ -164,8 +164,9 @@ export default class Details extends Component {
   }
 
   _formatReports(reports, stations) {
+    
     return Object.entries(reports.reduce((acc, el) => {
-      let temp = el[0].split('-').pop().slice(0, -1);
+      let temp = el[0].split('-').pop().slice(0, -1).toUpperCase();
       let name = stations.find((a) => a.stop_id.includes(temp)).stop_name;
       acc[name] = acc[name] ? acc[name] + el[1] : el[1];
       return acc;
