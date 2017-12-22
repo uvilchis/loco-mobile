@@ -1,6 +1,6 @@
 
 import React, { Component } from 'react';
-import { StyleSheet, Text, ScrollView, Animated, Dimensions, Easing, RefreshControl, View, PanResponder, TouchableOpacity } from 'react-native';
+import { StyleSheet, Text, ScrollView, Animated, Dimensions, Easing, RefreshControl, View, PanResponder, TouchableOpacity, Alert } from 'react-native';
 import { EvilIcons } from '@expo/vector-icons';
 import axios from 'axios';
 import URL from '../env/urls';
@@ -41,7 +41,7 @@ export default class AddFavorite extends Component {
       }, []);
       this.setState(newState);
     })
-    .catch((error) => console.log(error))
+    .catch((error) => console.log(error));
   }
 
   onRouteSelect(routeId) {
@@ -77,7 +77,14 @@ export default class AddFavorite extends Component {
         stop_name: this.state.stopName
       })
       .then(({ data }) => this.props.handleAddFavorite(data.favorites))
-      .catch((error) => console.log(error));
+      .catch((error) => Alert.alert(
+        '',
+        'Please Login to Add a Favorite',
+        [
+          {text: 'OK', onPress: () => console.log('OK Pressed')}
+        ],
+        { cancelable: false }
+      ));
     }
   }
 

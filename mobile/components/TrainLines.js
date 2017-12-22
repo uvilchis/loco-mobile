@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { StyleSheet, ScrollView, View, Text, RefreshControl, ActivityIndicator, Dimensions } from 'react-native';
+import { StyleSheet, ScrollView, View, Text, RefreshControl, ActivityIndicator, Dimensions, Alert } from 'react-native';
 import axios from 'axios';
 import TrainLine from './TrainLine';
 import URL from '../env/urls';
@@ -51,7 +51,7 @@ export default class TrainLines extends Component {
       });
       this.setState(newState, this._fetchTimer);
     })
-    .catch((error) => console.log(error));
+    .catch((error) => console.log(error))
   }
 
   _fetchTimer() {
