@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Image, View, Text, Modal, Button, StyleSheet, Animated } from 'react-native';
+import { Image, View, Text, Modal, Button, StyleSheet, Animated, Alert } from 'react-native';
 import { Constants, Location, Permissions, MapView } from 'expo';
 import { EvilIcons } from '@expo/vector-icons';
 import axios from 'axios';
@@ -113,7 +113,8 @@ export default class UserMap extends Component {
       }
     })
     .then(({ data }) => this.setState({ results: data, location: location }))
-    .catch((err) => console.log('ERROR IN AXIOS REQUEST', err));
+    .catch((err) => console.log('ERROR IN AXIOS REQUEST', err), 
+    );
   }
 
   showModal() {
