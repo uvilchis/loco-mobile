@@ -18,3 +18,6 @@ This project was bootstrapped with [Create React Native App](https://github.com/
 * See complaints for many of the main routes and stations!
 * Keep track of your favorites!
 * Quickly see problems with  with the new map feature!
+
+## What to look forward to
+* Subscribe to a route and station to get notifications when problems arise
