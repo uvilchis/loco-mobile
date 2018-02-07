@@ -2,10 +2,11 @@ import React, { Component } from 'react';
 import { View, StyleSheet, Text, Animated, Dimensions, Easing, ScrollView, PanResponder } from 'react-native';
 import { EvilIcons } from '@expo/vector-icons';
 import axios from 'axios';
-import URL from '../env/urls';
 
 import Schedule from './Schedule';
-import CustomToggle from './CustomToggle';
+import CustomToggle from '../shared/CustomToggle';
+
+import URL from '../env/urls';
 
 export default class Cards extends Component {
   constructor(props) {
@@ -104,7 +105,7 @@ export default class Cards extends Component {
           <CustomToggle
             onDirectionSelect={this.onDirectionSelect}
             direction={this.state.direction} />
-          <Text style={styles.stationSelect}>Schedule</Text>
+          <Text style={styles.stopSelect}>Schedule</Text>
           <Schedule schedule={this.state.schedule} />
         </View>
       </ScrollView>
@@ -135,7 +136,7 @@ const styles = StyleSheet.create({
     marginTop: 20,
     margin: 12
   },
-  stationSelect: {
+  stopSelect: {
     fontSize: 24,
     margin: 12,
     marginTop: 24

@@ -6,9 +6,9 @@ import URL from '../env/urls';
 
 import AddFavorite from './AddFavorite';
 import Favorite from './Favorite';
-import Header from './Header';
-import MapNav from './MapNav';
-import Login from './Login';
+import Header from '../shared/Header';
+import MapNav from '../navigators/MapNav';
+import Login from '../login/Login';
 
 export default class Favorites extends Component {
   constructor (props) {
@@ -20,7 +20,7 @@ export default class Favorites extends Component {
       refreshing: false
     };
 
-    this.showAlert = this.showAlert.bind(this);
+    this._showAlert = this._showAlert.bind(this);
     this._onRefresh = this._onRefresh.bind(this);
     this._fetchFavorites = this._fetchFavorites.bind(this);
     this.handleAddFavorite = this.handleAddFavorite.bind(this);
@@ -52,7 +52,7 @@ export default class Favorites extends Component {
     return { title, headerTitleStyle, headerStyle, headerRight };
   }
 
-  showAlert(routeId, stopId) {
+  _showAlert(routeId, stopId) {
     Alert.alert(
       'Remove from favorites?',
       '',
@@ -118,7 +118,7 @@ export default class Favorites extends Component {
 
   onMapPress = () => this.props.navigation.navigate('MapNav');
 
-  onDetailsPress = (route, stop) => this.props.navigation.navigate('Details', { route, stop });
+  onDetailsPress = (route, stop) => this.props.navigation.navigate('Detail', { route, stop });
 
   showAddFavorite = () => this.setState({ addFavoriteVisible: true });
 
@@ -166,7 +166,7 @@ export default class Favorites extends Component {
               stopId={element.stop_id}
               stopName={element.stop_name}
               onDetailsPress={this.onDetailsPress}
-              showAlert={this.showAlert} />)}
+              _showAlert={this._showAlert} />)}
           <TouchableOpacity
             style={styles.addFavoriteButton}
             onPress={this.showAddFavorite}>

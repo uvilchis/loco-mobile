@@ -6,15 +6,16 @@ import axios from 'axios';
 import geodist from 'geodist';
 import Polyline from '@mapbox/polyline';
 
-import URL from '../env/urls';
-import MapDeets from './MapDeets';
+import MapModal from './MapModal';
 import MapCallout from './MapCallout';
 import MapRoutePicker from './MapRoutePicker';
+
+import URL from '../env/urls';
 import Helpers from '../lib/util';
 
 const GEOLOCATION_OPTIONS = { enableHighAccuracy: true, timeout: 20000, maximumAge: 1000 };
 
-export default class UserMap extends Component {
+export default class MapContainer extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -176,15 +177,17 @@ export default class UserMap extends Component {
 
           </MapView>
         </Animated.View>
+
         <MapRoutePicker onRoutePick={this.onRoutePick} />
+        
         <Modal
           animationType={'fade'}
           transparent={true}
           visible={this.state.modalVisible}
           onRequestClose={this.hideModal}>
-          <MapDeets
+          <MapModal
             stop={this.state.stop}
-            lines={this.state.results.filter((station, idx) => this.state.selected === station.stop_name)}
+            routes={this.state.results.filter((stop, idx) => this.state.selected === stop.stop_name)}
             hideModal={this.hideModal}
             onDetailsPress={this.onDetailsPress} />
         </Modal>
@@ -203,7 +206,7 @@ const styles = StyleSheet.create({
   }
 });
 
-UserMap.navigationOptions = {
+MapView.navigationOptions = {
   title: 'Map',
   headerStyle: {
     backgroundColor: 'grey'

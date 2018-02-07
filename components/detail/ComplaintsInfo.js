@@ -5,7 +5,7 @@ const ComplaintsInfo = (props) => (
   <View style={styles.container}>
     {props.currentComplaints.length ? 
       props.currentComplaints.map((el, idx) => 
-        <Text key={idx}>{`${el[1]} complaints at ${el[0]} station`}</Text>)
+        <Text key={idx}>{`${el[1]} complaints at ${el[0]} stop`}</Text>)
     : <Text>None!</Text>}
   </View>
 );

@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { View, TextInput, Text, StyleSheet, Animated, Easing, TouchableOpacity, TouchableWithoutFeedback } from 'react-native';
 import { EvilIcons } from '@expo/vector-icons';
 
-export default class StationSelect extends Component {
+export default class StopSelect extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -24,10 +24,10 @@ export default class StationSelect extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    if (!this.state.all.length && nextProps.stations.length) {
+    if (!this.state.all.length && nextProps.stops.length) {
       this.setState({
-        all: nextProps.stations,
-        filtered: nextProps.stations
+        all: nextProps.stops,
+        filtered: nextProps.stops
       });
     }
   }
@@ -53,13 +53,13 @@ export default class StationSelect extends Component {
     this.setState(newState, () => {
       this._anim();
       if (!search.length) {
-        this.props.onStationSelect('');
+        this.props.onStopSelect('');
       }
     });
   }
 
   onSelect(idx) {
-    this.props.onStationSelect(this.state.filtered[idx].stop_id, this.state.filtered[idx].stop_name);
+    this.props.onStopSelect(this.state.filtered[idx].stop_id, this.state.filtered[idx].stop_name);
     this.setState({
       search: this.state.filtered[idx].stop_name,
       filtered:[this.state.filtered[idx]],
@@ -89,7 +89,7 @@ export default class StationSelect extends Component {
             <TextInput
               style={styles.input}
               name="search"
-              placeholder="Search for a station"
+              placeholder="Search for a stop"
               value={this.state.search}
               onFocus={this._onFocus}
               onChangeText={this._onChange}
@@ -121,12 +121,12 @@ export default class StationSelect extends Component {
         </TouchableWithoutFeedback>
         {this.state.dropdown ?
           <View style={[styles.dropdown]} onLayout={this._setHeight}>
-            {this.state.filtered.map((station, idx) =>
+            {this.state.filtered.map((stop, idx) =>
               <TouchableOpacity
                 key={idx}
                 style={styles.item}
                 onPress={this.onSelect.bind(null, idx)}>
-                <Text style={styles.station}>{station.stop_name}</Text>
+                <Text style={styles.stop}>{stop.stop_name}</Text>
               </TouchableOpacity>)}
           </View> : null}
       </View>
@@ -169,7 +169,7 @@ const styles = StyleSheet.create({
     borderTopColor: 'lightgrey',
     borderTopWidth: 1
   },
-  station: {
+  stop: {
     fontSize: 14,
     paddingVertical: 16,
     paddingLeft: 8

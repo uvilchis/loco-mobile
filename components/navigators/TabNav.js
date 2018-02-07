@@ -1,12 +1,13 @@
 import React from 'react';
 import { Button, ScrollView } from 'react-native';
 import { SafeAreaView, StackNavigator, TabNavigator } from 'react-navigation';
-import RootNav from './RootNav';
+
+import RouteNav from './RouteNav';
 import FavNav from './FavNav';
 
 export default TabNav = TabNavigator ({
-  RootNav : {
-    screen : RootNav,
+  RouteNav : {
+    screen : RouteNav,
     navigationOptions : {
       tabBarLabel : 'Home'
     }
