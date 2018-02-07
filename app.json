@@ -1,0 +1,8 @@
+{
+  "expo": {
+    "name": "Loco",
+    "description": "Crowd-sourced MTA subway status on the fly",
+    "sdkVersion": "25.0.0",
+    "githubUrl": "https://github.com/teamloco/loco-mobile"
+  }
+}
