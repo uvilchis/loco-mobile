@@ -1,10 +1,12 @@
 import React, { Component } from 'react';
 import { StyleSheet, ScrollView, View, Text, RefreshControl, ActivityIndicator, Dimensions, Alert } from 'react-native';
 import axios from 'axios';
-import TrainLine from './TrainLine';
+
+import RouteGroup from './RouteGroup';
+
 import URL from '../env/urls';
 
-export default class TrainLines extends Component {
+export default class Routes extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -73,7 +75,7 @@ export default class TrainLines extends Component {
               <ActivityIndicator size="large" color="cadetblue" />
             </View> :
             this.state.service.map((line, idx) =>
-              <TrainLine key={idx} line={line} idx={idx} onDetailsPress={this.props.onDetailsPress}/>)}
+              <RouteGroup key={idx} line={line} idx={idx} onDetailsPress={this.props.onDetailsPress}/>)}
         </View>
       </ScrollView>
     );

@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { View, StyleSheet, Text, FlatList, Animated, Easing, TouchableOpacity, Platform } from 'react-native';
-import axios from 'axios';
 import { EvilIcons } from '@expo/vector-icons';
+import axios from 'axios';
 
 import URL from '../env/urls';
 import Helpers from '../lib/util';

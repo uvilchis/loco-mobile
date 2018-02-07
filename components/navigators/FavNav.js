@@ -1,7 +1,8 @@
 import React from 'react';
 import { StackNavigator } from 'react-navigation';
-import Favorites from './Favorites';
-import Details from './Details';
+
+import Favorites from '../favorite/Favorites';
+import Detail from '../detail/Detail';
 import MapNav from './MapNav';
 
 export default FavNav = StackNavigator({
@@ -11,6 +12,6 @@ export default FavNav = StackNavigator({
       headerMode:'screen'
     }
   },
-  Details: { screen: Details },
+  Detail: { screen: Detail },
   MapNav: { screen: MapNav }
 });

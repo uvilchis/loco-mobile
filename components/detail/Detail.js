@@ -1,16 +1,18 @@
 import React, { Component } from 'react';
 import { View, Text, StyleSheet, Alert, ScrollView, RefreshControl, Modal, TouchableOpacity, Animated, Easing, Dimensions } from 'react-native';
 import axios from 'axios';
-import URL from '../env/urls';
 import { EvilIcons } from '@expo/vector-icons';
 
 import ComplaintsInfo from './ComplaintsInfo';
-import StationSelect from './StationSelect';
-import StationComplaints from './StationComplaints';
-import CustomToggle from './CustomToggle';
-import Cards from './Cards';
+import ScheduleModal from './ScheduleModal';
+import StopComplaints from './StopComplaints';
 
-export default class Details extends Component {
+import StopSelect from '../shared/StopSelect';
+import CustomToggle from '../shared/CustomToggle';
+
+import URL from '../env/urls';
+
+export default class Detail extends Component {
   constructor(props) {
     super(props);
 
@@ -27,9 +29,9 @@ export default class Details extends Component {
       direction: '',
       stopId: '',
       currentComplaints: [],
-      stationComplaints: [],
-      stationsN: [],
-      stationsS: []
+      stopComplaints: [],
+      stopsN: [],
+      stopsS: []
     };
 
     // Click handlers
@@ -58,18 +60,18 @@ export default class Details extends Component {
     };
     this._fetchStops()
     .then(({ data }) => {
-      newState.stationsN = data.N;
-      newState.stationsS = data.S;
+      newState.stopsN = data.N;
+      newState.stopsS = data.S;
       return this._fetchReports();
     })
     .then(({ data }) => {
-      newState.currentComplaints = this._formatReports(data, newState.stationsN);
+      newState.currentComplaints = this._formatReports(data, newState.stopsN);
       this.setState(newState);
     })
     .catch((error) => console.log(error));
   }
 
-  onStationSelect = (stopId) => this.setState({ stopId }, this.onFetchComplaints);
+  onStopSelect = (stopId) => this.setState({ stopId }, this.onFetchComplaints);
 
   // True = uptown
   onDirectionSelect = (direction) => this.setState({ direction }, this.onFetchComplaints);
@@ -82,7 +84,7 @@ export default class Details extends Component {
     let stopId = this.state.stopId.slice(0, -1) + this.state.direction;
 
     this._fetchComplaints(stopId)
-    .then(({ data }) => this.setState({ selected: true, stationComplaints: data }))
+    .then(({ data }) => this.setState({ selected: true, stopComplaints: data }))
     .catch((error) => console.log(error));
   }
 
@@ -91,28 +93,27 @@ export default class Details extends Component {
     let stopId = this.state.stopId.slice(0, -1) + this.state.direction;
     this._addComplaint(complaintType, stopId)
     .then(({ data }) => {
-      newState.stationComplaints = this.state.stationComplaints.slice();
-      let temp = newState.stationComplaints.find((el) => el.name === complaintType);
+      newState.stopComplaints = this.state.stopComplaints.slice();
+      let temp = newState.stopComplaints.find((el) => el.name === complaintType);
       if (temp) {
         temp.count = data.count;
       } else {
-        newState.stationComplaints.push({ name: complaintType, count: data.count });
+        newState.stopComplaints.push({ name: complaintType, count: data.count });
       }
       return this._fetchReports();
     })
     .then(({ data }) => {
-      newState.currentComplaints = this._formatReports(data, this.state.stationsN);
+      newState.currentComplaints = this._formatReports(data, this.state.stopsN);
       this.setState(newState);
     })
     .catch((error) => {
       Alert.alert(
         '',
-        'Please Login to Post a Complaint',
+        'Please log in to post a complaint',
         [
-          {text: 'OK', onPress: () => console.log('OK Pressed')}
-        ],
-        { cancelable: false }
-      )
+          {text: 'OK', style: 'cancel'}
+        ]
+      );
     });
   }
 
@@ -124,11 +125,11 @@ export default class Details extends Component {
     this.setState({ refreshing: true }, () => {
       this._fetchReports()
       .then(({ data }) => {
-        newState.currentComplaints = this._formatReports(data, this.state.stationsN);
+        newState.currentComplaints = this._formatReports(data, this.state.stopsN);
         return this._fetchComplaints(this.state.stopId)
       })
       .then(({ data }) => {
-        newState.stationComplaints = data;
+        newState.stopComplaints = data;
         this.setState(newState);
       })
       .catch((error) => console.log(error));
@@ -172,11 +173,11 @@ export default class Details extends Component {
     });
   }
 
-  _formatReports(reports, stations) {
+  _formatReports(reports, stop) {
     
     return Object.entries(reports.reduce((acc, el) => {
       let temp = el[0].split('-').pop().slice(0, -1).toUpperCase();
-      let name = stations.find((a) => a.stop_id.includes(temp)).stop_name;
+      let name = stop.find((a) => a.stop_id.includes(temp)).stop_name;
       acc[name] = acc[name] ? acc[name] + el[1] : el[1];
       return acc;
     }, {}));
@@ -213,12 +214,12 @@ export default class Details extends Component {
           <ComplaintsInfo currentComplaints={this.state.currentComplaints} />
 
           <View style={styles.section}>
-            <Text style={styles.sectionHeader}>Select a station</Text>
+            <Text style={styles.sectionHeader}>Select a stop</Text>
           </View>
-          <StationSelect
+          <StopSelect
             stop={this.props.navigation.state.params.stop}
-            stations={this.state.stationsN}
-            onStationSelect={this.onStationSelect} />
+            stops={this.state.stopsN}
+            onStopSelect={this.onStopSelect} />
 
           <View style={styles.section}>
             <Text style={styles.sectionHeader}>Select direction</Text>
@@ -226,10 +227,10 @@ export default class Details extends Component {
           <CustomToggle onDirectionSelect={this.onDirectionSelect} />
 
           <View style={styles.section}>
-            <Text style={styles.sectionHeader}>Station complaints</Text>
+            <Text style={styles.sectionHeader}>Stop complaints</Text>
           </View>
-          <StationComplaints
-            stationComplaints={this.state.stationComplaints}
+          <StopComplaints
+            stopComplaints={this.state.stopComplaints}
             selected={this.state.selected}
             onAdd={this.onAdd} />
           {this.state.selected ?
@@ -259,7 +260,7 @@ export default class Details extends Component {
           transparent={false}
           visible={this.state.modalVisible}
           onRequestClose={this.hideModal}>
-          <Cards
+          <ScheduleModal
             direction={this.state.direction}
             hideModal={this.hideModal}
             routeId={this.props.navigation.state.params.route}
@@ -303,7 +304,7 @@ const styles = StyleSheet.create({
   }
 });
 
-Details.navigationOptions = {
+Detail.navigationOptions = {
   title: 'Details',
   headerStyle: { backgroundColor: 'grey' },
   headerTitleStyle: { color: 'white' },

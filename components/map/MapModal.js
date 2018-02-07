@@ -1,10 +1,11 @@
 import React, { Component } from 'react';
 import { TouchableWithoutFeedback, View, StyleSheet, ScrollView, Text, Animated, Easing, PanResponder, Dimensions } from 'react-native';
 import { EvilIcons } from '@expo/vector-icons';
+
 import MapLine from './MapLine';
 import Helpers from '../lib/util';
 
-export default class MapDeets extends Component {
+export default class MapModal extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -29,7 +30,7 @@ export default class MapDeets extends Component {
 
   componentDidMount() {
     this._drop();
-    let unique = this.props.lines.reduce((acc, el) => {
+    let unique = this.props.routes.reduce((acc, el) => {
       acc[el.route_id] = el.route_id;
       return acc;
     }, {});

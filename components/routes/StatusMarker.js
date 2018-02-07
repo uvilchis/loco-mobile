@@ -3,6 +3,17 @@ import { TouchableOpacity, Alert } from 'react-native';
 
 import { Feather } from '@expo/vector-icons';
 
+const _showAlert = (status) => {
+  let alertText = status.charAt(0).toUpperCase() + status.slice(1);
+  Alert.alert(
+    'Icon Definition',
+    alertText,
+    [
+      { text: 'Close', style: 'cancel' }
+    ]
+  );
+};
+
 const StatusMarker = (props) => {
   let name, color;
   switch(props.status) {
@@ -36,19 +47,9 @@ const StatusMarker = (props) => {
     }
   }
 
-  const showAlert = () => {
-    Alert.alert(
-      'Icon Definition',
-      props.status,
-      [
-        { text: 'Close', style: 'cancel' }
-      ]
-    );
-  }
-
   return (
     <TouchableOpacity
-      onLongPress={showAlert}>
+      onLongPress={() => _showAlert(props.status)}>
       <Feather
         name={name}
         color={color}

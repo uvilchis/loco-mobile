@@ -10,10 +10,10 @@ const defaultComplaints = [
   { name: 'crowded', count: 0 }
 ];
 
-const StationComplaints = (props) => {
+const StopComplaints = (props) => {
 
   let complaints = defaultComplaints.map((el) => {
-    let temp = props.stationComplaints.find((a) => a.name === el.name);
+    let temp = props.stopComplaints.find((a) => a.name === el.name);
     el.count = temp ? temp.count : 0;
     return el;
   });
@@ -35,4 +35,4 @@ const styles = StyleSheet.create({
   }
 });
 
-export default StationComplaints;
+export default StopComplaints;
