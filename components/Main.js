@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { StyleSheet, View, Modal, Text } from 'react-native';
+import { StyleSheet, View, Modal, Text, Alert } from 'react-native';
 import axios from 'axios';
 
 import Login from './Login';
@@ -73,7 +73,14 @@ export default class Main extends Component {
   onLogin(userObj) {
     axios.post(`${URL}/api/user/login`, userObj)
     .then(({ data }) => this.setState({ modalVisible: false }, this.props.screenProps.onLogin))
-    .catch((error) => console.log(error));
+    .catch((error) => Alert.alert(
+      '',
+      'Incorrect Username or Password',
+      [
+        {text: 'OK', onPress: () => console.log('OK Pressed')}
+      ],
+      { cancelable: false }
+    ));
   }
 
   onSignUp(userObj) {

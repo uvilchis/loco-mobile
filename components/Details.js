@@ -104,7 +104,16 @@ export default class Details extends Component {
       newState.currentComplaints = this._formatReports(data, this.state.stationsN);
       this.setState(newState);
     })
-    .catch((error) => console.log(error));
+    .catch((error) => {
+      Alert.alert(
+        '',
+        'Please Login to Post a Complaint',
+        [
+          {text: 'OK', onPress: () => console.log('OK Pressed')}
+        ],
+        { cancelable: false }
+      )
+    });
   }
 
   _onRefresh() {
