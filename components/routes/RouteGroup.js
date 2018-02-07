@@ -1,22 +1,23 @@
 import React, { Component } from 'react';
 import { View, StyleSheet, Image, Button, Text, Alert, Animated, Easing, TouchableOpacity } from 'react-native';
 import { Entypo, EvilIcons } from '@expo/vector-icons';
-import Lines from './Lines';
+
+import Route from './Route';
 import StatusMarker from './StatusMarker';
 
 import Helpers from '../lib/util';
 
-export default class TrainLine extends Component {
+export default class RouteGroup extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      showLines: false,
+      showRoutes: false,
       _dropValue: new Animated.Value()
     };
     this._spinValue = new Animated.Value(0);
     this._opacityValue = new Animated.Value(0);
     this._showAlert = this._showAlert.bind(this);
-    this._toggleLines = this._toggleLines.bind(this);
+    this._toggleRoutes = this._toggleRoutes.bind(this);
     this._setMax = this._setMax.bind(this);
     this._setMin = this._setMin.bind(this);
     this._drop = this._drop.bind(this);
@@ -32,8 +33,8 @@ export default class TrainLine extends Component {
     );
   }
 
-  _toggleLines() {
-    this.setState({ showLines: !this.state.showLines }, this._drop);
+  _toggleRoutes() {
+    this.setState({ showRoutes: !this.state.showRoutes }, this._drop);
   }
 
   _setMax(e) {
@@ -47,17 +48,17 @@ export default class TrainLine extends Component {
 
   // True = rotate down, false = rotate up
   _drop() {
-    let init = this.state.showLines ? this.state.min : this.state.max + this.state.min;
-    let final = this.state.showLines ? this.state.min + this.state.max : this.state.min;
+    let init = this.state.showRoutes ? this.state.min : this.state.max + this.state.min;
+    let final = this.state.showRoutes ? this.state.min + this.state.max : this.state.min;
 
     this.state._dropValue.setValue(init);
-    this._spinValue.setValue(this.state.showLines ? 0 : 1);
+    this._spinValue.setValue(this.state.showRoutes ? 0 : 1);
 
     Animated.parallel([
       Animated.timing(
         this._spinValue,
         {
-          toValue: this.state.showLines ? 1 : 0,
+          toValue: this.state.showRoutes ? 1 : 0,
           duration: 100,
           easing: Easing.linear
         }
@@ -71,7 +72,7 @@ export default class TrainLine extends Component {
       Animated.timing(
         this._opacityValue,
         {
-          toValue: this.state.showLines ? 100 : 0,
+          toValue: this.state.showRoutes ? 100 : 0,
           duration: 200,
           easing: Easing.linear
         }
@@ -108,12 +109,12 @@ export default class TrainLine extends Component {
                 name="chevron-down"
                 color='darkgrey'
                 size={32}
-                onPress={this._toggleLines} /> 
+                onPress={this._toggleRoutes} /> 
             </Animated.View>
           </View> 
         </View>
         <Animated.View style={{ opacity: this._opacityValue }} onLayout={this._setMax}>
-          <Lines
+          <Route
             countedRoutes={this.props.line.countedRoutes} 
             color={style.color}
             onDetailsPress={this.props.onDetailsPress} />

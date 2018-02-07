@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { View, TextInput, Text, StyleSheet, Animated, Easing, TouchableOpacity, TouchableWithoutFeedback } from 'react-native';
 import { EvilIcons } from '@expo/vector-icons';
+
 import Helpers from '../lib/util';
 
 export default class RouteSelect extends Component {
@@ -77,7 +78,7 @@ export default class RouteSelect extends Component {
         <View
           style={styles.inner}>
           <TextInput
-            style={[styles.input, styles.station, Helpers.LineStyleHelper(this.state.search)]}
+            style={[styles.input, styles.stop, Helpers.LineStyleHelper(this.state.search)]}
             name="search"
             placeholder="Search for a route"
             value={this.state.search}
@@ -110,7 +111,7 @@ export default class RouteSelect extends Component {
               key={idx}
               style={styles.item}
               onPress={this.onSelect.bind(null, idx)}>
-              <Text style={[styles.station, Helpers.LineStyleHelper(route.route_id)]}>{route.route_id}</Text>
+              <Text style={[styles.stop, Helpers.LineStyleHelper(route.route_id)]}>{route.route_id}</Text>
             </TouchableOpacity>)}
         </View> : null}
     </View>
@@ -145,7 +146,7 @@ const styles = StyleSheet.create({
     borderTopColor: 'lightgrey',
     borderTopWidth: 1
   },
-  station: {
+  stop: {
     fontSize: 20,
     paddingVertical: 12,
     paddingLeft: 8

@@ -1,7 +1,6 @@
 import React from 'react';
 import { View, StyleSheet, Text, TouchableOpacity } from 'react-native';
 import { EvilIcons } from '@expo/vector-icons';
-import StatusMarker from './StatusMarker';
 
 import Helpers from '../lib/util';
 

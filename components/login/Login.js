@@ -2,11 +2,10 @@ import React, { Component } from 'react';
 import Expo from 'expo';
 import { StyleSheet, ScrollView, Text, View, TextInput, TouchableWithoutFeedback, TouchableOpacity, Image, Animated, Easing, Dimensions, PanResponder } from 'react-native'
 import { EvilIcons } from '@expo/vector-icons'
-import KEYS from '../env/key';
-import URL from '../env/urls';
 import axios from 'axios';
 
-const bgSource = '../images/backgrounds/escalator-bg.jpg';
+import KEYS from '../env/key';
+import URL from '../env/urls';
 
 export default class Login extends Component {
   constructor(props) {
@@ -33,7 +32,7 @@ export default class Login extends Component {
           this.props.hideModal();
         }
       }
-    })
+    });
   }
 
   componentDidMount() {
@@ -138,7 +137,7 @@ export default class Login extends Component {
                 })
               }]
             }}
-            source={require('../images/backgrounds/escalator-bg.jpg')}/>
+            source={require('../../images/backgrounds/escalator-bg.jpg')}/>
           <Animated.View
             style={[styles.downButton, {
               transform: [{

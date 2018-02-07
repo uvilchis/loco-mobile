@@ -2,8 +2,8 @@ import React, { Component } from 'react';
 import axios from 'axios';
 import { Platform, StyleSheet, View, StatusBar, SafeAreaView } from 'react-native';
 
-import TabNav from './components/TabNav';
-import URL from './env/urls';
+import TabNav from './components/navigators/TabNav';
+import URL from './components/env/urls';
 
 export default class App extends Component {
   constructor(props) {

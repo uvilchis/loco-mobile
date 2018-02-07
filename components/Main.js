@@ -2,11 +2,16 @@ import React, { Component } from 'react';
 import { StyleSheet, View, Modal, Text, Alert } from 'react-native';
 import axios from 'axios';
 
-import Login from './Login';
-import TrainLines from './TrainLines';
-import Header from './Header';
-import MapNav from './MapNav';
-import URL from '../env/urls';
+import Login from './login/Login';
+import Routes from './routes/Routes';
+import Header from './shared/Header';
+import MapNav from './navigators/MapNav';
+
+import URL from './env/urls';
+
+/*
+  Main entry point into the app
+*/
 
 export default class Main extends Component {
   constructor(props) {
@@ -64,7 +69,7 @@ export default class Main extends Component {
 
   onMapPress = () => this.props.navigation.navigate('MapNav')
 
-  onDetailsPress = (route) => this.props.navigation.navigate('Details', { route });
+  onDetailsPress = (route) => this.props.navigation.navigate('Detail', { route });
 
   showModal = () => this.setState({ modalVisible: true });
 
@@ -102,7 +107,7 @@ export default class Main extends Component {
   render() {
     return (
       <View style={styles.container}>
-        <TrainLines onDetailsPress={this.onDetailsPress} />
+        <Routes onDetailsPress={this.onDetailsPress} />
         <Modal
           animationType="slide"
           transparent={false}

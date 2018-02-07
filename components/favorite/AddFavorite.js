@@ -1,11 +1,12 @@
-
 import React, { Component } from 'react';
 import { StyleSheet, Text, ScrollView, Animated, Dimensions, Easing, RefreshControl, View, PanResponder, TouchableOpacity, Alert } from 'react-native';
 import { EvilIcons } from '@expo/vector-icons';
 import axios from 'axios';
+
 import URL from '../env/urls';
-import RouteSelect from './RouteSelect'
-import StationSelect from './StationSelect'
+
+import RouteSelect from '../shared/RouteSelect';
+import StopSelect from '../shared/StopSelect';
 
 export default class AddFavorite extends Component {
   constructor(props) {
@@ -13,12 +14,12 @@ export default class AddFavorite extends Component {
     this.state = {
       routes : [],
       routeId: '',
-      stationsN: [],
-      stationsS: [],
+      stopsN: [],
+      stopsS: [],
       touchableEnabled: false
     };
     this.onRouteSelect = this.onRouteSelect.bind(this);
-    this.onStationSelect = this.onStationSelect.bind(this);
+    this.onStopSelect = this.onStopSelect.bind(this);
     this.onConfirm = this.onConfirm.bind(this);
 
     this._dropValue = new Animated.Value(0);
@@ -53,14 +54,14 @@ export default class AddFavorite extends Component {
       }
     })
     .then(({ data }) => {
-      newState.stationsN = data.N;
-      newState.stationsS = data.S;
+      newState.stopsN = data.N;
+      newState.stopsS = data.S;
       this.setState(newState);
     })
     .catch((error) => console.log(error));
   }
 
-  onStationSelect(stopId, stopName) {
+  onStopSelect(stopId, stopName) {
     this.setState({
       stopId: stopId,
       stopName: stopName,
@@ -81,9 +82,8 @@ export default class AddFavorite extends Component {
         '',
         'Please Login to Add a Favorite',
         [
-          {text: 'OK', onPress: () => console.log('OK Pressed')}
-        ],
-        { cancelable: false }
+          {text: 'OK', style: 'cancel'}
+        ]
       ));
     }
   }
@@ -124,16 +124,14 @@ export default class AddFavorite extends Component {
             <Text style={styles.sectionHeader}>Select a route</Text>
           </View>
           <RouteSelect
-            style={styles.stationStyle}
             routes={this.state.routes}
             onRouteSelect={this.onRouteSelect} />
             <View style={styles.section}>
-              <Text style={styles.sectionHeader}>Select a station</Text>
+              <Text style={styles.sectionHeader}>Select a stop</Text>
             </View>
-          <StationSelect
-            style={styles.stationStyle}
-            stations={this.state.stationsN}
-            onStationSelect={this.onStationSelect} />
+          <StopSelect
+            stops={this.state.stopsN}
+            onStopSelect={this.onStopSelect} />
           <TouchableOpacity
             onPress={this.onConfirm}
             style={[styles.confirmButton, { backgroundColor: this.state.touchableEnabled ? 'cadetblue' : 'lightgrey' }]}>

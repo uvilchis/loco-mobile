@@ -1,10 +1,11 @@
 import React from 'react';
 import { StackNavigator } from 'react-navigation';
-import MapNav from './MapNav';
-import Main from './Main';
-import Details from './Details';
 
-export default RootNav = StackNavigator({
+import MapNav from './MapNav';
+import Main from '../Main';
+import Detail from '../detail/Detail';
+
+export default RouteNav = StackNavigator({
   Main: {
     screen: Main,
     navigationOptions: {
@@ -12,5 +13,5 @@ export default RootNav = StackNavigator({
     }
   },
   MapNav: { screen: MapNav },
-  Details: { screen: Details }
+  Detail: { screen: Detail }
 });

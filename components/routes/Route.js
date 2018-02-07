@@ -2,9 +2,10 @@ import React, { Component } from 'react';
 import { StyleSheet, Text, View, TouchableOpacity } from 'react-native';
 import { Card } from 'react-native-elements';
 import { EvilIcons } from '@expo/vector-icons';
+
 import URL from '../env/urls';
 
-const Lines = (props) => (
+const Route = (props) => (
   <View>
     {props.countedRoutes.map((route, idx) =>
       <TouchableOpacity
@@ -46,4 +47,4 @@ const styles = StyleSheet.create({
   }
 });
 
-export default Lines;
+export default Route;

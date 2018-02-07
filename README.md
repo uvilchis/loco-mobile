@@ -15,9 +15,25 @@ Original development team:
 This project was bootstrapped with [Create React Native App](https://github.com/react-community/create-react-native-app).
 
 ## Current features
-* See complaints for many of the main routes and stations!
+* See complaints for many of the main routes and stops!
 * Keep track of your favorites!
 * Quickly see problems with  with the new map feature!
 
 ## What to look forward to
-* Subscribe to a route and station to get notifications when problems arise
+* Subscribe to a route and stop to get notifications when problems arise
+
+
+## Tech Todos:
+* Refactor to Redux
+* Improve login functionality
+* Singular complaint model
+* Refactor entire directory
+  * By Feature
+  * Match project names to API structure (GTFS)
+  * Documentation
+* Refactor Login Component (It's huge!)
+* Fix annoying start-up animation (stutters all routes)
+* Unify Code style
+  * _privateMethod
+  * EITHER async/await or promises
+  
